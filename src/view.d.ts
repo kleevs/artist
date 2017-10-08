@@ -20,5 +20,7 @@ export declare class Subview<TModel> extends BindingHandler<{
     }[]);
     update(element: HTMLElement, allBinding: any, viewmodel: any, context: any): void;
 }
-export declare function start(el: HTMLElement, type: any): void;
+export declare function start<T>(el: HTMLElement, type: {
+    prototype: T;
+}, callback?: (view: T) => void): void;
 export declare function setServiceProvider(value: IProvider): void;

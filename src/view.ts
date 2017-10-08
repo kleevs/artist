@@ -67,10 +67,10 @@ export class Subview<TModel> extends BindingHandler<{ type: any, constructor?: (
         var array = this.valueAccessor();
 
         var htmls = map(array, (item) => {
-            var viewType = grep(registeredView, (view) => view.construct.prototype instanceof item.type || item.type === view.construct)[0];
-            var view = serviceProvider && serviceProvider.createService(viewType.construct) || new viewType.construct();
-            item.constructor && item.constructor(view);
-            return viewType.html.then(value => {
+            var viewType = item && item.type && grep(registeredView, (view) => view.construct.prototype instanceof item.type || item.type === view.construct)[0];
+            var view = viewType && (serviceProvider && serviceProvider.createService(viewType.construct) || new viewType.construct());
+            view && item.constructor && item.constructor(view);
+            return viewType && viewType.html.then(value => {
                 var $el = $(value);
                 bindView($el, viewType.binding, view);
                 return $el;
@@ -84,15 +84,15 @@ export class Subview<TModel> extends BindingHandler<{ type: any, constructor?: (
     }
 }
 
-export function start(el: HTMLElement, type: any) {
+export function start<T>(el: HTMLElement, type: { prototype: T }, callback?: (view: T) => void) {
     var element:any = el;
     !element.viewmodel && (applyBinding([
         new Subview((ctx) => [element.viewmodel.view()])
     ], element, element.viewmodel = {
         view: object<any>({
-            type: type
+            type: type, constructor: callback
         })
-    }) || true) || element.viewmodel.view({ type: type });
+    }) || true) || element.viewmodel.view({ type: type, constructor: callback });
 }
 
 let serviceProvider: IProvider;

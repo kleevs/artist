@@ -10,7 +10,7 @@
   "dependencies": {
     "jquery": "^3.2.1",
     "mixin": "git+https://github.com/kleevs/mixin.git",
-    "view": "git+https://github.com/kleevs/view.git",
+    "mvvm": "git+https://github.com/kleevs/mvvm.git",
     "dependency-injection": "git+https://github.com/kleevs/dependency-injection.git"
   },
   "devDependencies": {

@@ -16,8 +16,8 @@
     const view_1 = require("./view");
     __export(require("node_modules/dependency-injection/src/index"));
     class IStartUp {
-        renderView(selector, view) {
-            view_1.start($(selector)[0], view);
+        renderView(selector, view, callback) {
+            view_1.start($(selector)[0], view, callback);
         }
     }
     exports.IStartUp = IStartUp;

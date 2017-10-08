@@ -61,10 +61,10 @@
             var $element = $(element);
             var array = this.valueAccessor();
             var htmls = index_1.map(array, (item) => {
-                var viewType = index_1.grep(registeredView, (view) => view.construct.prototype instanceof item.type || item.type === view.construct)[0];
-                var view = serviceProvider && serviceProvider.createService(viewType.construct) || new viewType.construct();
-                item.constructor && item.constructor(view);
-                return viewType.html.then(value => {
+                var viewType = item && item.type && index_1.grep(registeredView, (view) => view.construct.prototype instanceof item.type || item.type === view.construct)[0];
+                var view = viewType && (serviceProvider && serviceProvider.createService(viewType.construct) || new viewType.construct());
+                view && item.constructor && item.constructor(view);
+                return viewType && viewType.html.then(value => {
                     var $el = $(value);
                     bindView($el, viewType.binding, view);
                     return $el;
@@ -77,15 +77,15 @@
         }
     }
     exports.Subview = Subview;
-    function start(el, type) {
+    function start(el, type, callback) {
         var element = el;
         !element.viewmodel && (index_3.applyBinding([
             new Subview((ctx) => [element.viewmodel.view()])
         ], element, element.viewmodel = {
             view: index_2.object({
-                type: type
+                type: type, constructor: callback
             })
-        }) || true) || element.viewmodel.view({ type: type });
+        }) || true) || element.viewmodel.view({ type: type, constructor: callback });
     }
     exports.start = start;
     let serviceProvider;
