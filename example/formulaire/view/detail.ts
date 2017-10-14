@@ -19,5 +19,8 @@ class Detail extends IDetail {
     constructor() {
         super();
     }
-    
+
+    initialize(viewParent) {
+        this.parent = viewParent;
+    }
 }

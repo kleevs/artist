@@ -13,16 +13,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../../../src/index", "./form", "./detail", "./list", "./saved", "../../../src/index"], factory);
+        define(["require", "exports", "../../../src/index", "../view/form", "../view/detail", "../view/list", "../view/saved", "../../../src/index"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("../../../src/index");
-    const form_1 = require("./form");
-    const detail_1 = require("./detail");
-    const list_1 = require("./list");
-    const saved_1 = require("./saved");
+    const form_1 = require("../view/form");
+    const detail_1 = require("../view/detail");
+    const list_1 = require("../view/list");
+    const saved_1 = require("../view/saved");
     const index_2 = require("../../../src/index");
     class ILayout {
     }
@@ -45,10 +45,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         index_1.View({
             template: "tmpl/layout.html",
             binding: {
-                "[form]": [new index_2.Subview((ctx) => [{ type: form_1.IForm, constructor: (form) => form.parent = ctx }])],
-                "[detail]": [new index_2.Subview((ctx) => [{ type: detail_1.IDetail, constructor: (detail) => detail.parent = ctx }])],
-                "[list]": [new index_2.Subview((ctx) => [{ type: list_1.IList, constructor: (list) => { ctx.list = list; list.parent = ctx; } }])],
-                "[saved]": [new index_2.Subview((ctx) => [{ type: saved_1.ISaved, constructor: (saved) => ctx.saved = saved }])]
+                "[form]": [new index_2.Subview((ctx) => [{ type: form_1.IForm }])],
+                "[detail]": [new index_2.Subview((ctx) => [{ type: detail_1.IDetail }])],
+                "[list]": [new index_2.Subview((ctx) => [{ type: list_1.IList }])],
+                "[saved]": [new index_2.Subview((ctx) => [{ type: saved_1.ISaved }])]
             }
         }),
         __metadata("design:paramtypes", [])

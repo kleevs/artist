@@ -1,24 +1,19 @@
 import { IStartUp } from './istartup';
-import { setServiceProvider } from './view';
-import { DependencyInjector } from 'node_modules/dependency-injection/src/index';
-import * as $ from 'node_modules/jquery/dist/jquery';
+import { config } from './service';
+
+export * from 'node_modules/mvvm/src/index';
+export * from 'node_modules/dependency-injection/src/index';
 export * from './istartup';
 export * from './view';
+export * from './service';
+export function startup(starter: any) {
+    var context: Window = window;
+    var startup: IStartUp = new starter();
+    
+    startup && startup.onStart && startup.onStart(config);
+    startup && startup.onHashChange && context.addEventListener("hashchange", () => {
+        startup.onHashChange(location.hash, location.href);
+    }, false);
+    startup && startup.onHashChange && startup.onHashChange(location.hash, location.href);
+}
 
-var injector = new DependencyInjector();
-var config = injector.getConfig();
-var provider = injector.getProvider();
-setServiceProvider(provider);
-
-$(() => {
-    setTimeout(() => { 
-        var context: Window & { StartUp?: new() => IStartUp } = window;
-        var startup: IStartUp = context && context.StartUp && context.StartUp.prototype instanceof IStartUp && new context.StartUp();
-        
-        startup && startup.onStart(config);
-        startup && context.addEventListener("hashchange", () => {
-            startup.onHashChange(location.hash, location.href);
-        }, false);
-        startup && startup.onHashChange(location.hash, location.href);
-    });
-});

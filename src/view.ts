@@ -1,9 +1,8 @@
 import { foreach, map, grep } from 'node_modules/mixin/src/index';
 import { isObservable, object } from 'node_modules/observable/src/index';
 import { applyBinding, BindingHandler } from 'node_modules/mvvm/src/index';
-import { IProvider } from 'node_modules/dependency-injection/src/index';
+import { provider as serviceProvider } from './service';
 import * as $ from 'node_modules/jquery/dist/jquery';
-export * from 'node_modules/mvvm/src/index';
 
 export declare type ViewOption<TModel> = {
     selector?: string,
@@ -57,8 +56,8 @@ function bindView<TModel>($element, bindings: {[s:string]: BindingHandler<any, T
     });
 }
 
-export class Subview<TModel> extends BindingHandler<{ type: any, constructor?: (view: any) => void }[], TModel> {
-    constructor(valueAccessor: (ctx) => { type: any, constructor?: (view: any) => void }[]) {
+export class Subview<TModel> extends BindingHandler<{ type: any, callback?: (view: any) => void }[], TModel> {
+    constructor(valueAccessor: (ctx) => { type: any, callback?: (view: any) => void }[]) {
         super(valueAccessor);
     }
 
@@ -69,7 +68,8 @@ export class Subview<TModel> extends BindingHandler<{ type: any, constructor?: (
         var htmls = map(array, (item) => {
             var viewType = item && item.type && grep(registeredView, (view) => view.construct.prototype instanceof item.type || item.type === view.construct)[0];
             var view = viewType && (serviceProvider && serviceProvider.createService(viewType.construct) || new viewType.construct());
-            view && item.constructor && item.constructor(view);
+            view && view.initialize && view.initialize(viewmodel);
+            view && item.callback && item.callback(view);
             return viewType && viewType.html.then(value => {
                 var $el = $(value);
                 bindView($el, viewType.binding, view);
@@ -90,12 +90,7 @@ export function start<T>(el: HTMLElement, type: { prototype: T }, callback?: (vi
         new Subview((ctx) => [element.viewmodel.view()])
     ], element, element.viewmodel = {
         view: object<any>({
-            type: type, constructor: callback
+            type: type, callback: callback
         })
-    }) || true) || element.viewmodel.view({ type: type, constructor: callback });
-}
-
-let serviceProvider: IProvider;
-export function setServiceProvider(value: IProvider) {
-    serviceProvider = value;
+    }) || true) || element.viewmodel.view({ type: type, callback: callback });
 }

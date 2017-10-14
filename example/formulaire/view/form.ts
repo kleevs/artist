@@ -29,6 +29,10 @@ class Form extends IForm {
         this.age = object<string>();
     }
 
+    initialize(viewParent) {
+        this.parent = viewParent;
+    }
+
     private add() {
         this.parent.add({
             last: this.last(),

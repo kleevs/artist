@@ -1,8 +1,8 @@
 import { View } from '../../../src/index';
-import { IForm } from './form';
-import { IDetail } from './detail';
-import { IList } from './list';
-import { ISaved } from './saved';
+import { IForm } from '../view/form';
+import { IDetail } from '../view/detail';
+import { IList } from '../view/list';
+import { ISaved } from '../view/saved';
 import { Text, Value, Click, ForEach, Subview } from '../../../src/index';
 
 export abstract class ILayout {}
@@ -10,10 +10,10 @@ export abstract class ILayout {}
 @View<Layout>({
     template: "tmpl/layout.html",
     binding: {
-        "[form]": [new Subview((ctx: Layout) =>  [{ type: IForm, constructor: (form: IForm) =>  form.parent = ctx }])],
-        "[detail]": [new Subview((ctx: Layout) =>  [{ type: IDetail, constructor: (detail: IDetail) =>  detail.parent = ctx }])],
-        "[list]": [new Subview((ctx: Layout) => [{ type: IList, constructor: (list: IList) => { ctx.list = list; list.parent = ctx; } }])],
-        "[saved]": [new Subview((ctx: Layout) => [{ type: ISaved, constructor: (saved: ISaved) =>  ctx.saved = saved }])]
+        "[form]": [new Subview((ctx: Layout) =>  [{ type: IForm }])],
+        "[detail]": [new Subview((ctx: Layout) =>  [{ type: IDetail }])],
+        "[list]": [new Subview((ctx: Layout) => [{ type: IList }])],
+        "[saved]": [new Subview((ctx: Layout) => [{ type: ISaved }])]
     }
 })
 class Layout extends ILayout {

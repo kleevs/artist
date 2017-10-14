@@ -38,6 +38,11 @@ class List extends IList {
         this.selected = object<any>();
     }
 
+    initialize(viewParent) {
+        this.parent = viewParent;
+        viewParent.list = this;
+    }
+
     public add(person: { last: string, first: string, age: string }) : void {
         var array = this.array() || [];
         var obs = {};

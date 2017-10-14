@@ -27,6 +27,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         constructor() {
             super();
         }
+        initialize(viewParent) {
+            this.parent = viewParent;
+        }
     };
     Detail = __decorate([
         index_1.View({

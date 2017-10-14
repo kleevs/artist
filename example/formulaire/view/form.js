@@ -31,6 +31,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             this.first = index_1.object('');
             this.age = index_1.object();
         }
+        initialize(viewParent) {
+            this.parent = viewParent;
+        }
         add() {
             this.parent.add({
                 last: this.last(),

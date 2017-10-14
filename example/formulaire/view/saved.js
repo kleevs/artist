@@ -30,6 +30,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             super();
             this.array = index_1.object();
         }
+        initialize(viewParent) {
+            viewParent.saved = this;
+        }
         save(person) {
             this.array(person);
         }

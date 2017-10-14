@@ -33,6 +33,10 @@ class Saved extends ISaved {
         this.array = object<any[]>();
     }
 
+    initialize(viewParent) {
+        viewParent.saved = this;
+    }
+
     public save(person: { last: string, first: string, age: string }[]) : void {
         this.array(person);
     }

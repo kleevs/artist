@@ -1,24 +1,22 @@
-import { IStartUp, IConfig } from '../../src/index';
+import { IStartUp, IConfig, startup } from '../../src/index';
+import { ILayout } from './layout/layout';
 
-(<any>window).StartUp = class StartUp extends IStartUp {
-    private require: (uri: string, callback: (module) => void) => void;
+startup(class StartUp extends IStartUp {
+    private _layout: ILayout;
 
     constructor() {
         super();
-        var context: Window & { require? } = window;
-        this.require = context.require;
     }
 
     onStart(config: IConfig): void {
         console.log("start");
+        this.renderView("[layout]", ILayout, (layout: ILayout) => {
+            this._layout = layout;
+        });
     }
 
     onHashChange (hash: string, href: string): void {
         console.log("hash " + hash);
-
-        this.require("./view/layout", (module) => {
-            this.renderView("[layout]", module.ILayout);
-        });
     }
-}
+});
 

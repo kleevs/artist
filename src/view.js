@@ -4,19 +4,16 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/mixin/src/index", "node_modules/observable/src/index", "node_modules/mvvm/src/index", "node_modules/jquery/dist/jquery", "node_modules/mvvm/src/index"], factory);
+        define(["require", "exports", "node_modules/mixin/src/index", "node_modules/observable/src/index", "node_modules/mvvm/src/index", "./service", "node_modules/jquery/dist/jquery"], factory);
     }
 })(function (require, exports) {
     "use strict";
-    function __export(m) {
-        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("node_modules/mixin/src/index");
     const index_2 = require("node_modules/observable/src/index");
     const index_3 = require("node_modules/mvvm/src/index");
+    const service_1 = require("./service");
     const $ = require("node_modules/jquery/dist/jquery");
-    __export(require("node_modules/mvvm/src/index"));
     let registeredView = [];
     function View(options) {
         return (constructor) => {
@@ -62,8 +59,9 @@
             var array = this.valueAccessor();
             var htmls = index_1.map(array, (item) => {
                 var viewType = item && item.type && index_1.grep(registeredView, (view) => view.construct.prototype instanceof item.type || item.type === view.construct)[0];
-                var view = viewType && (serviceProvider && serviceProvider.createService(viewType.construct) || new viewType.construct());
-                view && item.constructor && item.constructor(view);
+                var view = viewType && (service_1.provider && service_1.provider.createService(viewType.construct) || new viewType.construct());
+                view && view.initialize && view.initialize(viewmodel);
+                view && item.callback && item.callback(view);
                 return viewType && viewType.html.then(value => {
                     var $el = $(value);
                     bindView($el, viewType.binding, view);
@@ -83,15 +81,10 @@
             new Subview((ctx) => [element.viewmodel.view()])
         ], element, element.viewmodel = {
             view: index_2.object({
-                type: type, constructor: callback
+                type: type, callback: callback
             })
-        }) || true) || element.viewmodel.view({ type: type, constructor: callback });
+        }) || true) || element.viewmodel.view({ type: type, callback: callback });
     }
     exports.start = start;
-    let serviceProvider;
-    function setServiceProvider(value) {
-        serviceProvider = value;
-    }
-    exports.setServiceProvider = setServiceProvider;
 });
 //# sourceMappingURL=view.js.map

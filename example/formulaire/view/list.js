@@ -31,6 +31,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             this.array = index_1.object([]);
             this.selected = index_1.object();
         }
+        initialize(viewParent) {
+            this.parent = viewParent;
+            viewParent.list = this;
+        }
         add(person) {
             var array = this.array() || [];
             var obs = {};
