@@ -4,6 +4,7 @@ import { IDetail } from '../view/detail';
 import { IList } from '../view/list';
 import { ISaved } from '../view/saved';
 import { Text, Value, Click, ForEach, Subview } from '../../../src/index';
+import { IApp } from '../service/app';
 
 export abstract class ILayout {}
 
@@ -20,19 +21,7 @@ class Layout extends ILayout {
     private list: IList;
     private saved: ISaved;
 
-    constructor() {
+    constructor(private _app: IApp) {
         super();
-    }
-
-    public add(person: { last: string, first: string, age: string }) {
-        this.list && this.list.add(person);
-    }
-
-    public save(persons: { last: string, first: string, age: string }[]) {
-        this.saved && this.saved.save(persons);
-    }
-
-    public selected() {
-        return this.list.selected();
     }
 }

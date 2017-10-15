@@ -13,22 +13,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../../../src/index", "../../../src/index"], factory);
+        define(["require", "exports", "../../../src/index", "../../../src/index", "../service/app"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("../../../src/index");
     const index_2 = require("../../../src/index");
+    const app_1 = require("../service/app");
     class IDetail {
     }
     exports.IDetail = IDetail;
     let Detail = class Detail extends IDetail {
-        constructor() {
+        constructor(_app) {
             super();
-        }
-        initialize(viewParent) {
-            this.parent = viewParent;
+            this._app = _app;
         }
     };
     Detail = __decorate([
@@ -36,12 +35,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             template: "tmpl/detail.html",
             binding: {
                 "[panel-title]": [new index_2.Text(() => "Detail")],
-                "#last": [new index_2.Value((ctx) => { return (ctx.parent.selected() || { last: () => { } }).last; })],
-                "#first": [new index_2.Value((ctx) => { return (ctx.parent.selected() || { first: () => { } }).first; })],
-                "#age": [new index_2.Value((ctx) => { return (ctx.parent.selected() || { age: () => { } }).age; })]
+                "#last": [new index_2.Value((ctx) => { return ctx._app.getSelected().last; })],
+                "#first": [new index_2.Value((ctx) => { return ctx._app.getSelected().first; })],
+                "#age": [new index_2.Value((ctx) => { return ctx._app.getSelected().age; })]
             }
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [app_1.IApp])
     ], Detail);
 });
 //# sourceMappingURL=detail.js.map

@@ -13,71 +13,55 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/observable/src/index", "../../../src/index", "node_modules/jquery/dist/jquery", "../../../src/index"], factory);
+        define(["require", "exports", "../../../src/index", "node_modules/jquery/dist/jquery", "../../../src/index", "../service/app"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("node_modules/observable/src/index");
-    const index_2 = require("../../../src/index");
+    const index_1 = require("../../../src/index");
     const $ = require("node_modules/jquery/dist/jquery");
-    const index_3 = require("../../../src/index");
+    const index_2 = require("../../../src/index");
+    const app_1 = require("../service/app");
     class IList {
     }
     exports.IList = IList;
     let List = class List extends IList {
-        constructor() {
+        constructor(_app) {
             super();
-            this.array = index_1.object([]);
-            this.selected = index_1.object();
-        }
-        initialize(viewParent) {
-            this.parent = viewParent;
-            viewParent.list = this;
-        }
-        add(person) {
-            var array = this.array() || [];
-            var obs = {};
-            for (var key in person) {
-                obs[key] = index_1.object(person[key]);
-            }
-            array.push(obs);
-            this.array([].concat(array));
+            this._app = _app;
         }
         select(selected) {
-            this.selected(selected);
+            this._app.select(selected);
         }
         save() {
-            var array = this.array() || [];
-            this.parent.save(JSON.parse(JSON.stringify(array)));
+            this._app.save();
         }
         clear() {
-            this.array([]);
-            this.selected(undefined);
+            this._app.clearUsers();
         }
     };
     List = __decorate([
-        index_2.View({
+        index_1.View({
             template: "tmpl/list.html",
             binding: {
-                "[panel-title]": [new index_3.Text(() => "List")],
-                "[data-action=save]": [new index_3.Click((ctx) => () => ctx.save() || false)],
-                "[data-action=clear]": [new index_3.Click((ctx) => () => ctx.clear() || false)],
-                "table tbody": [new index_3.ForEach((ctx) => {
+                "[panel-title]": [new index_2.Text(() => "List")],
+                "[data-action=save]": [new index_2.Click((ctx) => () => ctx.save() || false)],
+                "[data-action=clear]": [new index_2.Click((ctx) => () => ctx.clear() || false)],
+                "table tbody": [new index_2.ForEach((ctx) => {
                         return {
-                            array: ctx.array(),
+                            array: ctx._app.getUsers(),
                             config: {
-                                "this": (row) => [new index_3.Click((row) => () => ctx.select(row) || false)],
-                                "[first]": (row) => [new index_3.Text((row) => { return row.first(); })],
-                                "[last]": (row) => [new index_3.Text((row) => { return row.last(); })],
-                                "[full]": (row) => [new index_3.Text((row) => { return $.grep([row.first(), row.last()], (item) => !!item).join(" "); })],
-                                "[age] input": (row) => [new index_3.Value((row) => { return row.age; })]
+                                "this": (row) => [new index_2.Click((row) => () => ctx.select(row) || false)],
+                                "[first]": (row) => [new index_2.Text((row) => { return row.first(); })],
+                                "[last]": (row) => [new index_2.Text((row) => { return row.last(); })],
+                                "[full]": (row) => [new index_2.Text((row) => { return $.grep([row.first(), row.last()], (item) => !!item).join(" "); })],
+                                "[age] input": (row) => [new index_2.Value((row) => { return row.age; })]
                             }
                         };
                     })]
             }
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [app_1.IApp])
     ], List);
 });
 //# sourceMappingURL=list.js.map

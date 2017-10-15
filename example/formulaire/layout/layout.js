@@ -13,7 +13,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../../../src/index", "../view/form", "../view/detail", "../view/list", "../view/saved", "../../../src/index"], factory);
+        define(["require", "exports", "../../../src/index", "../view/form", "../view/detail", "../view/list", "../view/saved", "../../../src/index", "../service/app"], factory);
     }
 })(function (require, exports) {
     "use strict";
@@ -24,21 +24,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     const list_1 = require("../view/list");
     const saved_1 = require("../view/saved");
     const index_2 = require("../../../src/index");
+    const app_1 = require("../service/app");
     class ILayout {
     }
     exports.ILayout = ILayout;
     let Layout = class Layout extends ILayout {
-        constructor() {
+        constructor(_app) {
             super();
-        }
-        add(person) {
-            this.list && this.list.add(person);
-        }
-        save(persons) {
-            this.saved && this.saved.save(persons);
-        }
-        selected() {
-            return this.list.selected();
+            this._app = _app;
         }
     };
     Layout = __decorate([
@@ -51,7 +44,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
                 "[saved]": [new index_2.Subview((ctx) => [{ type: saved_1.ISaved }])]
             }
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [app_1.IApp])
     ], Layout);
 });
 //# sourceMappingURL=layout.js.map

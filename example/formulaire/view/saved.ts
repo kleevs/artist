@@ -2,18 +2,18 @@ import { object } from 'node_modules/observable/src/index';
 import { View } from '../../../src/index';
 import * as $ from 'node_modules/jquery/dist/jquery';
 import { Text, Value, Click, ForEach } from '../../../src/index';
+import { IApp } from '../service/app';
 
 export abstract class ISaved {
-    abstract save(person: { last: string, first: string, age: string }[]): void;
 }
 
 @View<Saved>({
     template: "tmpl/saved.html",
     binding: {
         "[panel-title]": [new Text((ctx) => "Saved")],
-        "table tbody": [new ForEach((ctx) => {
+        "table tbody": [new ForEach((ctx: Saved) => {
             return { 
-                array: ctx.array(), 
+                array: ctx._app.getArchived(), 
                 config: {
                     "[first]": (row) => [new Text((row: any) => row.first)],
                     "[last]": (row) => [new Text((row: any) => row.last)],
@@ -26,18 +26,7 @@ export abstract class ISaved {
     }
 })
 class Saved extends ISaved {
-    private array;
-
-    constructor() {
+    constructor(private _app: IApp) {
         super();
-        this.array = object<any[]>();
-    }
-
-    initialize(viewParent) {
-        viewParent.saved = this;
-    }
-
-    public save(person: { last: string, first: string, age: string }[]) : void {
-        this.array(person);
     }
 }

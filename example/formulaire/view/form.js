@@ -13,53 +13,42 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/observable/src/index", "../../../src/index", "../../../src/index"], factory);
+        define(["require", "exports", "../../../src/index", "../../../src/index", "../service/app"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("node_modules/observable/src/index");
+    const index_1 = require("../../../src/index");
     const index_2 = require("../../../src/index");
-    const index_3 = require("../../../src/index");
+    const app_1 = require("../service/app");
     class IForm {
     }
     exports.IForm = IForm;
     let Form = class Form extends IForm {
-        constructor() {
+        constructor(_app) {
             super();
-            this.last = index_1.object('');
-            this.first = index_1.object('');
-            this.age = index_1.object();
-        }
-        initialize(viewParent) {
-            this.parent = viewParent;
+            this._app = _app;
         }
         add() {
-            this.parent.add({
-                last: this.last(),
-                first: this.first(),
-                age: this.age()
-            });
+            this._app.add();
         }
         clear() {
-            this.last('');
-            this.first('');
-            this.age('');
+            this._app.clearUser();
         }
     };
     Form = __decorate([
-        index_2.View({
+        index_1.View({
             template: "tmpl/form.html",
             binding: {
-                "[panel-title]": [new index_3.Text(() => "Forme")],
-                "#last": [new index_3.Value((ctx) => { return ctx.last; })],
-                "#first": [new index_3.Value((ctx) => { return ctx.first; })],
-                "#age": [new index_3.Value((ctx) => { return ctx.age; })],
-                "[data-action=add]": [new index_3.Click((ctx) => () => ctx.add() || false)],
-                "[data-action=clear]": [new index_3.Click((ctx) => () => ctx.clear() || false)]
+                "[panel-title]": [new index_2.Text(() => "Formulaire")],
+                "#last": [new index_2.Value((ctx) => { return ctx._app.getFormulaire().last; })],
+                "#first": [new index_2.Value((ctx) => { return ctx._app.getFormulaire().first; })],
+                "#age": [new index_2.Value((ctx) => { return ctx._app.getFormulaire().age; })],
+                "[data-action=add]": [new index_2.Click((ctx) => () => ctx.add() || false)],
+                "[data-action=clear]": [new index_2.Click((ctx) => () => ctx.clear() || false)]
             }
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [app_1.IApp])
     ], Form);
 });
 //# sourceMappingURL=form.js.map

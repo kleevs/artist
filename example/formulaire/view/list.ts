@@ -2,11 +2,9 @@ import { object } from 'node_modules/observable/src/index';
 import { View } from '../../../src/index';
 import * as $ from 'node_modules/jquery/dist/jquery';
 import { Text, Value, Click, ForEach } from '../../../src/index';
+import { IApp } from '../service/app';
 
 export abstract class IList {
-    abstract add(person: { last: string, first: string, age: string }): void;
-    public selected;
-    public parent: any;
 }
 
 @View<List>({
@@ -17,7 +15,7 @@ export abstract class IList {
         "[data-action=clear]": [new Click((ctx) => () => ctx.clear() || false)],
         "table tbody": [new ForEach((ctx: List) => {
             return {
-                array: ctx.array(), 
+                array: ctx._app.getUsers(),
                 config: {
                     "this": (row) => [new Click((row: any) => () => ctx.select(row) || false)],
                     "[first]": (row) => [new Text((row: any) => { return row.first(); })],
@@ -30,41 +28,19 @@ export abstract class IList {
     }
 })
 class List extends IList {
-    private array;
-
-    constructor() {
+    constructor(private _app: IApp) {
         super();
-        this.array = object<any[]>([]);
-        this.selected = object<any>();
-    }
-
-    initialize(viewParent) {
-        this.parent = viewParent;
-        viewParent.list = this;
-    }
-
-    public add(person: { last: string, first: string, age: string }) : void {
-        var array = this.array() || [];
-        var obs = {};
-        for (var key in person) {
-            obs[key] = object(person[key]);
-        }
-
-        array.push(obs);
-        this.array([].concat(array));
     }
 
     private select(selected) {
-        this.selected(selected);
+        this._app.select(selected);
     }
 
     public save() : void {
-        var array = this.array() || [];
-        this.parent.save(JSON.parse(JSON.stringify(array)));
+        this._app.save();
     }
 
     private clear(): void {
-        this.array([]);
-        this.selected(undefined);
+        this._app.clearUsers();
     }
 }
