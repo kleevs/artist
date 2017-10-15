@@ -14,16 +14,18 @@ export declare type ViewOption<TModel> = {
 declare type RegisteredView<TModel> = {
     construct: {new(...args:any[]): any},
     binding: { [s:string]: BindingHandler<any, TModel>[] }
+    parameters: any[],
     html: Promise<string> 
 };
 
 let registeredView: RegisteredView<any>[] = [];
 
 export function View<T>(options: ViewOption<T>) { 
-    return (constructor: {new(...args:any[]):T}) => {
+    return (constructor: {new(...args:any[]):T}, metadata?) => {
         registeredView.push({
             construct: constructor,
             binding: options.binding,
+            parameters: metadata && metadata["design:paramtypes"] || [],
             html: new Promise((resolve, reject) => {
                 options.html && resolve(options.html);
                 options.template && !options.html && (() => {
@@ -67,7 +69,7 @@ export class Subview<TModel> extends BindingHandler<{ type: any, callback?: (vie
 
         var htmls = map(array, (item) => {
             var viewType = item && item.type && grep(registeredView, (view) => view.construct.prototype instanceof item.type || item.type === view.construct)[0];
-            var view = viewType && (serviceProvider && serviceProvider.createService(viewType.construct) || new viewType.construct());
+            var view = viewType && (serviceProvider && serviceProvider.createService(viewType.construct, viewType.parameters) || new viewType.construct());
             view && view.initialize && view.initialize(viewmodel);
             view && item.callback && item.callback(view);
             return viewType && viewType.html.then(value => {

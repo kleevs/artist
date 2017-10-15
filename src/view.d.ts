@@ -7,7 +7,7 @@ export declare type ViewOption<TModel> = {
         [s: string]: BindingHandler<any, TModel>[];
     };
 };
-export declare function View<T>(options: ViewOption<T>): (constructor: new (...args: any[]) => T) => void;
+export declare function View<T>(options: ViewOption<T>): (constructor: new (...args: any[]) => T, metadata?: any) => void;
 export declare class Subview<TModel> extends BindingHandler<{
     type: any;
     callback?: (view: any) => void;

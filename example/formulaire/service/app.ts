@@ -1,6 +1,5 @@
-import { Object, object } from '../../../src/index';
+import { Service, Object, object } from '../../../src/index';
 import { User } from '../model/user';
-import { Service } from '../../../src/index';
 
 export abstract class IApp {
     abstract add(): void;
@@ -20,22 +19,30 @@ export abstract class IApp {
 class App extends IApp {
     private _formulaire: Object<User>;
     private _detail: Object<User>;
-    private _users: User[] = [];
-    private _archived: User[] = [];
+    private _users: Object<User[]>;
+    private _archived: Object<User[]>;
 
     constructor() {
         super();
         this._formulaire = object<User>(new User());
         this._detail = object<User>(new User());
+        this._users = object<User[]>([]);
+        this._archived = object<User[]>([]);
     }
 
-    add(): void {
-        var user = this._formulaire();
+    copy(user: User): User {
         var usr = new User();
         usr.age(user.age());
         usr.last(user.last());
         usr.first(user.first());
-        this._users.push(usr);
+        return usr;
+    }
+
+    add(): void {
+        var users = this._users();
+        var user = this._formulaire();
+        users.push(this.copy(user));
+        this._users(users);
     }
 
     clearUser(): void {
@@ -43,12 +50,13 @@ class App extends IApp {
     }
 
     clearUsers(): void {
-        this._users.length = 0;
+        this._users([]);
     }
 
     save(): void {
-        this._archived.length = 0;
-        this._users.forEach(user => this._archived.push(user));
+        var saved = []; 
+        this._users().forEach(user => saved.push(this.copy(user)));
+        this._archived(saved);
     }
 
     select(user: User) {
@@ -56,11 +64,11 @@ class App extends IApp {
     }
 
     getUsers(): User[] {
-        return this._users;
+        return this._users();
     }
 
     getArchived(): User[] {
-        return this._archived;
+        return this._archived();
     }
 
     getSelected(): User {

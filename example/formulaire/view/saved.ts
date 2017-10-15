@@ -15,10 +15,10 @@ export abstract class ISaved {
             return { 
                 array: ctx._app.getArchived(), 
                 config: {
-                    "[first]": (row) => [new Text((row: any) => row.first)],
-                    "[last]": (row) => [new Text((row: any) => row.last)],
-                    "[full]": (row) => [new Text((row: any) => $.grep([row.first, row.last], (item) => !!item).join(" "))],
-                    "[age]": (row) => [new Text((row: any) =>row.age)]
+                    "[first]": (row) => [new Text((row: any) => row.first())],
+                    "[last]": (row) => [new Text((row: any) => row.last())],
+                    "[full]": (row) => [new Text((row: any) => $.grep([row.first(), row.last()], (item) => !!item).join(" "))],
+                    "[age]": (row) => [new Text((row: any) =>row.age())]
                 }
             }; 
             

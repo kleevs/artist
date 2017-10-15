@@ -16,10 +16,11 @@
     const $ = require("node_modules/jquery/dist/jquery");
     let registeredView = [];
     function View(options) {
-        return (constructor) => {
+        return (constructor, metadata) => {
             registeredView.push({
                 construct: constructor,
                 binding: options.binding,
+                parameters: metadata && metadata["design:paramtypes"] || [],
                 html: new Promise((resolve, reject) => {
                     options.html && resolve(options.html);
                     options.template && !options.html && (() => {
@@ -59,7 +60,7 @@
             var array = this.valueAccessor();
             var htmls = index_1.map(array, (item) => {
                 var viewType = item && item.type && index_1.grep(registeredView, (view) => view.construct.prototype instanceof item.type || item.type === view.construct)[0];
-                var view = viewType && (service_1.provider && service_1.provider.createService(viewType.construct) || new viewType.construct());
+                var view = viewType && (service_1.provider && service_1.provider.createService(viewType.construct, viewType.parameters) || new viewType.construct());
                 view && view.initialize && view.initialize(viewmodel);
                 view && item.callback && item.callback(view);
                 return viewType && viewType.html.then(value => {

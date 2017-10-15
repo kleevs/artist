@@ -13,51 +13,56 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../../../src/index", "../model/user", "../../../src/index"], factory);
+        define(["require", "exports", "../../../src/index", "../model/user"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("../../../src/index");
     const user_1 = require("../model/user");
-    const index_2 = require("../../../src/index");
     class IApp {
     }
     exports.IApp = IApp;
     let App = class App extends IApp {
         constructor() {
             super();
-            this._users = [];
-            this._archived = [];
             this._formulaire = index_1.object(new user_1.User());
             this._detail = index_1.object(new user_1.User());
+            this._users = index_1.object([]);
+            this._archived = index_1.object([]);
         }
-        add() {
-            var user = this._formulaire();
+        copy(user) {
             var usr = new user_1.User();
             usr.age(user.age());
             usr.last(user.last());
             usr.first(user.first());
-            this._users.push(usr);
+            return usr;
+        }
+        add() {
+            var users = this._users();
+            var user = this._formulaire();
+            users.push(this.copy(user));
+            this._users(users);
         }
         clearUser() {
             this._formulaire(new user_1.User());
         }
         clearUsers() {
-            this._users.length = 0;
+            this._users([]);
         }
         save() {
-            this._archived.length = 0;
-            this._users.forEach(user => this._archived.push(user));
+            var saved = [];
+            this._users().forEach(user => saved.push(this.copy(user)));
+            this._archived(saved);
         }
         select(user) {
             this._detail(user);
         }
         getUsers() {
-            return this._users;
+            return this._users();
         }
         getArchived() {
-            return this._archived;
+            return this._archived();
         }
         getSelected() {
             return this._detail();
@@ -67,7 +72,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         }
     };
     App = __decorate([
-        index_2.Service({
+        index_1.Service({
             interface: IApp
         }),
         __metadata("design:paramtypes", [])
