@@ -12,10 +12,13 @@ export declare class Subview<TModel> extends BindingHandler<{
     type: any;
     callback?: (view: any) => void;
 }[], TModel> {
+    private _htmlsHandler;
+    private _observable;
     constructor(valueAccessor: (ctx) => {
         type: any;
         callback?: (view: any) => void;
     }[]);
+    init(element: HTMLElement, allBinding: any, viewmodel: any, context: any): void;
     update(element: HTMLElement, allBinding: any, viewmodel: any, context: any): void;
 }
 export declare function start<T>(el: HTMLElement, type: {

@@ -34,45 +34,32 @@
         };
     }
     exports.View = View;
-    function bindView($element, bindings, viewmodel) {
-        var config = [];
-        index_1.foreach(bindings, (binding, selector) => {
-            var $el = selector.trim() === "this" && $element || $element.find(selector);
-            config.push({
-                $el: $el,
-                binding: binding
-            });
-        });
-        index_1.foreach(config, (conf) => {
-            conf.$el.each((i, el) => {
-                if ($element[0] === el || $element.find(el).length > 0) {
-                    index_3.applyBinding(conf.binding, el, viewmodel);
-                }
-            });
-        });
-    }
     class Subview extends index_3.BindingHandler {
         constructor(valueAccessor) {
             super(valueAccessor);
+            this._htmlsHandler = new index_3.Htmls((ctx) => this._observable());
+            this._observable = index_2.object();
+        }
+        init(element, allBinding, viewmodel, context) {
+            index_3.applyBinding([this._htmlsHandler], element, viewmodel, context);
         }
         update(element, allBinding, viewmodel, context) {
             var $element = $(element);
             var array = this.valueAccessor();
-            var htmls = index_1.map(array, (item) => {
-                var viewType = item && item.type && index_1.grep(registeredView, (view) => view.construct.prototype instanceof item.type || item.type === view.construct)[0];
-                var view = viewType && (service_1.provider && service_1.provider.createService(viewType.construct, viewType.parameters) || new viewType.construct());
-                view && view.initialize && view.initialize(viewmodel);
-                view && item.callback && item.callback(view);
-                return viewType && viewType.html.then(value => {
-                    var $el = $(value);
-                    bindView($el, viewType.binding, view);
-                    return $el;
+            index_2.wrap(() => {
+                var htmls = index_1.map(array, (item) => {
+                    var viewType = item && item.type && index_1.grep(registeredView, (view) => view.construct.prototype instanceof item.type || item.type === view.construct)[0];
+                    var view = viewType && (service_1.provider && service_1.provider.createService(viewType.construct, viewType.parameters) || new viewType.construct());
+                    view && view.initialize && view.initialize(viewmodel);
+                    view && item.callback && item.callback(view);
+                    return viewType && viewType.html.then(value => {
+                        return { template: value, model: view, config: viewType.binding };
+                    });
                 });
-            });
-            Promise.all(htmls).then((results) => {
-                $element.html("");
-                index_1.foreach(results, $el => $element.append($el));
-            });
+                Promise.all(htmls).then((results) => {
+                    this._observable(results);
+                });
+            }).silent();
         }
     }
     exports.Subview = Subview;

@@ -4,7 +4,6 @@ import { Text, Value } from '../../../src/index';
 import { IApp } from '../service/app';
 
 export abstract class IDetail {
-    public parent: any;
 }
 
 @View<Detail>({
