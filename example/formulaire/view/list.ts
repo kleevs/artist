@@ -17,11 +17,11 @@ export abstract class IList {
             return {
                 array: ctx._app.getUsers(),
                 config: {
-                    "this": (row) => [new Click((row: any) => () => ctx.select(row) || false)],
-                    "[first]": (row) => [new Text((row: any) => { return row.first(); })],
-                    "[last]": (row) => [new Text((row: any) => { return row.last(); })],
-                    "[full]": (row) => [new Text((row: any) => { return $.grep([row.first(), row.last()], (item) => !!item).join(" "); })],
-                    "[age] input": (row) => [new Value((row: any) => { return row.age; })]
+                    "this": [new Click((row: any) => () => ctx.select(row) || false)],
+                    "[first]": [new Text((row: any) => { return row.first(); })],
+                    "[last]": [new Text((row: any) => { return row.last(); })],
+                    "[full]": [new Text((row: any) => { return $.grep([row.first(), row.last()], (item) => !!item).join(" "); })],
+                    "[age] input": [new Value((row: any) => { return row.age; })]
                 }
             };
         })]

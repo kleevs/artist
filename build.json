@@ -1,0 +1,11 @@
+{
+	"name": "Artist",
+	"main": "src/index",
+	"out": "dist/artist.js",
+	"paths": {
+		"node_modules": "node_modules"
+	},
+	"ignores": {
+		"node_modules/jquery/dist/jquery": "$"
+	}
+}

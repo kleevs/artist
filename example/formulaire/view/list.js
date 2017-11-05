@@ -51,11 +51,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
                         return {
                             array: ctx._app.getUsers(),
                             config: {
-                                "this": (row) => [new index_2.Click((row) => () => ctx.select(row) || false)],
-                                "[first]": (row) => [new index_2.Text((row) => { return row.first(); })],
-                                "[last]": (row) => [new index_2.Text((row) => { return row.last(); })],
-                                "[full]": (row) => [new index_2.Text((row) => { return $.grep([row.first(), row.last()], (item) => !!item).join(" "); })],
-                                "[age] input": (row) => [new index_2.Value((row) => { return row.age; })]
+                                "this": [new index_2.Click((row) => () => ctx.select(row) || false)],
+                                "[first]": [new index_2.Text((row) => { return row.first(); })],
+                                "[last]": [new index_2.Text((row) => { return row.last(); })],
+                                "[full]": [new index_2.Text((row) => { return $.grep([row.first(), row.last()], (item) => !!item).join(" "); })],
+                                "[age] input": [new index_2.Value((row) => { return row.age; })]
                             }
                         };
                     })]

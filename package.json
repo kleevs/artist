@@ -5,13 +5,16 @@
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -r ./dist/*",
+    "compile": "tsc",
+    "dist": "node node_modules/amd-loader/dist/amd-loader.js ./build.json",
+    "build": "npm run clean & npm run compile & npm run dist"
   },
   "dependencies": {
     "jquery": "^3.2.1",
-    "mixin": "git+https://github.com/kleevs/mixin.git",
-    "mvvm": "git+https://github.com/kleevs/mvvm.git",
-    "dependency-injection": "git+https://github.com/kleevs/dependency-injection.git"
+    "dependency-injection": "git+https://github.com/kleevs/dependency-injection.git",
+    "binder": "git+https://github.com/kleevs/binder.git" 
   },
   "devDependencies": {
     "@types/node": "^7.0.14",

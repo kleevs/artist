@@ -40,10 +40,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
                         return {
                             array: ctx._app.getArchived(),
                             config: {
-                                "[first]": (row) => [new index_2.Text((row) => row.first())],
-                                "[last]": (row) => [new index_2.Text((row) => row.last())],
-                                "[full]": (row) => [new index_2.Text((row) => $.grep([row.first(), row.last()], (item) => !!item).join(" "))],
-                                "[age]": (row) => [new index_2.Text((row) => row.age())]
+                                "[first]": [new index_2.Text((row) => row.first())],
+                                "[last]": [new index_2.Text((row) => row.last())],
+                                "[full]": [new index_2.Text((row) => $.grep([row.first(), row.last()], (item) => !!item).join(" "))],
+                                "[age]": [new index_2.Text((row) => row.age())]
                             }
                         };
                     })]

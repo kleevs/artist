@@ -1,19 +1,47 @@
-import { foreach, map, grep } from 'node_modules/mixin/src/index';
 import { isObservable, object, wrap } from 'node_modules/observable/src/index';
-import { applyBinding, BindingHandler, Htmls } from 'node_modules/mvvm/src/index';
+import { Binder, BindingHandler, Htmls } from 'node_modules/binder/src/index';
 import { provider as serviceProvider } from './service';
+import { AbstractBinder } from './binder';
 import * as $ from 'node_modules/jquery/dist/jquery';
+
+function foreach<T>(item, callback) {
+    let i;
+    if (item instanceof Array) {
+        for (i=0; i<item.length;i++) {
+            callback(item[i], i);
+        }
+    } else {
+        for (i in item) {
+            callback(item[i], i);
+        }
+    }
+}
+
+function map<T, T2>(array: T[], parse: (item: T)=>T2): T2[] {
+    let res = [];
+    foreach(array, (x) => { res.push(parse(x)); return false; });
+    return  res;
+}
+
+function grep<T>(array: T[], predicate: (item: T, index: number)=>boolean): T[] {
+    let i, res = [];
+    for (i=0; i<array.length;i++) {
+        if (predicate(array[i], i)) res.push(array[i]);
+    }
+
+    return res;
+}
 
 export declare type ViewOption<TModel> = {
     selector?: string,
     template?: string,
     html?: string,
-    binding?: { [s:string]: BindingHandler<any, TModel>[] }
+    binding?: { [s:string]: AbstractBinder<any, TModel>[] }
 };
 
 declare type RegisteredView<TModel> = {
     construct: {new(...args:any[]): any},
-    binding: { [s:string]: BindingHandler<any, TModel>[] }
+    binding: { [s:string]: AbstractBinder<any, TModel>[] }
     parameters: any[],
     html: Promise<string> 
 };
@@ -39,23 +67,23 @@ export function View<T>(options: ViewOption<T>) {
     };
 }
 
-export class Subview<TModel> extends BindingHandler<{ type: any, callback?: (view: any) => void }[], TModel> {
-	private _htmlsHandler: Htmls<TModel>;
+export class SubviewHandler<TModel> extends BindingHandler<{ type: any, callback?: (view: any) => void }[], TModel> {
+	private _binder: Binder<{ type: any, callback?: (view: any) => void }[], TModel>;
 	private _observable;
 	
-    constructor(valueAccessor: (ctx) => { type: any, callback?: (view: any) => void }[]) {
-        super(valueAccessor);
-		this._htmlsHandler = new Htmls((ctx) => this._observable());
+    constructor() {
+        super();
+		this._binder = new Binder(Htmls, (ctx) => this._observable());
 		this._observable = object();
     }
 	
-	init(element: HTMLElement, allBinding, viewmodel, context) {
-		applyBinding([this._htmlsHandler], element, viewmodel, context);
+	init(element, valueAccessor, viewmodel, context) {
+		this._binder.bind(element, viewmodel, context);
 	}
 
-    update(element: HTMLElement, allBinding, viewmodel, context) {
+    update(element, valueAccessor, viewmodel, context) {
         var $element = $(element);
-        var array = this.valueAccessor();
+        var array: { type: any, callback?: (view: any) => void }[] = valueAccessor();
 
 		wrap(() => {
 			var htmls = map(array, (item) => {
@@ -77,9 +105,7 @@ export class Subview<TModel> extends BindingHandler<{ type: any, callback?: (vie
 
 export function start<T>(el: HTMLElement, type: { prototype: T }, callback?: (view: T) => void) {
     var element:any = el;
-    !element.viewmodel && (applyBinding([
-        new Subview((ctx) => [element.viewmodel.view()])
-    ], element, element.viewmodel = {
+    !element.viewmodel && (new Binder(SubviewHandler, (ctx) => [element.viewmodel.view()]).bind(element, element.viewmodel = {
         view: object<any>({
             type: type, callback: callback
         })
