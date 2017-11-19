@@ -49,7 +49,7 @@
                 html: new Promise((resolve, reject) => {
                     options.html && resolve(options.html);
                     options.template && !options.html && (() => {
-                        $("<div>").load(options.template, (template, status) => {
+                        $("<div>").load(`/${options.template}`, (template, status) => {
                             status == "error" && (reject() || true) ||
                                 resolve(template);
                         });
