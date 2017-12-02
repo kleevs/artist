@@ -13,55 +13,61 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../../../src/index", "node_modules/jquery/dist/jquery", "../../../src/index", "../service/app"], factory);
+        define(["require", "exports", "node_modules/binder/src/index", "../../../src/index", "node_modules/jquery/dist/jquery"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("../../../src/index");
-    const $ = require("node_modules/jquery/dist/jquery");
+    const index_1 = require("node_modules/binder/src/index");
     const index_2 = require("../../../src/index");
-    const app_1 = require("../service/app");
+    const $ = require("node_modules/jquery/dist/jquery");
     class IList {
     }
     exports.IList = IList;
-    let List = class List extends IList {
-        constructor(_app) {
+    let List = List_1 = class List extends IList {
+        constructor(_observalizer) {
             super();
-            this._app = _app;
+            this._observalizer = _observalizer;
+            this.observable = _observalizer.convert({
+                users: []
+            });
         }
-        select(selected) {
-            this._app.select(selected);
+        add(user) {
+            this.observable.users.push(this._observalizer.convert(user));
+        }
+        select(user) {
+            this.selectUser(user);
         }
         save() {
-            this._app.save();
+            this.saveUsers(JSON.parse(JSON.stringify(this.observable.users)));
         }
         clear() {
-            this._app.clearUsers();
+            this.observable.users = [];
         }
     };
-    List = __decorate([
-        index_1.View({
-            template: "tmpl/list.html",
+    List = List_1 = __decorate([
+        index_2.View({
+            template: "example/formulaire/tmpl/list.html",
             binding: {
-                "[panel-title]": [new index_2.Text(() => "List")],
-                "[data-action=save]": [new index_2.Click((ctx) => () => ctx.save() || false)],
-                "[data-action=clear]": [new index_2.Click((ctx) => () => ctx.clear() || false)],
-                "table tbody": [new index_2.ForEach((ctx) => {
+                "[panel-title]": (view) => index_1.text(() => "List"),
+                "[data-action=save]": (view) => index_1.click(() => () => view.save() || false),
+                "[data-action=clear]": (view) => index_1.click(() => () => view.clear() || false),
+                "table tbody": (view) => index_1.each(() => {
+                    return $.map(view.observable.users, (row) => {
                         return {
-                            array: ctx._app.getUsers(),
-                            config: {
-                                "this": [new index_2.Click((row) => () => ctx.select(row) || false)],
-                                "[first]": [new index_2.Text((row) => { return row.first(); })],
-                                "[last]": [new index_2.Text((row) => { return row.last(); })],
-                                "[full]": [new index_2.Text((row) => { return $.grep([row.first(), row.last()], (item) => !!item).join(" "); })],
-                                "[age] input": [new index_2.Value((row) => { return row.age; })]
-                            }
+                            "this": index_1.click(() => () => view.select(row) || false),
+                            "[first]": index_1.text(() => row.first),
+                            "[last]": index_1.text(() => row.last),
+                            "[full]": index_1.text(() => $.grep([row.first, row.last], (item) => !!item).join(" ")),
+                            "[age] input": index_1.value({ get: () => (row.age || "").toString(), set: (v) => row.age = parseInt(v) || undefined })
                         };
-                    })]
+                    });
+                })
             }
         }),
-        __metadata("design:paramtypes", [app_1.IApp])
+        index_2.Service({ interface: List_1 }),
+        __metadata("design:paramtypes", [index_2.IObservablizer])
     ], List);
+    var List_1;
 });
 //# sourceMappingURL=list.js.map

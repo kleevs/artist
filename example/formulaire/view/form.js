@@ -13,42 +13,54 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../../../src/index", "../../../src/index", "../service/app"], factory);
+        define(["require", "exports", "node_modules/binder/src/index", "../../../src/index", "../model/user"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("../../../src/index");
+    const index_1 = require("node_modules/binder/src/index");
     const index_2 = require("../../../src/index");
-    const app_1 = require("../service/app");
+    const user_1 = require("../model/user");
     class IForm {
     }
     exports.IForm = IForm;
-    let Form = class Form extends IForm {
-        constructor(_app) {
+    let Form = Form_1 = class Form extends IForm {
+        constructor(observalizer) {
             super();
-            this._app = _app;
+            this.observable = observalizer.convert({
+                last: undefined,
+                first: undefined,
+                age: undefined
+            });
         }
         add() {
-            this._app.add();
+            var usr = new user_1.User();
+            usr.last = this.observable.last;
+            usr.first = this.observable.first;
+            usr.age = this.observable.age;
+            this.addUser(usr);
         }
         clear() {
-            this._app.clearUser();
+            this.observable.last = undefined;
+            this.observable.first = undefined;
+            this.observable.age = undefined;
         }
     };
-    Form = __decorate([
-        index_1.View({
-            template: "tmpl/form.html",
+    Form = Form_1 = __decorate([
+        index_2.View({
+            template: "example/formulaire/tmpl/form.html",
             binding: {
-                "[panel-title]": [new index_2.Text(() => "Formulaire")],
-                "#last": [new index_2.Value((ctx) => { return ctx._app.getFormulaire().last; })],
-                "#first": [new index_2.Value((ctx) => { return ctx._app.getFormulaire().first; })],
-                "#age": [new index_2.Value((ctx) => { return ctx._app.getFormulaire().age; })],
-                "[data-action=add]": [new index_2.Click((ctx) => () => ctx.add() || false)],
-                "[data-action=clear]": [new index_2.Click((ctx) => () => ctx.clear() || false)]
+                "[panel-title]": (view) => index_1.text(() => "Formulaire"),
+                "#last": (view) => index_1.value({ get: () => view.observable.last, set: (v) => view.observable.last = v }),
+                "#first": (view) => index_1.value({ get: () => view.observable.first, set: (v) => view.observable.first = v }),
+                "#age": (view) => index_1.value({ get: () => (view.observable.age || '').toString(), set: (v) => view.observable.age = parseInt(v) || undefined }),
+                "[data-action=add]": (view) => index_1.click(() => () => view.add() || false),
+                "[data-action=clear]": (view) => index_1.click(() => () => view.clear() || false)
             }
         }),
-        __metadata("design:paramtypes", [app_1.IApp])
+        index_2.Service({ interface: Form_1 }),
+        __metadata("design:paramtypes", [index_2.IObservablizer])
     ], Form);
+    var Form_1;
 });
 //# sourceMappingURL=form.js.map

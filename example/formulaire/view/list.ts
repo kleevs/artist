@@ -1,46 +1,59 @@
-import { object } from 'node_modules/observable/src/index';
-import { View } from '../../../src/index';
+import { text, value, click, each } from 'node_modules/binder/src/index';
+import { View, Service, IObservablizer } from '../../../src/index';
 import * as $ from 'node_modules/jquery/dist/jquery';
-import { Text, Value, Click, ForEach } from '../../../src/index';
-import { IApp } from '../service/app';
+import { User } from '../model/user';
 
 export abstract class IList {
+    abstract add(user: User);
+    selectUser: (user: User) => void;
+    saveUsers: (users: User[]) => void;
 }
 
 @View<List>({
-    template: "tmpl/list.html",
+    template: "example/formulaire/tmpl/list.html",
     binding: {
-        "[panel-title]": [new Text(() => "List")],
-        "[data-action=save]": [new Click((ctx) => () => ctx.save() || false)],
-        "[data-action=clear]": [new Click((ctx) => () => ctx.clear() || false)],
-        "table tbody": [new ForEach((ctx: List) => {
-            return {
-                array: ctx._app.getUsers(),
-                config: {
-                    "this": [new Click((row: any) => () => ctx.select(row) || false)],
-                    "[first]": [new Text((row: any) => { return row.first(); })],
-                    "[last]": [new Text((row: any) => { return row.last(); })],
-                    "[full]": [new Text((row: any) => { return $.grep([row.first(), row.last()], (item) => !!item).join(" "); })],
-                    "[age] input": [new Value((row: any) => { return row.age; })]
-                }
-            };
-        })]
+        "[panel-title]": (view) => text(() => "List"),
+        "[data-action=save]": (view) => click(() => () => view.save() || false),
+        "[data-action=clear]": (view) => click(() => () => view.clear() || false),
+        "table tbody": (view) => each(() => {
+            return $.map(view.observable.users, (row: User) => {
+                return { 
+                    "this": click(() => () => view.select(row) || false),
+                    "[first]": text(() => row.first),
+                    "[last]": text(() => row.last),
+                    "[full]": text(() => $.grep([row.first, row.last], (item) => !!item).join(" ")),
+                    "[age] input": value({ get: () => (row.age || "").toString(), set: (v) => row.age = parseInt(v) || undefined })
+                }; 
+            });
+        })
     }
 })
+@Service({ interface: List })
 class List extends IList {
-    constructor(private _app: IApp) {
+    private readonly observable: {
+        users: User[]
+    };
+
+    constructor(private _observalizer: IObservablizer) {
         super();
+        this.observable = _observalizer.convert({
+            users: []
+        });
     }
 
-    private select(selected) {
-        this._app.select(selected);
+    add(user: User) {
+        this.observable.users.push(this._observalizer.convert(user));
+    }
+
+    public select(user: User) : void {
+        this.selectUser(user);
     }
 
     public save() : void {
-        this._app.save();
+        this.saveUsers(JSON.parse(JSON.stringify(this.observable.users)));
     }
 
     private clear(): void {
-        this._app.clearUsers();
+        this.observable.users = [];
     }
 }

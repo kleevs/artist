@@ -1,32 +1,52 @@
 import { object } from 'node_modules/observable/src/index';
-import { View } from '../../../src/index';
-import { Text, Value, Click } from '../../../src/index';
-import { IApp } from '../service/app';
+import { text, value, click } from 'node_modules/binder/src/index';
+import { View, Service, IObservablizer } from '../../../src/index';
+import { User } from '../model/user';
 
 export abstract class IForm {
+    addUser: (user: User) => void
 }
 
 @View<Form>({
-    template: "tmpl/form.html",
+    template: "example/formulaire/tmpl/form.html",
     binding: {
-        "[panel-title]": [new Text(() => "Formulaire")],
-        "#last": [new Value((ctx) => { return ctx._app.getFormulaire().last; })],
-        "#first": [new Value((ctx) => { return ctx._app.getFormulaire().first; })],
-        "#age": [new Value((ctx) => { return ctx._app.getFormulaire().age; })],
-        "[data-action=add]": [new Click((ctx) => () => ctx.add() || false)],
-        "[data-action=clear]": [new Click((ctx) => () => ctx.clear() || false)]
+        "[panel-title]": (view) => text(() => "Formulaire"),
+        "#last": (view) => value({ get: () => view.observable.last, set: (v) => view.observable.last = v }),
+        "#first": (view) => value({ get: () => view.observable.first, set: (v) => view.observable.first = v }),
+        "#age": (view) => value({ get: () => (view.observable.age || '').toString(), set: (v) => view.observable.age = parseInt(v) || undefined }),
+        "[data-action=add]": (view) => click(() => () => view.add() || false),
+        "[data-action=clear]": (view) => click(() => () => view.clear() || false)
     }
 })
+@Service({ interface: Form })
 class Form extends IForm {
-    constructor(private _app: IApp) {
+    private readonly observable: {
+        last: string;
+        first: string;
+        age: number;
+    }
+
+    constructor(observalizer: IObservablizer) {
         super();
+
+        this.observable = observalizer.convert({
+            last: undefined,
+            first: undefined,
+            age: undefined
+        });
     }
 
     private add() {
-        this._app.add();
+        var usr = new User();
+        usr.last = this.observable.last;
+        usr.first = this.observable.first;
+        usr.age = this.observable.age;
+        this.addUser(usr);
     }
 
     private clear() {
-        this._app.clearUser();
+        this.observable.last = undefined;
+        this.observable.first = undefined;
+        this.observable.age = undefined;        
     }
 }

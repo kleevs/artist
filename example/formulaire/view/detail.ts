@@ -1,22 +1,34 @@
+import { text, value, click } from 'node_modules/binder/src/index';
 import { object } from 'node_modules/observable/src/index';
-import { View } from '../../../src/index';
-import { Text, Value } from '../../../src/index';
-import { IApp } from '../service/app';
+import { View, Service, IObservablizer } from '../../../src/index';
+import { User } from '../model/user';
 
 export abstract class IDetail {
+    abstract select(user: User);
 }
 
 @View<Detail>({
-    template: "tmpl/detail.html",
+    template: "example/formulaire/tmpl/detail.html",
     binding: {
-        "[panel-title]": [new Text(() => "Detail")],
-        "#last": [new Value((ctx: Detail) => { return ctx._app.getSelected().last; })],
-        "#first": [new Value((ctx: Detail) => { return ctx._app.getSelected().first; })],
-        "#age": [new Value((ctx: Detail) => { return ctx._app.getSelected().age; })]
+        "[panel-title]": (view) => text(() => "Detail"),
+        "#last": (view) => value({ get: () => view.observable.user.last, set: (v) => view.observable.user.last = v }),
+        "#first": (view) => value({ get: () => view.observable.user.first, set: (v) => view.observable.user.first = v }),
+        "#age": (view) => value({ get: () => (view.observable.user.age || '').toString(), set: (v) => view.observable.user.age = parseInt(v) || undefined })
     }
 })
+@Service({ interface: Detail })
 class Detail extends IDetail {
-    constructor(private _app: IApp) {
+    private readonly observable: {
+        user: User;
+    }
+
+    constructor(observalizer: IObservablizer) {
         super();
+
+        this.observable = observalizer.convert({ user: new User() });
+    }
+
+    select(user: User) {
+        this.observable.user = user;
     }
 }

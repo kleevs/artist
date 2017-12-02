@@ -13,7 +13,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../../../src/index", "../view/form", "../view/detail", "../view/list", "../view/saved", "../../../src/index", "../service/app"], factory);
+        define(["require", "exports", "../../../src/index", "../view/form", "../view/detail", "../view/list", "../view/saved"], factory);
     }
 })(function (require, exports) {
     "use strict";
@@ -23,28 +23,45 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     const detail_1 = require("../view/detail");
     const list_1 = require("../view/list");
     const saved_1 = require("../view/saved");
-    const index_2 = require("../../../src/index");
-    const app_1 = require("../service/app");
     class ILayout {
     }
     exports.ILayout = ILayout;
-    let Layout = class Layout extends ILayout {
-        constructor(_app) {
+    let LayoutView = class LayoutView extends ILayout {
+        constructor(value) {
             super();
-            this._app = _app;
+            this.observable = value;
         }
     };
-    Layout = __decorate([
+    LayoutView = __decorate([
         index_1.View({
-            template: "tmpl/layout.html",
+            template: "example/formulaire/tmpl/layout.html",
             binding: {
-                "[form]": [new index_2.Subview((ctx) => [{ type: form_1.IForm }])],
-                "[detail]": [new index_2.Subview((ctx) => [{ type: detail_1.IDetail }])],
-                "[list]": [new index_2.Subview((ctx) => [{ type: list_1.IList }])],
-                "[saved]": [new index_2.Subview((ctx) => [{ type: saved_1.ISaved }])]
+                "[form]": (layout) => index_1.view(() => layout.observable.form),
+                "[detail]": (layout) => index_1.view(() => layout.observable.detail),
+                "[list]": (layout) => index_1.view(() => layout.observable.list),
+                "[saved]": (layout) => index_1.view(() => layout.observable.saved),
             }
         }),
-        __metadata("design:paramtypes", [app_1.IApp])
-    ], Layout);
+        __metadata("design:paramtypes", [Object])
+    ], LayoutView);
+    let LayoutService = class LayoutService extends LayoutView {
+        constructor(viewProvider, observalizer) {
+            super(observalizer.convert({
+                list: viewProvider.newInstance(list_1.IList),
+                saved: viewProvider.newInstance(saved_1.ISaved),
+                form: viewProvider.newInstance(form_1.IForm),
+                detail: viewProvider.newInstance(detail_1.IDetail)
+            }));
+            this.observable.form.addUser = (usr) => this.observable.list.add(usr);
+            this.observable.list.saveUsers = (usrs) => this.observable.saved.save(usrs);
+            this.observable.list.selectUser = (usr) => this.observable.detail.select(usr);
+        }
+    };
+    LayoutService = __decorate([
+        index_1.Service({
+            interface: LayoutView
+        }),
+        __metadata("design:paramtypes", [index_1.IViewProvider, index_1.IObservablizer])
+    ], LayoutService);
 });
 //# sourceMappingURL=layout.js.map

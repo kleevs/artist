@@ -1,32 +1,42 @@
-import { object } from 'node_modules/observable/src/index';
-import { View } from '../../../src/index';
+import { text, value, click, each } from 'node_modules/binder/src/index';
+import { View, Service, IObservablizer } from '../../../src/index';
 import * as $ from 'node_modules/jquery/dist/jquery';
-import { Text, Value, Click, ForEach } from '../../../src/index';
-import { IApp } from '../service/app';
+import { User } from '../model/user';
 
 export abstract class ISaved {
+    abstract save(users: User[]);
 }
 
 @View<Saved>({
-    template: "tmpl/saved.html",
+    template: "example/formulaire/tmpl/saved.html",
     binding: {
-        "[panel-title]": [new Text((ctx) => "Saved")],
-        "table tbody": [new ForEach((ctx: Saved) => {
-            return { 
-                array: ctx._app.getArchived(), 
-                config: {
-                    "[first]": [new Text((row: any) => row.first())],
-                    "[last]": [new Text((row: any) => row.last())],
-                    "[full]": [new Text((row: any) => $.grep([row.first(), row.last()], (item) => !!item).join(" "))],
-                    "[age]": [new Text((row: any) =>row.age())]
-                }
-            }; 
-            
-        })]
+        "[panel-title]": (view) => text(() => "Saved"),
+        "table tbody": (view) => each(() => {
+            return $.map(view.observable.users, (row) => {
+                return { 
+                    "[first]": text(() => row.first),
+                    "[last]": text(() => row.last),
+                    "[full]": text(() => $.grep([row.first, row.last], (item) => !!item).join(" ")),
+                    "[age]": text(() => row.age)
+                }; 
+            });
+        })
     }
 })
+@Service({ interface: Saved })
 class Saved extends ISaved {
-    constructor(private _app: IApp) {
+    private readonly observable: {
+        users: User[]
+    }
+
+    constructor(observalizer: IObservablizer) {
         super();
+        this.observable = observalizer.convert({
+            users: []
+        });
+    }
+
+    save(users: User[]) {
+        this.observable.users = users;
     }
 }

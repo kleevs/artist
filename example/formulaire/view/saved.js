@@ -13,43 +13,48 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../../../src/index", "node_modules/jquery/dist/jquery", "../../../src/index", "../service/app"], factory);
+        define(["require", "exports", "node_modules/binder/src/index", "../../../src/index", "node_modules/jquery/dist/jquery"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("../../../src/index");
-    const $ = require("node_modules/jquery/dist/jquery");
+    const index_1 = require("node_modules/binder/src/index");
     const index_2 = require("../../../src/index");
-    const app_1 = require("../service/app");
+    const $ = require("node_modules/jquery/dist/jquery");
     class ISaved {
     }
     exports.ISaved = ISaved;
-    let Saved = class Saved extends ISaved {
-        constructor(_app) {
+    let Saved = Saved_1 = class Saved extends ISaved {
+        constructor(observalizer) {
             super();
-            this._app = _app;
+            this.observable = observalizer.convert({
+                users: []
+            });
+        }
+        save(users) {
+            this.observable.users = users;
         }
     };
-    Saved = __decorate([
-        index_1.View({
-            template: "tmpl/saved.html",
+    Saved = Saved_1 = __decorate([
+        index_2.View({
+            template: "example/formulaire/tmpl/saved.html",
             binding: {
-                "[panel-title]": [new index_2.Text((ctx) => "Saved")],
-                "table tbody": [new index_2.ForEach((ctx) => {
+                "[panel-title]": (view) => index_1.text(() => "Saved"),
+                "table tbody": (view) => index_1.each(() => {
+                    return $.map(view.observable.users, (row) => {
                         return {
-                            array: ctx._app.getArchived(),
-                            config: {
-                                "[first]": [new index_2.Text((row) => row.first())],
-                                "[last]": [new index_2.Text((row) => row.last())],
-                                "[full]": [new index_2.Text((row) => $.grep([row.first(), row.last()], (item) => !!item).join(" "))],
-                                "[age]": [new index_2.Text((row) => row.age())]
-                            }
+                            "[first]": index_1.text(() => row.first),
+                            "[last]": index_1.text(() => row.last),
+                            "[full]": index_1.text(() => $.grep([row.first, row.last], (item) => !!item).join(" ")),
+                            "[age]": index_1.text(() => row.age)
                         };
-                    })]
+                    });
+                })
             }
         }),
-        __metadata("design:paramtypes", [app_1.IApp])
+        index_2.Service({ interface: Saved_1 }),
+        __metadata("design:paramtypes", [index_2.IObservablizer])
     ], Saved);
+    var Saved_1;
 });
 //# sourceMappingURL=saved.js.map

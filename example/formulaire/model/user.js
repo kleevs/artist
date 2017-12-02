@@ -4,17 +4,16 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../../../src/index"], factory);
+        define(["require", "exports"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("../../../src/index");
     class User {
         constructor() {
-            this.last = index_1.object();
-            this.first = index_1.object();
-            this.age = index_1.object();
+            this.last = undefined;
+            this.first = undefined;
+            this.age = undefined;
         }
     }
     exports.User = User;

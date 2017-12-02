@@ -6,3 +6,6 @@ export declare let Service: <TKey, TValue extends TKey>(options: {
         prototype: TKey;
     };
 }) => (target: new (...arg: any[]) => TValue) => void;
+export declare abstract class IObservablizer {
+    abstract convert<T>(value: T & {}): T;
+}

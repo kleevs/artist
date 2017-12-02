@@ -1,13 +1,11 @@
-import { Object, object } from '../../../src/index';
-
 export class User {
     constructor() {
-        this.last = object<string>();
-        this.first = object<string>();
-        this.age = object<number>();
+        this.last = undefined;
+        this.first = undefined;
+        this.age = undefined;
     }
 
-    public last: Object<string>;
-    public first: Object<string>;
-    public age: Object<number>;
+    public last: string;
+    public first: string;
+    public age: number;
 }
