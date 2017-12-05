@@ -1,2 +1,2 @@
-#artist
+# artist
 Another Javascript framework

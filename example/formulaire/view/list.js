@@ -23,11 +23,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     const $ = require("node_modules/jquery/dist/jquery");
     class IList {
     }
+    IList.SelectUserEvent = "SelectUserEvent";
+    IList.SaveUsersEvent = "SaveUsersEvent";
     exports.IList = IList;
     let List = List_1 = class List extends IList {
-        constructor(_observalizer) {
+        constructor(_observalizer, _notifier) {
             super();
             this._observalizer = _observalizer;
+            this._notifier = _notifier;
             this.observable = _observalizer.convert({
                 users: []
             });
@@ -36,10 +39,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             this.observable.users.push(this._observalizer.convert(user));
         }
         select(user) {
-            this.selectUser(user);
+            this._notifier.notify(this, IList.SelectUserEvent, user);
         }
         save() {
-            this.saveUsers(JSON.parse(JSON.stringify(this.observable.users)));
+            this._notifier.notify(this, IList.SaveUsersEvent, JSON.parse(JSON.stringify(this.observable.users)));
         }
         clear() {
             this.observable.users = [];
@@ -66,7 +69,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             }
         }),
         index_2.Service({ interface: List_1 }),
-        __metadata("design:paramtypes", [index_2.IObservablizer])
+        __metadata("design:paramtypes", [index_2.IObservablizer, index_2.INotifier])
     ], List);
     var List_1;
 });

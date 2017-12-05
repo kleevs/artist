@@ -23,10 +23,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     const user_1 = require("../model/user");
     class IForm {
     }
+    IForm.AddUserEvent = "AddUserEvent";
     exports.IForm = IForm;
     let Form = Form_1 = class Form extends IForm {
-        constructor(observalizer) {
+        constructor(observalizer, _notifier) {
             super();
+            this._notifier = _notifier;
             this.observable = observalizer.convert({
                 last: undefined,
                 first: undefined,
@@ -38,7 +40,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             usr.last = this.observable.last;
             usr.first = this.observable.first;
             usr.age = this.observable.age;
-            this.addUser(usr);
+            this._notifier.notify(this, IForm.AddUserEvent, usr);
         }
         clear() {
             this.observable.last = undefined;
@@ -59,7 +61,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             }
         }),
         index_2.Service({ interface: Form_1 }),
-        __metadata("design:paramtypes", [index_2.IObservablizer])
+        __metadata("design:paramtypes", [index_2.IObservablizer, index_2.INotifier])
     ], Form);
     var Form_1;
 });

@@ -1,10 +1,10 @@
 import { object } from 'node_modules/observable/src/index';
 import { text, value, click } from 'node_modules/binder/src/index';
-import { View, Service, IObservablizer } from '../../../src/index';
+import { View, Service, IObservablizer, INotifier } from '../../../src/index';
 import { User } from '../model/user';
 
 export abstract class IForm {
-    addUser: (user: User) => void
+    static AddUserEvent = "AddUserEvent";
 }
 
 @View<Form>({
@@ -26,7 +26,7 @@ class Form extends IForm {
         age: number;
     }
 
-    constructor(observalizer: IObservablizer) {
+    constructor(observalizer: IObservablizer, private _notifier: INotifier) {
         super();
 
         this.observable = observalizer.convert({
@@ -41,7 +41,7 @@ class Form extends IForm {
         usr.last = this.observable.last;
         usr.first = this.observable.first;
         usr.age = this.observable.age;
-        this.addUser(usr);
+        this._notifier.notify(this, IForm.AddUserEvent, usr);
     }
 
     private clear() {

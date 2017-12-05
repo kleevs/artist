@@ -1,12 +1,12 @@
 import { text, value, click, each } from 'node_modules/binder/src/index';
-import { View, Service, IObservablizer } from '../../../src/index';
+import { View, Service, IObservablizer, INotifier } from '../../../src/index';
 import * as $ from 'node_modules/jquery/dist/jquery';
 import { User } from '../model/user';
 
 export abstract class IList {
     abstract add(user: User);
-    selectUser: (user: User) => void;
-    saveUsers: (users: User[]) => void;
+    static SelectUserEvent = "SelectUserEvent";
+    static SaveUsersEvent = "SaveUsersEvent";
 }
 
 @View<List>({
@@ -34,7 +34,7 @@ class List extends IList {
         users: User[]
     };
 
-    constructor(private _observalizer: IObservablizer) {
+    constructor(private _observalizer: IObservablizer, private _notifier: INotifier) {
         super();
         this.observable = _observalizer.convert({
             users: []
@@ -46,11 +46,11 @@ class List extends IList {
     }
 
     public select(user: User) : void {
-        this.selectUser(user);
+		this._notifier.notify(this, IList.SelectUserEvent, user);
     }
 
     public save() : void {
-        this.saveUsers(JSON.parse(JSON.stringify(this.observable.users)));
+		this._notifier.notify(this, IList.SaveUsersEvent, JSON.parse(JSON.stringify(this.observable.users)));
     }
 
     private clear(): void {

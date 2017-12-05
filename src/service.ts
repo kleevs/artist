@@ -11,6 +11,11 @@ export abstract class IObservablizer {
     abstract convert<T>(value: T & {}): T;
 }
 
+export abstract class INotifier {
+    abstract notify(obj, key: string, data): void;
+	abstract listen(obj, key: string, callback: (data) => void): void;
+}
+
 @Service({
     interface: IObservablizer
 })
@@ -43,6 +48,30 @@ class Observablizer extends IObservablizer {
 
         return res;
     }
+}
+
+@Service({
+    interface: INotifier
+})
+class Notifier extends INotifier {
+	private _callbacks: any = {};
+	
+	notify(obj, key, data): void {
+		var callbacks = this.register(obj, key);
+		callbacks && callbacks.forEach((callback) => {
+			callback(data);
+		});
+	}
+	
+	listen(obj, key: string, callback: (data) => void): void {
+		var callbacks = this.register(obj, key);
+		callbacks.push(callback);
+	}
+	
+	private register(obj, key) {
+		obj.__notifier__id__ = obj.__notifier__id__ || [new Date().getTime(), Math.random() * 100].join(""); 
+		return this._callbacks[obj.__notifier__id__ + "_" + key] = this._callbacks[obj.__notifier__id__ + "_" + key] || [];
+	}
 }
 
 

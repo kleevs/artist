@@ -45,23 +45,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         __metadata("design:paramtypes", [Object])
     ], LayoutView);
     let LayoutService = class LayoutService extends LayoutView {
-        constructor(viewProvider, observalizer) {
+        constructor(viewProvider, observalizer, notifier) {
             super(observalizer.convert({
                 list: viewProvider.newInstance(list_1.IList),
                 saved: viewProvider.newInstance(saved_1.ISaved),
                 form: viewProvider.newInstance(form_1.IForm),
                 detail: viewProvider.newInstance(detail_1.IDetail)
             }));
-            this.observable.form.addUser = (usr) => this.observable.list.add(usr);
-            this.observable.list.saveUsers = (usrs) => this.observable.saved.save(usrs);
-            this.observable.list.selectUser = (usr) => this.observable.detail.select(usr);
+            notifier.listen(this.observable.form, form_1.IForm.AddUserEvent, (usr) => this.observable.list.add(usr));
+            notifier.listen(this.observable.list, list_1.IList.SaveUsersEvent, (usrs) => this.observable.saved.save(usrs));
+            notifier.listen(this.observable.list, list_1.IList.SelectUserEvent, (usr) => this.observable.detail.select(usr));
         }
     };
     LayoutService = __decorate([
         index_1.Service({
             interface: LayoutView
         }),
-        __metadata("design:paramtypes", [index_1.IViewProvider, index_1.IObservablizer])
+        __metadata("design:paramtypes", [index_1.IViewProvider, index_1.IObservablizer, index_1.INotifier])
     ], LayoutService);
 });
 //# sourceMappingURL=layout.js.map

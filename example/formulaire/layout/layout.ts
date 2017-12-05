@@ -1,5 +1,5 @@
 import { Object, object } from 'node_modules/observable/src/index';
-import { View, view, IViewProvider, Service, IObservablizer } from '../../../src/index';
+import { View, view, IViewProvider, Service, IObservablizer, INotifier } from '../../../src/index';
 import { IForm } from '../view/form';
 import { IDetail } from '../view/detail';
 import { IList } from '../view/list';
@@ -39,7 +39,7 @@ abstract class LayoutView extends ILayout {
     interface: LayoutView
 })
 class LayoutService extends LayoutView {
-    constructor(viewProvider: IViewProvider, observalizer: IObservablizer) {
+    constructor(viewProvider: IViewProvider, observalizer: IObservablizer, notifier: INotifier) {
         super(observalizer.convert({
             list: viewProvider.newInstance(IList),
             saved: viewProvider.newInstance(ISaved),
@@ -47,8 +47,8 @@ class LayoutService extends LayoutView {
             detail: viewProvider.newInstance(IDetail)
         }));
         
-        this.observable.form.addUser = (usr) => this.observable.list.add(usr);
-        this.observable.list.saveUsers = (usrs) => this.observable.saved.save(usrs);
-        this.observable.list.selectUser = (usr) => this.observable.detail.select(usr);          
+		notifier.listen(this.observable.form, IForm.AddUserEvent, (usr) => this.observable.list.add(usr));
+		notifier.listen(this.observable.list, IList.SaveUsersEvent, (usrs) => this.observable.saved.save(usrs));
+		notifier.listen(this.observable.list, IList.SelectUserEvent, (usr) => this.observable.detail.select(usr));       
     }
 }

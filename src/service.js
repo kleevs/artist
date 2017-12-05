@@ -25,6 +25,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     class IObservablizer {
     }
     exports.IObservablizer = IObservablizer;
+    class INotifier {
+    }
+    exports.INotifier = INotifier;
     let Observablizer = class Observablizer extends IObservablizer {
         convert(value) {
             var res = value && Object.create(value) || undefined;
@@ -57,5 +60,30 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             interface: IObservablizer
         })
     ], Observablizer);
+    let Notifier = class Notifier extends INotifier {
+        constructor() {
+            super(...arguments);
+            this._callbacks = {};
+        }
+        notify(obj, key, data) {
+            var callbacks = this.register(obj, key);
+            callbacks && callbacks.forEach((callback) => {
+                callback(data);
+            });
+        }
+        listen(obj, key, callback) {
+            var callbacks = this.register(obj, key);
+            callbacks.push(callback);
+        }
+        register(obj, key) {
+            obj.__notifier__id__ = obj.__notifier__id__ || [new Date().getTime(), Math.random() * 100].join("");
+            return this._callbacks[obj.__notifier__id__ + "_" + key] = this._callbacks[obj.__notifier__id__ + "_" + key] || [];
+        }
+    };
+    Notifier = __decorate([
+        exports.Service({
+            interface: INotifier
+        })
+    ], Notifier);
 });
 //# sourceMappingURL=service.js.map
