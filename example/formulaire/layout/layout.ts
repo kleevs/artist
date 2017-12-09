@@ -1,4 +1,3 @@
-import { Object, object } from 'node_modules/observable/src/index';
 import { View, view, IViewProvider, Service, IObservablizer, INotifier } from '../../../src/index';
 import { IForm } from '../view/form';
 import { IDetail } from '../view/detail';

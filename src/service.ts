@@ -1,4 +1,4 @@
-import { object } from 'node_modules/observable/src/index';
+import { observable as object } from 'node_modules/observable/src/index';
 import { DependencyInjector, IProvider, IConfig } from 'node_modules/dependency-injection/src/index';
 import { foreach } from './mixin';
 
@@ -27,16 +27,16 @@ class Observablizer extends IObservablizer {
             var observable;
             !descriptor.get && !descriptor.set &&
             (() => { 
-                observable = object();
-                descriptor.get = () => observable(); 
+                observable = object({});
+                descriptor.get = () => observable().value; 
                 descriptor.set = (v) => { 
                     v instanceof Array && (v.push = function () {
                         var res = Array.prototype.push.apply(this, arguments);
-                        observable(this);
+                        observable({ value: this });
                         return res;
                     });
 
-                    observable(v); 
+                    observable({ value: v }); 
                 }
                 
                 delete descriptor.value;

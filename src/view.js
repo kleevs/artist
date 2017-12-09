@@ -59,7 +59,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             return view;
         }
         getNode(view) {
-            return view.__elt__;
+            return view && view.__elt__;
         }
     };
     ViewProvider = __decorate([
@@ -73,7 +73,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             $element.html("");
             return () => {
                 var value = valueAccessor();
-                service_1.provider.getService(IViewProvider).getNode(value).then((el) => {
+                value && service_1.provider.getService(IViewProvider).getNode(value).then((el) => {
                     $element.html("");
                     $element.append(el);
                 });

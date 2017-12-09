@@ -22,50 +22,48 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     const $ = require("node_modules/jquery/dist/jquery");
     const view_1 = require("./view");
     const service_1 = require("./service");
+    let StartView = class StartView {
+        constructor(_viewProvider) {
+            this._viewProvider = _viewProvider;
+            this.view = index_1.observable();
+        }
+        renderView(type, callback) {
+            var v = this._viewProvider.newInstance(type);
+            this.view(v);
+            v && this._viewProvider.getNode(v).then((element) => {
+                callback(v);
+            }) || callback(v);
+        }
+    };
+    StartView = __decorate([
+        view_1.View({
+            html: "<div></div>",
+            binding: {
+                "this": (startView) => view_1.view(() => startView.view())
+            }
+        }),
+        __metadata("design:paramtypes", [view_1.IViewProvider])
+    ], StartView);
+    ;
+    let StartService = class StartService extends StartView {
+        constructor(viewProvider) {
+            super(viewProvider);
+        }
+    };
+    StartService = __decorate([
+        service_1.Service({
+            interface: StartView
+        }),
+        __metadata("design:paramtypes", [view_1.IViewProvider])
+    ], StartService);
     class IStartUp {
-        renderView(selector, view, callback) {
-            let StartView = class StartView {
-                constructor() {
-                    this.view = index_1.object();
-                }
-            };
-            StartView = __decorate([
-                view_1.View({
-                    html: "<div></div>",
-                    binding: {
-                        "this": (view) => (element) => {
-                            return () => {
-                                $(element).html("");
-                                $(element).append(view.view());
-                            };
-                        }
-                    }
-                }),
-                __metadata("design:paramtypes", [])
-            ], StartView);
-            ;
-            let StartService = class StartService extends StartView {
-                constructor(_viewProvider) {
-                    super();
-                    this._viewProvider = _viewProvider;
-                    this.view = index_1.object();
-                }
-                initialize() {
-                    var v = this._viewProvider.newInstance(view);
-                    this._viewProvider.getNode(v).then((element) => {
-                        this.view(element);
-                        callback(v);
-                    });
-                }
-            };
-            StartService = __decorate([
-                service_1.Service({
-                    interface: StartView
-                }),
-                __metadata("design:paramtypes", [view_1.IViewProvider])
-            ], StartService);
+        constructor(_selector) {
+            this._selector = _selector;
             var viewProvider = service_1.provider.getService(view_1.IViewProvider);
-            viewProvider.getNode(viewProvider.newInstance(StartView)).then((el) => $(selector).append(el));
+            viewProvider.getNode(this._starter = viewProvider.newInstance(StartView)).then((el) => $(_selector).append(el));
+        }
+        renderView(type, callback) {
+            this._starter.renderView(type, callback);
         }
     }
     exports.IStartUp = IStartUp;

@@ -5,12 +5,12 @@ startup(class StartUp extends IStartUp {
     private _layout: ILayout;
 
     constructor() {
-        super();
+        super("[layout]");
     }
 
     onStart(config: IConfig): void {
         console.log("start");
-        this.renderView("[layout]", ILayout, (layout: ILayout) => {
+        this.renderView(ILayout, (layout: ILayout) => {
             this._layout = layout;
         });
     }

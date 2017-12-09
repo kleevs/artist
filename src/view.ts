@@ -1,4 +1,4 @@
-import { isObservable, object, wrap } from 'node_modules/observable/src/index';
+import { observable } from 'node_modules/observable/src/index';
 import { Binder } from 'node_modules/binder/src/index';
 import { provider as serviceProvider, config, Service } from './service';
 import { foreach, map, grep } from './mixin';
@@ -67,7 +67,7 @@ class ViewProvider {
     }
 
     public getNode(view: any): Promise<Element> {
-        return view.__elt__;
+        return view && view.__elt__;
     }
 }
 
@@ -78,7 +78,7 @@ export function view(valueAccessor: () => any) {
         
 		return () => {
             var value = valueAccessor();
-            serviceProvider.getService(IViewProvider).getNode(value).then((el) => {
+            value && serviceProvider.getService(IViewProvider).getNode(value).then((el) => {
                 $element.html("");
                 $element.append(el);
             });

@@ -1,5 +1,4 @@
 import { text, value, click } from 'node_modules/binder/src/index';
-import { object } from 'node_modules/observable/src/index';
 import { View, Service, IObservablizer } from '../../../src/index';
 import { User } from '../model/user';
 

@@ -36,15 +36,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                 var observable;
                 !descriptor.get && !descriptor.set &&
                     (() => {
-                        observable = index_1.object();
-                        descriptor.get = () => observable();
+                        observable = index_1.observable({});
+                        descriptor.get = () => observable().value;
                         descriptor.set = (v) => {
                             v instanceof Array && (v.push = function () {
                                 var res = Array.prototype.push.apply(this, arguments);
-                                observable(this);
+                                observable({ value: this });
                                 return res;
                             });
-                            observable(v);
+                            observable({ value: v });
                         };
                         delete descriptor.value;
                         delete descriptor.writable;

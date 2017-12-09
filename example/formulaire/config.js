@@ -13,11 +13,11 @@
     const layout_1 = require("./layout/layout");
     index_1.startup(class StartUp extends index_1.IStartUp {
         constructor() {
-            super();
+            super("[layout]");
         }
         onStart(config) {
             console.log("start");
-            this.renderView("[layout]", layout_1.ILayout, (layout) => {
+            this.renderView(layout_1.ILayout, (layout) => {
                 this._layout = layout;
             });
         }
