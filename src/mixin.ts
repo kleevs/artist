@@ -1,3 +1,5 @@
+export function foreach<T>(item: T[], callback: (item: T, index: number) => void) 
+export function foreach<T>(item: {[s: string]: T}, callback: (item: T, key: string) => void) 
 export function foreach<T>(item, callback) {
     let i;
     if (item instanceof Array) {
