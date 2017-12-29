@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "code",    
     "experimentalDecorators": true,
     "sourceMap": true,
     "declaration": true,
@@ -9,19 +10,19 @@
     "emitDecoratorMetadata": true,
     "target": "es6",
     "typeRoots": [
-      "node_modules/@types",
-	    "../node_modules/*"
+      "node_modules/@types"
     ],
     "lib": [
       "es2016",
       "dom"
-    ]
+    ],
+    "outDir": "src"    
   },
   "include" : [ 
-    "./src/**/*.ts",
-    "./example/**/*.ts"
+    "./code/**/*.ts"
   ],
   "exclude" : [
-	  "./node_modules" 
+    "./node_modules",
+    "./src"
   ]
 }

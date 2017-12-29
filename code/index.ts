@@ -15,4 +15,3 @@ export function startup(starter: any) {
     }, false);
     startup && startup.onHashChange && startup.onHashChange(location.hash, location.href);
 }
-

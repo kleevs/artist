@@ -6,7 +6,8 @@ import { ISaved } from '../view/saved';
 
 export abstract class ILayout {}
 
-@View<LayoutView>({
+@View<ILayout, LayoutView>({
+    key: ILayout,
     template: "example/formulaire/tmpl/layout.html",
     binding: {
         "[form]": (layout) => view(() => layout.observable.form),
@@ -15,7 +16,7 @@ export abstract class ILayout {}
         "[saved]": (layout) => view(() => layout.observable.saved),
     }
 })
-abstract class LayoutView extends ILayout {
+class LayoutView extends ILayout {
     protected readonly observable: {
         list: IList;
         saved: ISaved;

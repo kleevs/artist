@@ -1,11 +1,13 @@
-{
-	"name": "Artist",
+[{
 	"main": "src/index",
 	"out": "dist/artist.js",
-	"paths": {
+	"option": {
+	  "name": "Artist",
+	  "paths": {
 		"node_modules": "node_modules"
-	},
-	"ignores": {
+	  },
+	  "ignores": {
 		"node_modules/jquery/dist/jquery": "$"
+	  }
 	}
-}
+  }]

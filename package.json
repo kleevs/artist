@@ -5,11 +5,7 @@
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -r ./dist/*",
-    "compile": "tsc",
-    "dist": "node node_modules/amd-loader/dist/amd-loader.js ./build.json",
-    "build": "npm run clean & npm run compile & npm run dist"
+    "build": "tsc && node node_modules/amd-loader/bin/build.js build.json"    
   },
   "dependencies": {
     "jquery": "^3.2.1",
