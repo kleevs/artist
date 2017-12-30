@@ -35,7 +35,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     };
     Detail = Detail_1 = __decorate([
         index_2.View({
-            template: "example/formulaire/tmpl/detail.html",
+            template: "formulaire/tmpl/detail.html",
             binding: {
                 "[panel-title]": (view) => index_1.text(() => "Detail"),
                 "#last": (view) => index_1.value({ get: () => view.observable.user.last, set: (v) => view.observable.user.last = v }),

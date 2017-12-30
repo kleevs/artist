@@ -34,7 +34,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     };
     LayoutView = __decorate([
         index_1.View({
-            template: "example/formulaire/tmpl/layout.html",
+            template: "formulaire/tmpl/layout.html",
             binding: {
                 "[form]": (layout) => index_1.view(() => layout.observable.form),
                 "[detail]": (layout) => index_1.view(() => layout.observable.detail),

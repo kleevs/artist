@@ -50,7 +50,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     };
     List = List_1 = __decorate([
         index_2.View({
-            template: "example/formulaire/tmpl/list.html",
+            template: "formulaire/tmpl/list.html",
             binding: {
                 "[panel-title]": (view) => index_1.text(() => "List"),
                 "[data-action=save]": (view) => index_1.click(() => () => view.save() || false),

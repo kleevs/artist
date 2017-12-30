@@ -6,9 +6,8 @@ import { ISaved } from '../view/saved';
 
 export abstract class ILayout {}
 
-@View<ILayout, LayoutView>({
-    key: ILayout,
-    template: "example/formulaire/tmpl/layout.html",
+@View<LayoutView>({
+    template: "formulaire/tmpl/layout.html",
     binding: {
         "[form]": (layout) => view(() => layout.observable.form),
         "[detail]": (layout) => view(() => layout.observable.detail),

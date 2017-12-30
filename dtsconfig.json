@@ -1,5 +1,0 @@
-{
-    "name": "artist",
-    "main": "src/index.d.ts",
-    "out": "../dist/artist.d.ts"
-}

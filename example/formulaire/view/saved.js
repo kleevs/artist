@@ -37,7 +37,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     };
     Saved = Saved_1 = __decorate([
         index_2.View({
-            template: "example/formulaire/tmpl/saved.html",
+            template: "formulaire/tmpl/saved.html",
             binding: {
                 "[panel-title]": (view) => index_1.text(() => "Saved"),
                 "table tbody": (view) => index_1.each(() => {

@@ -5,7 +5,8 @@
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
   "scripts": {
-    "build": "tsc && node node_modules/amd-loader/bin/build.js build.json"    
+    "build": "tsc && node node_modules/amd-loader/bin/build.js build.json",
+    "start": "node node_modules/server/.bin/server.js config.json"    
   },
   "dependencies": {
     "jquery": "^3.2.1",
@@ -15,7 +16,8 @@
   "devDependencies": {
     "@types/node": "^7.0.14",
     "bootstrap": "^3.3.7",
-    "amd-loader": "git+https://github.com/kleevs/amd-loader.git"
+    "amd-loader": "git+https://github.com/kleevs/amd-loader.git",
+    "server": "git+https://github.com/kleevs/server.git"
   },
   "repository": {
     "type": "git",

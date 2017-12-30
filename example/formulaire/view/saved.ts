@@ -8,7 +8,7 @@ export abstract class ISaved {
 }
 
 @View<Saved>({
-    template: "example/formulaire/tmpl/saved.html",
+    template: "formulaire/tmpl/saved.html",
     binding: {
         "[panel-title]": (view) => text(() => "Saved"),
         "table tbody": (view) => each(() => {

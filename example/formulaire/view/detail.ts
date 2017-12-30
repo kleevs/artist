@@ -7,7 +7,7 @@ export abstract class IDetail {
 }
 
 @View<Detail>({
-    template: "example/formulaire/tmpl/detail.html",
+    template: "formulaire/tmpl/detail.html",
     binding: {
         "[panel-title]": (view) => text(() => "Detail"),
         "#last": (view) => value({ get: () => view.observable.user.last, set: (v) => view.observable.user.last = v }),

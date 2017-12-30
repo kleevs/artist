@@ -7,7 +7,7 @@ export abstract class IForm {
 }
 
 @View<Form>({
-    template: "example/formulaire/tmpl/form.html",
+    template: "formulaire/tmpl/form.html",
     binding: {
         "[panel-title]": (view) => text(() => "Formulaire"),
         "#last": (view) => value({ get: () => view.observable.last, set: (v) => view.observable.last = v }),

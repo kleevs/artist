@@ -10,7 +10,7 @@ export abstract class IList {
 }
 
 @View<List>({
-    template: "example/formulaire/tmpl/list.html",
+    template: "formulaire/tmpl/list.html",
     binding: {
         "[panel-title]": (view) => text(() => "List"),
         "[data-action=save]": (view) => click(() => () => view.save() || false),

@@ -50,7 +50,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     };
     Form = Form_1 = __decorate([
         index_2.View({
-            template: "example/formulaire/tmpl/form.html",
+            template: "formulaire/tmpl/form.html",
             binding: {
                 "[panel-title]": (view) => index_1.text(() => "Formulaire"),
                 "#last": (view) => index_1.value({ get: () => view.observable.last, set: (v) => view.observable.last = v }),
