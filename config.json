@@ -3,8 +3,8 @@
         "match": "/?node_modules\\/(.*)",
         "rewrite": "./node_modules/$1"
     }, {
-        "match": "/?src\\/(.*)",
-        "rewrite": "./src/$1"
+        "match": "/?dist\\/(.*)",
+        "rewrite": "./dist/$1"
     }, {
         "match": "(.*\\.[a-z]+)",
         "rewrite": "./example$1"

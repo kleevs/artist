@@ -13,12 +13,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../../../src/index", "../view/form", "../view/detail", "../view/list", "../view/saved"], factory);
+        define(["require", "exports", "../../../dist/artist", "../view/form", "../view/detail", "../view/list", "../view/saved"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("../../../src/index");
+    const artist_1 = require("../../../dist/artist");
     const form_1 = require("../view/form");
     const detail_1 = require("../view/detail");
     const list_1 = require("../view/list");
@@ -33,13 +33,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         }
     };
     LayoutView = __decorate([
-        index_1.View({
+        artist_1.View({
             template: "formulaire/tmpl/layout.html",
             binding: {
-                "[form]": (layout) => index_1.view(() => layout.observable.form),
-                "[detail]": (layout) => index_1.view(() => layout.observable.detail),
-                "[list]": (layout) => index_1.view(() => layout.observable.list),
-                "[saved]": (layout) => index_1.view(() => layout.observable.saved),
+                "[form]": (layout) => artist_1.view(() => layout.observable.form),
+                "[detail]": (layout) => artist_1.view(() => layout.observable.detail),
+                "[list]": (layout) => artist_1.view(() => layout.observable.list),
+                "[saved]": (layout) => artist_1.view(() => layout.observable.saved),
             }
         }),
         __metadata("design:paramtypes", [Object])
@@ -58,10 +58,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         }
     };
     LayoutService = __decorate([
-        index_1.Service({
+        artist_1.Service({
             interface: LayoutView
         }),
-        __metadata("design:paramtypes", [index_1.IViewProvider, index_1.IObservablizer, index_1.INotifier])
+        __metadata("design:paramtypes", [artist_1.IViewProvider, artist_1.IObservablizer, artist_1.INotifier])
     ], LayoutService);
 });
 //# sourceMappingURL=layout.js.map

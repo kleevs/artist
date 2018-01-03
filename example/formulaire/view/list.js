@@ -13,13 +13,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/binder/src/index", "../../../src/index", "node_modules/jquery/dist/jquery"], factory);
+        define(["require", "exports", "node_modules/binder/src/index", "../../../dist/artist", "node_modules/jquery/dist/jquery"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("node_modules/binder/src/index");
-    const index_2 = require("../../../src/index");
+    const artist_1 = require("../../../dist/artist");
     const $ = require("node_modules/jquery/dist/jquery");
     class IList {
     }
@@ -49,7 +49,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         }
     };
     List = List_1 = __decorate([
-        index_2.View({
+        artist_1.View({
             template: "formulaire/tmpl/list.html",
             binding: {
                 "[panel-title]": (view) => index_1.text(() => "List"),
@@ -68,8 +68,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
                 })
             }
         }),
-        index_2.Service({ interface: List_1 }),
-        __metadata("design:paramtypes", [index_2.IObservablizer, index_2.INotifier])
+        artist_1.Service({ interface: List_1 }),
+        __metadata("design:paramtypes", [artist_1.IObservablizer, artist_1.INotifier])
     ], List);
     var List_1;
 });

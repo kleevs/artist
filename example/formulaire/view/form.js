@@ -13,13 +13,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/binder/src/index", "../../../src/index", "../model/user"], factory);
+        define(["require", "exports", "node_modules/binder/src/index", "../../../dist/artist", "../model/user"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("node_modules/binder/src/index");
-    const index_2 = require("../../../src/index");
+    const artist_1 = require("../../../dist/artist");
     const user_1 = require("../model/user");
     class IForm {
     }
@@ -49,7 +49,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         }
     };
     Form = Form_1 = __decorate([
-        index_2.View({
+        artist_1.View({
             template: "formulaire/tmpl/form.html",
             binding: {
                 "[panel-title]": (view) => index_1.text(() => "Formulaire"),
@@ -60,8 +60,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
                 "[data-action=clear]": (view) => index_1.click(() => () => view.clear() || false)
             }
         }),
-        index_2.Service({ interface: Form_1 }),
-        __metadata("design:paramtypes", [index_2.IObservablizer, index_2.INotifier])
+        artist_1.Service({ interface: Form_1 }),
+        __metadata("design:paramtypes", [artist_1.IObservablizer, artist_1.INotifier])
     ], Form);
     var Form_1;
 });

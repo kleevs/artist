@@ -1,13 +1,14 @@
 [{
 	"main": "src/index",
-	"out": "dist/artist.js",
+	"out": "dist/artist",
+	"declaration": true,
 	"option": {
-	  "name": "Artist",
+		"name": "Artist",
 	  "paths": {
-		"node_modules": "node_modules"
+			"node_modules": "node_modules"
 	  },
 	  "ignores": {
-		"node_modules/jquery/dist/jquery": "$"
+			"node_modules/jquery/dist/jquery": "$"
 	  }
 	}
   }]

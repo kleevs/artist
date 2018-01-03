@@ -1,4 +1,4 @@
-import { View, view, IViewProvider, Service, IObservablizer, INotifier } from '../../../src/index';
+import { View, view, IViewProvider, Service, IObservablizer, INotifier } from '../../../dist/artist';
 import { IForm } from '../view/form';
 import { IDetail } from '../view/detail';
 import { IList } from '../view/list';

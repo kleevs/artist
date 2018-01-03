@@ -1,4 +1,4 @@
-import { IStartUp, IConfig, startup } from '../../src/index';
+import { IStartUp, IConfig, startup } from '../../dist/artist';
 import { ILayout } from './layout/layout';
 
 startup(class StartUp extends IStartUp {

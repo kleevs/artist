@@ -1,5 +1,5 @@
 import { text, value, click, each } from 'node_modules/binder/src/index';
-import { View, Service, IObservablizer, INotifier } from '../../../src/index';
+import { View, Service, IObservablizer, INotifier } from '../../../dist/artist';
 import * as $ from 'node_modules/jquery/dist/jquery';
 import { User } from '../model/user';
 

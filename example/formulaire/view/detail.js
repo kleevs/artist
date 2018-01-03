@@ -13,13 +13,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/binder/src/index", "../../../src/index", "../model/user"], factory);
+        define(["require", "exports", "node_modules/binder/src/index", "../../../dist/artist", "../model/user"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("node_modules/binder/src/index");
-    const index_2 = require("../../../src/index");
+    const artist_1 = require("../../../dist/artist");
     const user_1 = require("../model/user");
     class IDetail {
     }
@@ -34,7 +34,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         }
     };
     Detail = Detail_1 = __decorate([
-        index_2.View({
+        artist_1.View({
             template: "formulaire/tmpl/detail.html",
             binding: {
                 "[panel-title]": (view) => index_1.text(() => "Detail"),
@@ -43,8 +43,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
                 "#age": (view) => index_1.value({ get: () => (view.observable.user.age || '').toString(), set: (v) => view.observable.user.age = parseInt(v) || undefined })
             }
         }),
-        index_2.Service({ interface: Detail_1 }),
-        __metadata("design:paramtypes", [index_2.IObservablizer])
+        artist_1.Service({ interface: Detail_1 }),
+        __metadata("design:paramtypes", [artist_1.IObservablizer])
     ], Detail);
     var Detail_1;
 });
