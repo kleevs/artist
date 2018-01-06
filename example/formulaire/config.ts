@@ -10,7 +10,7 @@ startup(class StartUp extends IStartUp {
 
     onStart(config: IConfig): void {
         console.log("start");
-        this.renderView(ILayout, (layout: ILayout) => {
+        this.renderView(ILayout).then((layout: ILayout) => {
             this._layout = layout;
         });
     }

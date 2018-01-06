@@ -27,12 +27,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             this._viewProvider = _viewProvider;
             this.view = index_1.observable();
         }
-        renderView(type, callback) {
-            var v = this._viewProvider.newInstance(type);
-            this.view(v);
-            v && this._viewProvider.getNode(v).then((element) => {
-                callback(v);
-            }) || callback(v);
+        renderView(type) {
+            return new Promise((resolve) => {
+                var v = this._viewProvider.newInstance(type);
+                this.view(v);
+                v && this._viewProvider.getNode(v).then((element) => {
+                    resolve(v);
+                }) || resolve(v);
+            });
         }
     };
     StartView = __decorate([
@@ -62,8 +64,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             var viewProvider = service_1.provider.getService(view_1.IViewProvider);
             viewProvider.getNode(this._starter = viewProvider.newInstance(StartView)).then((el) => $(_selector).append(el));
         }
-        renderView(type, callback) {
-            this._starter.renderView(type, callback);
+        renderView(type) {
+            return this._starter.renderView(type);
         }
     }
     exports.IStartUp = IStartUp;

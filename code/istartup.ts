@@ -17,12 +17,14 @@ abstract class StartView {
         this.view = observable<any>();
     }
 
-    public renderView<T>(type: Function & { prototype: T }, callback?: (view: T) => void): void {
-        var v = this._viewProvider.newInstance(type);
-        this.view(v);
-        v && this._viewProvider.getNode(v).then((element) => {
-            callback(v);
-        }) || callback(v);
+    public renderView<T>(type: Function & { prototype: T }): Promise<T> {
+        return new Promise((resolve) => {
+            var v = this._viewProvider.newInstance(type);
+            this.view(v);
+            v && this._viewProvider.getNode(v).then((element) => {
+                resolve(v);
+            }) || resolve(v);
+        });
     }
 };
 
@@ -45,7 +47,7 @@ export abstract class IStartUp {
         viewProvider.getNode(this._starter = viewProvider.newInstance(StartView)).then((el) => $(_selector).append(el));
     }
 
-    public renderView<T>(type: Function & { prototype: T }, callback?: (view: T) => void): void {
-        this._starter.renderView(type, callback);
+    public renderView<T>(type: Function & { prototype: T }): Promise<T> {
+        return this._starter.renderView(type);
     }
 }

@@ -7,5 +7,5 @@ export declare abstract class IStartUp {
     constructor(_selector: string);
     renderView<T>(type: Function & {
         prototype: T;
-    }, callback?: (view: T) => void): void;
+    }): Promise<T>;
 }
