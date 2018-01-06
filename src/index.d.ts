@@ -1,3 +1,4 @@
+export * from 'node_modules/binder/src/index';
 export * from 'node_modules/dependency-injection/src/index';
 export * from './istartup';
 export * from './view';

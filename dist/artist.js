@@ -47,7 +47,7 @@ class Resolver {
         }
     }
 var resolver = new Resolver({"node_modules":"node_modules"});
-var names = ["node_modules/observable/src/core","node_modules/observable/src/observable","node_modules/observable/src/observer","node_modules/observable/src/blind","node_modules/observable/src/index","node_modules/reflect-decorator/src/index","node_modules/dependency-injection/src/index","src/mixin","src/service","node_modules/jquery/dist/jquery","node_modules/binder/src/binder","node_modules/binder/src/handler/attr","node_modules/binder/src/handler/change","node_modules/binder/src/handler/click","node_modules/binder/src/handler/text","node_modules/binder/src/handler/value","node_modules/binder/src/handler/base/mixin","node_modules/binder/src/handler/options","node_modules/binder/src/handler/each","node_modules/binder/src/handlers","node_modules/binder/src/index","src/view","src/istartup","src/index"]
+var names = ["node_modules/observable/src/core","node_modules/observable/src/observable","node_modules/observable/src/observer","node_modules/observable/src/blind","node_modules/observable/src/index","node_modules/reflect-decorator/src/index","node_modules/dependency-injection/src/index","src/mixin","src/service","node_modules/binder/src/binder","node_modules/jquery/dist/jquery","node_modules/binder/src/handler/attr","node_modules/binder/src/handler/change","node_modules/binder/src/handler/click","node_modules/binder/src/handler/text","node_modules/binder/src/handler/value","node_modules/binder/src/handler/base/mixin","node_modules/binder/src/handler/options","node_modules/binder/src/handler/each","node_modules/binder/src/handlers","node_modules/binder/src/index","src/view","src/istartup","src/index"]
 var res = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 var require = function(currentPath, name) { var n = resolver.resolve(currentPath, name); return names.indexOf(n) >= 0 && res[names.indexOf(n)] || req(name); }
 res[0] = (function (require, exports) {
@@ -385,10 +385,7 @@ res[8] = (function (require, exports) {
         })
     ], Notifier);
 })(require.bind(null, "src/"),res[8],res[4],res[6],res[7]) || res[8];
-res[9] = (function anonymous() {
-return $;
-})() || res[9];
-res[10] = (function (require, exports) {
+res[9] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("node_modules/observable/src/index");
@@ -402,7 +399,10 @@ res[10] = (function (require, exports) {
         }
     }
     exports.Binder = Binder;
-})(require.bind(null, "node_modules/binder/src/"),res[10],res[4]) || res[10];
+})(require.bind(null, "node_modules/binder/src/"),res[9],res[4]) || res[9];
+res[10] = (function anonymous() {
+return $;
+})() || res[10];
 res[11] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -419,7 +419,7 @@ res[11] = (function (require, exports) {
         };
     }
     exports.attr = attr;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[11],res[9]) || res[11];
+})(require.bind(null, "node_modules/binder/src/handler/"),res[11],res[10]) || res[11];
 res[12] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -433,7 +433,7 @@ res[12] = (function (require, exports) {
         };
     }
     exports.change = change;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[12],res[9]) || res[12];
+})(require.bind(null, "node_modules/binder/src/handler/"),res[12],res[10]) || res[12];
 res[13] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -447,7 +447,7 @@ res[13] = (function (require, exports) {
         };
     }
     exports.click = click;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[13],res[9]) || res[13];
+})(require.bind(null, "node_modules/binder/src/handler/"),res[13],res[10]) || res[13];
 res[14] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -462,7 +462,7 @@ res[14] = (function (require, exports) {
         };
     }
     exports.text = text;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[14],res[9]) || res[14];
+})(require.bind(null, "node_modules/binder/src/handler/"),res[14],res[10]) || res[14];
 res[15] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -480,7 +480,7 @@ res[15] = (function (require, exports) {
         };
     }
     exports.value = value;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[15],res[9]) || res[15];
+})(require.bind(null, "node_modules/binder/src/handler/"),res[15],res[10]) || res[15];
 res[16] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -537,7 +537,7 @@ res[17] = (function (require, exports) {
         };
     }
     exports.options = options;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[17],res[16],res[9]) || res[17];
+})(require.bind(null, "node_modules/binder/src/handler/"),res[17],res[16],res[10]) || res[17];
 res[18] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -564,7 +564,7 @@ res[18] = (function (require, exports) {
         };
     }
     exports.each = each;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[18],res[9],res[10],res[16]) || res[18];
+})(require.bind(null, "node_modules/binder/src/handler/"),res[18],res[10],res[9],res[16]) || res[18];
 res[19] = (function (require, exports) {
     "use strict";
     function __export(m) {
@@ -588,7 +588,7 @@ res[20] = (function (require, exports) {
     __export(require("node_modules/observable/src/index"));
     __export(require("./binder"));
     __export(require("./handlers"));
-})(require.bind(null, "node_modules/binder/src/"),res[20],res[4],res[10],res[19]) || res[20];
+})(require.bind(null, "node_modules/binder/src/"),res[20],res[4],res[9],res[19]) || res[20];
 res[21] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -658,7 +658,7 @@ res[21] = (function (require, exports) {
         };
     }
     exports.view = view;
-})(require.bind(null, "src/"),res[21],res[20],res[8],res[7],res[9]) || res[21];
+})(require.bind(null, "src/"),res[21],res[20],res[8],res[7],res[10]) || res[21];
 res[22] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -711,7 +711,7 @@ res[22] = (function (require, exports) {
         }
     }
     exports.IStartUp = IStartUp;
-})(require.bind(null, "src/"),res[22],res[4],res[9],res[21],res[8]) || res[22];
+})(require.bind(null, "src/"),res[22],res[4],res[10],res[21],res[8]) || res[22];
 return res[23] = (function (require, exports) {
     "use strict";
     function __export(m) {
@@ -719,6 +719,7 @@ return res[23] = (function (require, exports) {
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     const service_1 = require("./service");
+    __export(require("node_modules/binder/src/index"));
     __export(require("node_modules/dependency-injection/src/index"));
     __export(require("./istartup"));
     __export(require("./view"));
@@ -733,5 +734,5 @@ return res[23] = (function (require, exports) {
         startup && startup.onHashChange && startup.onHashChange(location.hash, location.href);
     }
     exports.startup = startup;
-})(require.bind(null, "src/"),res[23],res[8],res[6],res[22],res[21],res[8]) || res[23];
+})(require.bind(null, "src/"),res[23],res[8],res[20],res[6],res[22],res[21],res[8]) || res[23];
 }, typeof window !== 'undefined' && (window.Artist = {}) || {})
