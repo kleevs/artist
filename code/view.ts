@@ -22,6 +22,7 @@ let registeredView: RegisteredView<any>[] = [];
 
 export function View<T>(options: ViewOption<T>) { 
     return (constructor: Function, metadata?) => {
+        options = constructor.prototype.__view__option__ = $.extend(true, constructor.prototype.__view__option__, options);
         registeredView.push({
             construct: <any>constructor,
             binding: options.binding,

@@ -22,6 +22,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     let registeredView = [];
     function View(options) {
         return (constructor, metadata) => {
+            options = constructor.prototype.__view__option__ = $.extend(true, constructor.prototype.__view__option__, options);
             registeredView.push({
                 construct: constructor,
                 binding: options.binding,
