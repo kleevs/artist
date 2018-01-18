@@ -2,7 +2,7 @@ import { IConfig } from 'node_modules/dependency-injection/src/index';
 import { observable } from 'node_modules/observable/src/index';
 import * as $ from 'node_modules/jquery/dist/jquery';
 import { IViewProvider, View, view } from './view';
-import { provider, Service } from './service';
+import { serviceProvider, Service } from './service';
 
 @View({
     html: "<div></div>",
@@ -43,7 +43,7 @@ export abstract class IStartUp {
     abstract onHashChange (hash: string, href: string): void;
 
     constructor(private _selector: string) {
-        var viewProvider = provider.getService(IViewProvider);
+        var viewProvider = serviceProvider.getService(IViewProvider);
         viewProvider.getNode(this._starter = viewProvider.newInstance(StartView)).then((el) => $(_selector).append(el));
     }
 

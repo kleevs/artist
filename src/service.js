@@ -20,7 +20,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     const mixin_1 = require("./mixin");
     var injector = new index_2.DependencyInjector();
     exports.config = injector.getConfig();
-    exports.provider = injector.getProvider();
+    exports.serviceProvider = injector.getProvider();
     exports.Service = injector.getDecorator();
     class IObservablizer {
     }

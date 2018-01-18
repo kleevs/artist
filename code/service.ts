@@ -4,7 +4,7 @@ import { foreach } from './mixin';
 
 var injector = new DependencyInjector();
 export let config = injector.getConfig();
-export let provider = injector.getProvider();
+export let serviceProvider = injector.getProvider();
 export let Service = injector.getDecorator();
 
 export abstract class IObservablizer {

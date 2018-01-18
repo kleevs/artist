@@ -1,6 +1,6 @@
 import { observable } from 'node_modules/observable/src/index';
 import { Binder } from 'node_modules/binder/src/index';
-import { provider as serviceProvider, config, Service } from './service';
+import { serviceProvider, config, Service } from './service';
 import { foreach, map, grep } from './mixin';
 import * as $ from 'node_modules/jquery/dist/jquery';
 
@@ -42,6 +42,7 @@ export function View<T>(options: ViewOption<T>) {
 export abstract class IViewProvider {
     abstract newInstance<T>(type: Function & { prototype: T }): T;
     abstract getNode(view: any): Promise<Element>;
+    abstract getView(element: Element): any;
 }
 
 @Service({
@@ -61,6 +62,8 @@ class ViewProvider {
                     new Binder(el).bind(valueAccessor(view));
                 });
             });
+
+            t[0].__view__ = view;
             return t[0];
         }));
 
@@ -69,6 +72,10 @@ class ViewProvider {
 
     public getNode(view: any): Promise<Element> {
         return view && view.__elt__;
+    }
+
+    public getView(element: Element): any {
+        return element && (<any>element).__view__;
     }
 }
 
@@ -79,10 +86,12 @@ export function view(valueAccessor: () => any) {
         
 		return () => {
             var value = valueAccessor();
-            value && serviceProvider.getService(IViewProvider).getNode(value).then((el) => {
-                $element.html("");
-                $element.append(el);
-            });
+			var array = !value || value instanceof Array ? value : [value];
+            array && Promise.all(array.map((item) => serviceProvider.getService(IViewProvider).getNode(item)))
+				.then((elts) => {
+					$element.children().appendTo($("<div>"));
+					elts.forEach(el => $element.append(el));
+				});
 		};
 	};
 }

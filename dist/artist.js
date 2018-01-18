@@ -319,7 +319,7 @@ res[8] = (function (require, exports) {
     const mixin_1 = require("./mixin");
     var injector = new index_2.DependencyInjector();
     exports.config = injector.getConfig();
-    exports.provider = injector.getProvider();
+    exports.serviceProvider = injector.getProvider();
     exports.Service = injector.getDecorator();
     class IObservablizer {
     }
@@ -622,7 +622,7 @@ res[21] = (function (require, exports) {
     let ViewProvider = class ViewProvider {
         newInstance(type) {
             var viewType = type && mixin_1.grep(registeredView, (view) => view.construct.prototype instanceof type || type === view.construct)[0];
-            var view = viewType && (service_1.provider && service_1.config.getService(viewType.construct) && service_1.provider.createService(viewType.construct) || new viewType.construct());
+            var view = viewType && (service_1.serviceProvider && service_1.config.getService(viewType.construct) && service_1.serviceProvider.createService(viewType.construct) || new viewType.construct());
             var binding = viewType.binding;
             view && view.initialize && view.initialize();
             viewType && (view.__elt__ = viewType.html.then(template => {
@@ -632,12 +632,16 @@ res[21] = (function (require, exports) {
                         new index_1.Binder(el).bind(valueAccessor(view));
                     });
                 });
+                t[0].__view__ = view;
                 return t[0];
             }));
             return view;
         }
         getNode(view) {
             return view && view.__elt__;
+        }
+        getView(element) {
+            return element && element.__view__;
         }
     };
     ViewProvider = __decorate([
@@ -651,9 +655,11 @@ res[21] = (function (require, exports) {
             $element.html("");
             return () => {
                 var value = valueAccessor();
-                value && service_1.provider.getService(IViewProvider).getNode(value).then((el) => {
-                    $element.html("");
-                    $element.append(el);
+                var array = !value || value instanceof Array ? value : [value];
+                array && Promise.all(array.map((item) => service_1.serviceProvider.getService(IViewProvider).getNode(item)))
+                    .then((elts) => {
+                    $element.children().appendTo($("<div>"));
+                    elts.forEach(el => $element.append(el));
                 });
             };
         };
@@ -706,7 +712,7 @@ res[22] = (function (require, exports) {
     class IStartUp {
         constructor(_selector) {
             this._selector = _selector;
-            var viewProvider = service_1.provider.getService(view_1.IViewProvider);
+            var viewProvider = service_1.serviceProvider.getService(view_1.IViewProvider);
             viewProvider.getNode(this._starter = viewProvider.newInstance(StartView)).then((el) => $(_selector).append(el));
         }
         renderView(type) {

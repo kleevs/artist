@@ -61,7 +61,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     class IStartUp {
         constructor(_selector) {
             this._selector = _selector;
-            var viewProvider = service_1.provider.getService(view_1.IViewProvider);
+            var viewProvider = service_1.serviceProvider.getService(view_1.IViewProvider);
             viewProvider.getNode(this._starter = viewProvider.newInstance(StartView)).then((el) => $(_selector).append(el));
         }
         renderView(type) {

@@ -12,5 +12,6 @@ export declare abstract class IViewProvider {
         prototype: T;
     }): T;
     abstract getNode(view: any): Promise<Element>;
+    abstract getView(element: Element): any;
 }
 export declare function view(valueAccessor: () => any): (element: any) => () => void;

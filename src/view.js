@@ -45,7 +45,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     let ViewProvider = class ViewProvider {
         newInstance(type) {
             var viewType = type && mixin_1.grep(registeredView, (view) => view.construct.prototype instanceof type || type === view.construct)[0];
-            var view = viewType && (service_1.provider && service_1.config.getService(viewType.construct) && service_1.provider.createService(viewType.construct) || new viewType.construct());
+            var view = viewType && (service_1.serviceProvider && service_1.config.getService(viewType.construct) && service_1.serviceProvider.createService(viewType.construct) || new viewType.construct());
             var binding = viewType.binding;
             view && view.initialize && view.initialize();
             viewType && (view.__elt__ = viewType.html.then(template => {
@@ -55,12 +55,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                         new index_1.Binder(el).bind(valueAccessor(view));
                     });
                 });
+                t[0].__view__ = view;
                 return t[0];
             }));
             return view;
         }
         getNode(view) {
             return view && view.__elt__;
+        }
+        getView(element) {
+            return element && element.__view__;
         }
     };
     ViewProvider = __decorate([
@@ -74,9 +78,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             $element.html("");
             return () => {
                 var value = valueAccessor();
-                value && service_1.provider.getService(IViewProvider).getNode(value).then((el) => {
-                    $element.html("");
-                    $element.append(el);
+                var array = !value || value instanceof Array ? value : [value];
+                array && Promise.all(array.map((item) => service_1.serviceProvider.getService(IViewProvider).getNode(item)))
+                    .then((elts) => {
+                    $element.children().appendTo($("<div>"));
+                    elts.forEach(el => $element.append(el));
                 });
             };
         };
