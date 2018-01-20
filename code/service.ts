@@ -36,6 +36,12 @@ class Observablizer extends IObservablizer {
                         return res;
                     });
 
+                    v instanceof Array && (v.splice = function () {
+                        var res = Array.prototype.splice.apply(this, arguments);
+                        observable({ value: this });
+                        return res;
+                    });
+
                     observable({ value: v }); 
                 }
                 

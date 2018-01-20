@@ -44,6 +44,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                                 observable({ value: this });
                                 return res;
                             });
+                            v instanceof Array && (v.splice = function () {
+                                var res = Array.prototype.splice.apply(this, arguments);
+                                observable({ value: this });
+                                return res;
+                            });
                             observable({ value: v });
                         };
                         delete descriptor.value;
