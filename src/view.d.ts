@@ -3,7 +3,7 @@ export declare type ViewOption<TModel> = {
     template?: string;
     html?: string;
     binding?: {
-        [s: string]: (model: TModel) => (element) => () => any;
+        [s: string]: (model: TModel) => ((element) => () => any) | ((element) => () => any)[];
     };
 };
 export declare function View<T>(options: ViewOption<T>): (constructor: Function, metadata?: any) => void;

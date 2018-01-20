@@ -52,7 +52,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                 var t = $(template);
                 mixin_1.foreach(binding, (valueAccessor, selector) => {
                     (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
-                        new index_1.Binder(el).bind(valueAccessor(view));
+                        var binder = valueAccessor(view);
+                        var binders = binder && !(binder instanceof Array) && [binder] || binder;
+                        binders.forEach(b => new index_1.Binder(el).bind(b));
                     });
                 });
                 t[0].__view__ = view;

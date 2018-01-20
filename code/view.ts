@@ -9,12 +9,12 @@ export declare type ViewOption<TModel> = {
     selector?: string,
     template?: string,
     html?: string,
-    binding?: { [s:string]: (model: TModel) => (element) => () => any }
+    binding?: { [s:string]: (model: TModel) => ((element) => () => any) | ((element) => () => any)[] }
 };
 
 declare type RegisteredView<TModel> = {
     construct: {new(...args:any[]): any},
-    binding: { [s:string]: (model: TModel) => (element) => () => any }
+    binding: { [s:string]: (model: TModel) => ((element) => () => any) | ((element) => () => any)[] }
     html: Promise<string> 
 };
 
@@ -59,7 +59,9 @@ class ViewProvider {
             var t = $(template);
             foreach(binding, (valueAccessor, selector) => {
                 (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
-                    new Binder(el).bind(valueAccessor(view));
+                    var binder = valueAccessor(view);
+                    var binders = binder && !(binder instanceof Array) && [binder] || binder;
+                    binders.forEach(b => new Binder(el).bind(b));
                 });
             });
 
