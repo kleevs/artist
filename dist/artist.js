@@ -47,8 +47,8 @@ class Resolver {
         }
     }
 var resolver = new Resolver({"node_modules":"node_modules"});
-var names = ["node_modules/observable/src/core","node_modules/observable/src/observable","node_modules/observable/src/observer","node_modules/observable/src/blind","node_modules/observable/src/index","node_modules/reflect-decorator/src/index","node_modules/dependency-injection/src/index","src/mixin","src/service","node_modules/binder/src/binder","node_modules/jquery/dist/jquery","node_modules/binder/src/handler/attr","node_modules/binder/src/handler/change","node_modules/binder/src/handler/click","node_modules/binder/src/handler/text","node_modules/binder/src/handler/value","node_modules/binder/src/handler/base/mixin","node_modules/binder/src/handler/options","node_modules/binder/src/handler/each","node_modules/binder/src/handlers","node_modules/binder/src/index","src/view","src/istartup","src/index"]
-var res = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
+var names = ["node_modules/observable/src/core","node_modules/observable/src/observable","node_modules/observable/src/observer","node_modules/observable/src/blind","node_modules/observable/src/index","node_modules/reflect-decorator/src/index","node_modules/dependency-injection/src/index","src/mixin","src/service","node_modules/binder/src/binder","node_modules/jquery/dist/jquery","node_modules/binder/src/handler/attr","node_modules/binder/src/handler/change","node_modules/binder/src/handler/click","node_modules/binder/src/handler/text","node_modules/binder/src/handler/value","node_modules/binder/src/handler/base/mixin","node_modules/binder/src/handler/options","node_modules/binder/src/handler/each","node_modules/binder/src/handler/class","node_modules/binder/src/handlers","node_modules/binder/src/index","src/view","src/istartup","src/index"]
+var res = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 var require = function(currentPath, name) { var n = resolver.resolve(currentPath, name); return names.indexOf(n) >= 0 && res[names.indexOf(n)] || req(name); }
 res[0] = (function (require, exports) {
     "use strict";
@@ -572,6 +572,28 @@ res[18] = (function (require, exports) {
 })(require.bind(null, "node_modules/binder/src/handler/"),res[18],res[10],res[9],res[16]) || res[18];
 res[19] = (function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    const $ = require("node_modules/jquery/dist/jquery");
+    function classes(valueAccessor) {
+        return (element) => {
+            var $element = $(element);
+            return () => {
+                var value = valueAccessor();
+                for (var key in value) {
+                    if (value[key]) {
+                        $element.addClass(key);
+                    }
+                    else {
+                        $element.removeClass(key);
+                    }
+                }
+            };
+        };
+    }
+    exports.classes = classes;
+})(require.bind(null, "node_modules/binder/src/handler/"),res[19],res[10]) || res[19];
+res[20] = (function (require, exports) {
+    "use strict";
     function __export(m) {
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
     }
@@ -583,8 +605,9 @@ res[19] = (function (require, exports) {
     __export(require("./handler/value"));
     __export(require("./handler/options"));
     __export(require("./handler/each"));
-})(require.bind(null, "node_modules/binder/src/"),res[19],res[11],res[12],res[13],res[14],res[15],res[17],res[18]) || res[19];
-res[20] = (function (require, exports) {
+    __export(require("./handler/class"));
+})(require.bind(null, "node_modules/binder/src/"),res[20],res[11],res[12],res[13],res[14],res[15],res[17],res[18],res[19]) || res[20];
+res[21] = (function (require, exports) {
     "use strict";
     function __export(m) {
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -593,8 +616,8 @@ res[20] = (function (require, exports) {
     __export(require("node_modules/observable/src/index"));
     __export(require("./binder"));
     __export(require("./handlers"));
-})(require.bind(null, "node_modules/binder/src/"),res[20],res[4],res[9],res[19]) || res[20];
-res[21] = (function (require, exports) {
+})(require.bind(null, "node_modules/binder/src/"),res[21],res[4],res[9],res[20]) || res[21];
+res[22] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("node_modules/binder/src/index");
@@ -672,8 +695,8 @@ res[21] = (function (require, exports) {
         };
     }
     exports.view = view;
-})(require.bind(null, "src/"),res[21],res[20],res[8],res[7],res[10]) || res[21];
-res[22] = (function (require, exports) {
+})(require.bind(null, "src/"),res[22],res[21],res[8],res[7],res[10]) || res[22];
+res[23] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("node_modules/observable/src/index");
@@ -727,8 +750,8 @@ res[22] = (function (require, exports) {
         }
     }
     exports.IStartUp = IStartUp;
-})(require.bind(null, "src/"),res[22],res[4],res[10],res[21],res[8]) || res[22];
-return res[23] = (function (require, exports) {
+})(require.bind(null, "src/"),res[23],res[4],res[10],res[22],res[8]) || res[23];
+return res[24] = (function (require, exports) {
     "use strict";
     function __export(m) {
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -750,5 +773,5 @@ return res[23] = (function (require, exports) {
         startup && startup.onHashChange && startup.onHashChange(location.hash, location.href);
     }
     exports.startup = startup;
-})(require.bind(null, "src/"),res[23],res[8],res[20],res[6],res[22],res[21],res[8]) || res[23];
+})(require.bind(null, "src/"),res[24],res[8],res[21],res[6],res[23],res[22],res[8]) || res[24];
 }, typeof window !== 'undefined' && (window.Artist = {}) || {})
