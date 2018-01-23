@@ -11,6 +11,12 @@ export declare abstract class IViewProvider {
     abstract newInstance<T>(type: Function & {
         prototype: T;
     }): T;
+    abstract newInstance<T>(type: Function & {
+        prototype: T;
+    }, arg: any): T;
+    abstract map<T>(type: Function & {
+        prototype: T;
+    }): (arg: any) => T;
     abstract getNode(view: any): Promise<Element>;
     abstract getView(element: Element): any;
 }

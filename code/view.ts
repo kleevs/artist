@@ -40,7 +40,9 @@ export function View<T>(options: ViewOption<T>) {
 }
 
 export abstract class IViewProvider {
-    abstract newInstance<T>(type: Function & { prototype: T }): T;
+	abstract newInstance<T>(type: Function & { prototype: T }): T;
+	abstract newInstance<T>(type: Function & { prototype: T }, arg: any): T;
+	abstract map<T>(type: Function & { prototype: T }): (arg: any) => T;
     abstract getNode(view: any): Promise<Element>;
     abstract getView(element: Element): any;
 }
@@ -49,12 +51,14 @@ export abstract class IViewProvider {
     interface: IViewProvider
 })
 class ViewProvider {
-    public newInstance<T>(type: Function & { prototype: T }): T {
+	public newInstance<T>(type: Function & { prototype: T }): T;
+	public newInstance<T>(type: Function & { prototype: T }, arg: any): T;
+    public newInstance<T>(type: Function & { prototype: T }, arg?: any): T {
         var viewType = type && grep(registeredView, (view) => view.construct.prototype instanceof type || type === view.construct)[0];
         var view = viewType && (serviceProvider && config.getService(viewType.construct) && serviceProvider.createService(viewType.construct) || new viewType.construct());
         var binding = viewType.binding;
 
-        view && view.initialize && view.initialize();
+        view && view.initialize && view.initialize(arg);
         viewType && (view.__elt__ = viewType.html.then(template => {
             var t = $(template);
             foreach(binding, (valueAccessor, selector) => {
@@ -71,6 +75,10 @@ class ViewProvider {
 
         return view;
     }
+	
+	public map<T>(type: Function & { prototype: T }): (arg: any) => T {
+		return (arg: any) => this.newInstance(type, arg);
+	}
 
     public getNode(view: any): Promise<Element> {
         return view && view.__elt__;
