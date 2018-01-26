@@ -379,6 +379,12 @@ res[8] = (function (require, exports) {
             var callbacks = this.register(obj, key);
             callbacks.push(callback);
         }
+        forEvent(event) {
+            return {
+                listen: (obj, callback) => this.listen(obj, event.key, callback),
+                notify: (obj, value) => this.notify(obj, event.key, value)
+            };
+        }
         register(obj, key) {
             obj.__notifier__id__ = obj.__notifier__id__ || [new Date().getTime(), Math.random() * 100].join("");
             return this._callbacks[obj.__notifier__id__ + "_" + key] = this._callbacks[obj.__notifier__id__ + "_" + key] || [];

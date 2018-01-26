@@ -14,6 +14,7 @@ export abstract class IObservablizer {
 export abstract class INotifier {
     abstract notify(obj, key: string, data): void;
 	abstract listen(obj, key: string, callback: (data) => void): void;
+	abstract forEvent<TArgument>(event: { key: string, type: { prototype: TArgument }}): { listen: (obj: any, callback: (data: TArgument) => void) => void, notify: (obj: any, value: TArgument) => void };
 }
 
 @Service({
@@ -72,6 +73,13 @@ class Notifier extends INotifier {
 	listen(obj, key: string, callback: (data) => void): void {
 		var callbacks = this.register(obj, key);
 		callbacks.push(callback);
+	}
+	
+	forEvent<TArgument>(event: { key: string, type: { prototype: TArgument }}) {
+		return {
+			listen: (obj: any, callback: (data: TArgument) => void) => this.listen(obj, event.key, callback),
+			notify: (obj: any, value: TArgument) => this.notify(obj, event.key, value)
+		};
 	}
 	
 	private register(obj, key) {
