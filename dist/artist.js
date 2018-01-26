@@ -424,7 +424,12 @@ res[11] = (function (require, exports) {
             return () => {
                 var value = valueAccessor();
                 for (var key in value) {
-                    $element.attr(key, value[key]);
+                    if (value[key] === undefined) {
+                        $element.removeAttr(key);
+                    }
+                    else {
+                        $element.attr(key, value[key]);
+                    }
                 }
             };
         };
