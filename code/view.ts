@@ -92,23 +92,15 @@ class ViewProvider {
 export function view(valueAccessor: () => any) {
 	return (element) => {
 		var $element = $(element);
-		var last = [];
         $element.html("");
         
 		return () => {
             var value = valueAccessor();
 			var array = !value || value instanceof Array ? value : [value];
-			var deleted = last && last.filter(v => !array || !(v in array));
-			var added = array && array.filter(v => !last || !(v in last));
-			last = array && array.map(i => i);
             array && Promise.all(array.map((item) => serviceProvider.getService(IViewProvider).getNode(item)))
 				.then((elts) => {
 					$element.children().appendTo($("<div>"));
 					elts.forEach(el => $element.append(el));
-				})
-				.then(() => {
-					deleted && deleted.forEach(v => v.unload && v.unload());
-					added && added.forEach(v => v.load && v.load());
 				});
 		};
 	};
