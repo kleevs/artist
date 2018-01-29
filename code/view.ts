@@ -96,8 +96,8 @@ export function view(valueAccessor: () => any) {
         
 		return () => {
             var value = valueAccessor();
-			var array = !value || value instanceof Array ? value : [value];
-            array && Promise.all(array.map((item) => serviceProvider.getService(IViewProvider).getNode(item)))
+			var array = !value || value instanceof Array ? (value || []) : [value];
+            Promise.all(array.map((item) => serviceProvider.getService(IViewProvider).getNode(item)))
 				.then((elts) => {
 					$element.children().appendTo($("<div>"));
 					elts.forEach(el => $element.append(el));

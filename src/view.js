@@ -83,8 +83,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             $element.html("");
             return () => {
                 var value = valueAccessor();
-                var array = !value || value instanceof Array ? value : [value];
-                array && Promise.all(array.map((item) => service_1.serviceProvider.getService(IViewProvider).getNode(item)))
+                var array = !value || value instanceof Array ? (value || []) : [value];
+                Promise.all(array.map((item) => service_1.serviceProvider.getService(IViewProvider).getNode(item)))
                     .then((elts) => {
                     $element.children().appendTo($("<div>"));
                     elts.forEach(el => $element.append(el));
