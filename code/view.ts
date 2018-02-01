@@ -97,11 +97,44 @@ export function view(valueAccessor: () => any) {
 		return () => {
             var value = valueAccessor();
 			var array = !value || value instanceof Array ? (value || []) : [value];
+			var $deleted = $("<div>");
+			var $added = $("<div>");
             Promise.all(array.map((item) => serviceProvider.getService(IViewProvider).getNode(item)))
 				.then((elts) => {
-					$element.children().appendTo($("<div>"));
-					elts.forEach(el => $element.append(el));
-				});
+					$element.children().each((i, el) => { 
+						el.__view__parent = false;
+						$(el).appendTo($deleted); 
+					});
+					
+					return elts;
+				}).then((elts) => {
+					elts.forEach((el: any) => { 
+						$element.append(el);
+						el.__view__added = el.__view__parent !== false;
+						el.__view__parent = element;
+					});
+					
+					return elts;
+				})
+				.then((elts) => {
+					$deleted.children().each((i, el: any) => { 
+						el.__view__parent = undefined;
+						$(el).trigger("custom:view:remove", { from: element }); 
+					});
+					
+					return elts;
+  				})
+				.then((elts) => {
+					elts.forEach((el: any) => { 
+						if (el.__view__added) { 
+							$(el).trigger("custom:view:add", { into: element });
+						} 
+						
+						delete el.__view__added;
+					});
+					
+					return elts;
+  				});
 		};
 	};
 }
