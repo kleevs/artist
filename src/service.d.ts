@@ -12,10 +12,12 @@ export declare abstract class IObservablizer {
 export declare abstract class INotifier {
     abstract notify(obj: any, key: string, data: any): void;
     abstract listen(obj: any, key: string, callback: (data) => void): void;
-    abstract forEvent<TArgument>(event: {
-        key: string;
-    }): {
-        listen: (obj: any, callback: (data: TArgument) => void) => void;
-        notify: (obj: any, value: TArgument) => void;
+    abstract forEvent<TContext, TArgument>(event: Event<TContext, TArgument>): {
+        listen: (context: TContext, callback: (data: TArgument) => void) => void;
+        notify: (context: TContext, data?: TArgument) => void;
     };
+}
+export declare class Event<TContext = void, TArgument = void> {
+    key: string;
+    constructor(key: string);
 }

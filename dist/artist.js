@@ -364,6 +364,13 @@ res[8] = (function (require, exports) {
             interface: IObservablizer
         })
     ], Observablizer);
+    class Event {
+        constructor(key) {
+            this.key = key;
+        }
+    }
+    exports.Event = Event;
+    ;
     let Notifier = class Notifier extends INotifier {
         constructor() {
             super(...arguments);
@@ -382,7 +389,7 @@ res[8] = (function (require, exports) {
         forEvent(event) {
             return {
                 listen: (obj, callback) => this.listen(obj, event.key, callback),
-                notify: (obj, value) => this.notify(obj, event.key, value)
+                notify: (obj, data) => this.notify(obj, event.key, data)
             };
         }
         register(obj, key) {

@@ -14,7 +14,10 @@ export abstract class IObservablizer {
 export abstract class INotifier {
     abstract notify(obj, key: string, data): void;
 	abstract listen(obj, key: string, callback: (data) => void): void;
-	abstract forEvent<TArgument>(event: { key: string }): { listen: (obj: any, callback: (data: TArgument) => void) => void, notify: (obj: any, value: TArgument) => void };
+    abstract forEvent<TContext, TArgument>(event: Event<TContext, TArgument>): {
+        listen: (context: TContext, callback: (data: TArgument) => void) => void, 
+        notify: (context: TContext, data?: TArgument) => void 
+    }
 }
 
 @Service({
@@ -57,6 +60,10 @@ class Observablizer extends IObservablizer {
     }
 }
 
+export class Event<TContext=void, TArgument=void> {
+    constructor(public key: string) {}
+};
+
 @Service({
     interface: INotifier
 })
@@ -75,10 +82,13 @@ class Notifier extends INotifier {
 		callbacks.push(callback);
 	}
 	
-	forEvent<TArgument>(event: { key: string }): { listen: (obj: any, callback: (data: TArgument) => void) => void, notify: (obj: any, value: TArgument) => void } {
+	forEvent<TContext, TArgument>(event: Event<TContext, TArgument>): {
+        listen: (context: TContext, callback: (data: TArgument) => void) => void, 
+        notify: (context: TContext, data?: TArgument) => void 
+    } {
 		return {
-			listen: (obj: any, callback: (data: TArgument) => void) => this.listen(obj, event.key, callback),
-			notify: (obj: any, value: TArgument) => this.notify(obj, event.key, value)
+			listen: (obj: TContext, callback: (data: TArgument) => void) => this.listen(obj, event.key, callback),
+			notify: (obj: TContext, data?: TArgument) => this.notify(obj, event.key, data)
 		};
 	}
 	
