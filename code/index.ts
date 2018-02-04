@@ -1,18 +1,47 @@
-import { IStartUp } from './istartup';
-import { config } from './service';
+import { StartView } from './startview';
+import { serviceProvider } from './service';
+import { IViewProvider } from './view';
+import { IRouter } from './router';
+import { IConfig } from './config';
+import * as $ from 'node_modules/jquery/dist/jquery';
 
 export * from 'node_modules/binder/src/index';
 export * from 'node_modules/dependency-injection/src/index';
-export * from './istartup';
 export * from './view';
 export * from './service';
-export function startup(starter: any) {
+export function startup(callback: (config: IConfig) => void) {
     var context: Window = window;
-    var startup: IStartUp = new starter();
-    
-    startup && startup.onStart && startup.onStart(config);
-    startup && startup.onHashChange && context.addEventListener("hashchange", () => {
-        startup.onHashChange(location.hash, location.href);
+    var viewProvider = serviceProvider.getService(IViewProvider);
+    var startview = viewProvider.newInstance(StartView);
+    var href = (href) => href.replace(location.origin, "");
+
+    $("body").on("click", "a[href]", (event) => {
+        serviceProvider.getService(IRouter)
+            .onNext(href(event.currentTarget.href))
+            .then(view => startview.renderView(view))
+            .then((view) => serviceProvider.getService(IRouter).onLoaded(href(location.href), view));
+        return false;
+    });
+
+    window.onpopstate = (state) => {
+        serviceProvider.getService(IRouter)
+            .onBack(href(location.href))
+            .then(view => startview.renderView(view))
+            .then((view) => serviceProvider.getService(IRouter).onLoaded(href(location.href), view));
+    };
+
+    context.addEventListener("hashchange", () => {
+        serviceProvider.getService(IRouter)
+            .onNext(href(location.href))
+            .then(view => startview.renderView(view))
+            .then((view) => serviceProvider.getService(IRouter).onLoaded(href(location.href), view));
     }, false);
-    startup && startup.onHashChange && startup.onHashChange(location.hash, location.href);
+
+    callback(serviceProvider.getService(IConfig));
+    serviceProvider.getService(IRouter)
+        .onNext(href(location.href))
+        .then(view => startview.renderView(view))
+        .then((view) => serviceProvider.getService(IRouter).onLoaded(href(location.href), view));
+
+    viewProvider.getNode(startview).then((el) => $(serviceProvider.getService(IConfig).container).append(el));
 }
