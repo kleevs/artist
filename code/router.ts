@@ -5,6 +5,7 @@ import { Cache } from './cache';
 import { IConfig } from './config';
 
 export abstract class IRouter {
+	abstract goTo(href: string): Promise<any>;
     abstract onNext(href): Promise<any>;
     abstract onBack(href): Promise<any>;
     abstract onLoaded(href, view): void;
@@ -25,9 +26,15 @@ export class Router extends IRouter {
             this._config.route(href).then(v => resolve(v));
         });
     }
+	
+	goTo(href: string): Promise<any>  {
+		return new Promise(resolve => { 
+			$("body").trigger("location:href", { href: href, resolve: resolve });
+		});
+	}
 
     onNext(href: string): Promise<any> {
-        history.pushState({}, '', href);
+		history.pushState({}, '', href);
         return this.onLoad(href);
     }
 

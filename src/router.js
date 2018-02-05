@@ -13,12 +13,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./service", "./cache", "./config"], factory);
+        define(["require", "exports", "./service", "node_modules/jquery/dist/jquery", "./cache", "./config"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const service_1 = require("./service");
+    const $ = require("node_modules/jquery/dist/jquery");
     const cache_1 = require("./cache");
     const config_1 = require("./config");
     class IRouter {
@@ -33,6 +34,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         onLoad(href) {
             return this.cache.promise(href, (resolve, reject) => {
                 this._config.route(href).then(v => resolve(v));
+            });
+        }
+        goTo(href) {
+            return new Promise(resolve => {
+                $("body").trigger("location:href", { href: href, resolve: resolve });
             });
         }
         onNext(href) {

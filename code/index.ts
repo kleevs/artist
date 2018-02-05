@@ -8,6 +8,7 @@ import * as $ from 'node_modules/jquery/dist/jquery';
 export * from 'node_modules/binder/src/index';
 export * from 'node_modules/dependency-injection/src/index';
 export * from './view';
+export * from './router';
 export * from './service';
 export function startup(callback: (config: IConfig) => void) {
     var context: Window = window;
@@ -20,6 +21,15 @@ export function startup(callback: (config: IConfig) => void) {
             .onNext(href(event.currentTarget.href))
             .then(view => startview.renderView(view))
             .then((view) => serviceProvider.getService(IRouter).onLoaded(href(location.href), view));
+        return false;
+    });
+	
+	$("body").on("location:href", (event, data) => {
+        serviceProvider.getService(IRouter)
+            .onNext(href(data.href))
+            .then(view => startview.renderView(view))
+            .then((view) => serviceProvider.getService(IRouter).onLoaded(href(location.href), view) || view)
+			.then((view) => data.resolve(view));
         return false;
     });
 

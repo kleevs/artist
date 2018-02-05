@@ -845,6 +845,7 @@ res[26] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const service_1 = require("./service");
+    const $ = require("node_modules/jquery/dist/jquery");
     const cache_1 = require("./cache");
     const config_1 = require("./config");
     class IRouter {
@@ -859,6 +860,11 @@ res[26] = (function (require, exports) {
         onLoad(href) {
             return this.cache.promise(href, (resolve, reject) => {
                 this._config.route(href).then(v => resolve(v));
+            });
+        }
+        goTo(href) {
+            return new Promise(resolve => {
+                $("body").trigger("location:href", { href: href, resolve: resolve });
             });
         }
         onNext(href) {
@@ -879,7 +885,7 @@ res[26] = (function (require, exports) {
         __metadata("design:paramtypes", [config_1.IConfig])
     ], Router);
     exports.Router = Router;
-})(require.bind(null, "src/"),res[26],res[21],res[24],res[25]) || res[26];
+})(require.bind(null, "src/"),res[26],res[21],res[6],res[24],res[25]) || res[26];
 return res[27] = (function (require, exports) {
     "use strict";
     function __export(m) {
@@ -895,6 +901,7 @@ return res[27] = (function (require, exports) {
     __export(require("node_modules/binder/src/index"));
     __export(require("node_modules/dependency-injection/src/index"));
     __export(require("./view"));
+    __export(require("./router"));
     __export(require("./service"));
     function startup(callback) {
         var context = window;
@@ -906,6 +913,14 @@ return res[27] = (function (require, exports) {
                 .onNext(href(event.currentTarget.href))
                 .then(view => startview.renderView(view))
                 .then((view) => service_1.serviceProvider.getService(router_1.IRouter).onLoaded(href(location.href), view));
+            return false;
+        });
+        $("body").on("location:href", (event, data) => {
+            service_1.serviceProvider.getService(router_1.IRouter)
+                .onNext(href(data.href))
+                .then(view => startview.renderView(view))
+                .then((view) => service_1.serviceProvider.getService(router_1.IRouter).onLoaded(href(location.href), view) || view)
+                .then((view) => data.resolve(view));
             return false;
         });
         window.onpopstate = (state) => {
@@ -928,5 +943,5 @@ return res[27] = (function (require, exports) {
         viewProvider.getNode(startview).then((el) => $(service_1.serviceProvider.getService(config_1.IConfig).container).append(el));
     }
     exports.startup = startup;
-})(require.bind(null, "src/"),res[27],res[23],res[21],res[22],res[26],res[25],res[6],res[17],res[19],res[22],res[21]) || res[27];
+})(require.bind(null, "src/"),res[27],res[23],res[21],res[22],res[26],res[25],res[6],res[17],res[19],res[22],res[26],res[21]) || res[27];
 }, typeof window !== 'undefined' && (window.Artist = {}) || {})
