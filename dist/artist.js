@@ -4,9 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};(function template(factory, root) {
+(function template(factory, root) {
         if (typeof module === "object" && typeof module.exports === "object") {
             var v = factory(require);
             if (v !== undefined)
@@ -47,8 +45,8 @@ class Resolver {
         }
     }
 var resolver = new Resolver({"node_modules":"node_modules"});
-var names = ["node_modules/observable/src/core","node_modules/observable/src/observable","node_modules/observable/src/observer","node_modules/observable/src/blind","node_modules/observable/src/index","node_modules/binder/src/binder","node_modules/jquery/dist/jquery","node_modules/binder/src/handler/attr","node_modules/binder/src/handler/change","node_modules/binder/src/handler/click","node_modules/binder/src/handler/text","node_modules/binder/src/handler/value","node_modules/binder/src/handler/base/mixin","node_modules/binder/src/handler/options","node_modules/binder/src/handler/each","node_modules/binder/src/handler/class","node_modules/binder/src/handlers","node_modules/binder/src/index","node_modules/reflect-decorator/src/index","node_modules/dependency-injection/src/index","src/mixin","src/service","src/view","src/startview","src/cache","src/config","src/router","src/index"]
-var res = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
+var names = ["node_modules/observable/src/core","node_modules/observable/src/observable","node_modules/observable/src/observer","node_modules/observable/src/blind","node_modules/observable/src/index","node_modules/reflect-decorator/src/index","node_modules/dependency-injection/src/index","src/mixin","src/service","node_modules/binder/src/binder","node_modules/jquery/dist/jquery","node_modules/binder/src/handler/attr","node_modules/binder/src/handler/change","node_modules/binder/src/handler/click","node_modules/binder/src/handler/text","node_modules/binder/src/handler/value","node_modules/binder/src/handler/base/mixin","node_modules/binder/src/handler/options","node_modules/binder/src/handler/each","node_modules/binder/src/handler/class","node_modules/binder/src/handlers","node_modules/binder/src/index","src/view","src/index"]
+var res = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 var require = function(currentPath, name) { var n = resolver.resolve(currentPath, name); return names.indexOf(n) >= 0 && res[names.indexOf(n)] || req(name); }
 res[0] = (function (require, exports) {
     "use strict";
@@ -167,238 +165,6 @@ res[4] = (function (require, exports) {
 res[5] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("node_modules/observable/src/index");
-    class Binder {
-        constructor(element) {
-            this.element = element;
-        }
-        bind(callback) {
-            var fn = callback(this.element, this);
-            index_1.blind(() => index_1.observer(() => fn()));
-        }
-    }
-    exports.Binder = Binder;
-})(require.bind(null, "node_modules/binder/src/"),res[5],res[4]) || res[5];
-res[6] = (function anonymous() {
-return $;
-})() || res[6];
-res[7] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    const $ = require("node_modules/jquery/dist/jquery");
-    function attr(valueAccessor) {
-        return (element) => {
-            var $element = $(element);
-            return () => {
-                var value = valueAccessor();
-                for (var key in value) {
-                    if (value[key] === undefined) {
-                        $element.removeAttr(key);
-                    }
-                    else {
-                        $element.attr(key, value[key]);
-                    }
-                }
-            };
-        };
-    }
-    exports.attr = attr;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[7],res[6]) || res[7];
-res[8] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    const $ = require("node_modules/jquery/dist/jquery");
-    function change(valueAccessor) {
-        return (element) => {
-            $(element).change((e) => {
-                return valueAccessor().call(element, e);
-            });
-            return () => { };
-        };
-    }
-    exports.change = change;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[8],res[6]) || res[8];
-res[9] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    const $ = require("node_modules/jquery/dist/jquery");
-    function click(valueAccessor) {
-        return (element) => {
-            $(element).click((e) => {
-                return valueAccessor().call(element, e);
-            });
-            return () => { };
-        };
-    }
-    exports.click = click;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[9],res[6]) || res[9];
-res[10] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    const $ = require("node_modules/jquery/dist/jquery");
-    function text(valueAccessor) {
-        return (element) => {
-            var $element = $(element);
-            return () => {
-                var value = valueAccessor();
-                $element.text(value);
-            };
-        };
-    }
-    exports.text = text;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[10],res[6]) || res[10];
-res[11] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    const $ = require("node_modules/jquery/dist/jquery");
-    function value(valueAccessor) {
-        return (element) => {
-            var $element = $(element);
-            $element.change(() => {
-                valueAccessor.set($element.val());
-            });
-            return () => {
-                var value = valueAccessor.get();
-                $element.val(value);
-            };
-        };
-    }
-    exports.value = value;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[11],res[6]) || res[11];
-res[12] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    function foreach(item, callback) {
-        let i;
-        if (item instanceof Array) {
-            for (i = 0; i < item.length; i++) {
-                callback(item[i], i);
-            }
-        }
-        else {
-            for (i in item) {
-                callback(item[i], i);
-            }
-        }
-    }
-    exports.foreach = foreach;
-    function map(array, parse) {
-        let res = [];
-        foreach(array, (x) => { res.push(parse(x)); return false; });
-        return res;
-    }
-    exports.map = map;
-    function grep(array, predicate) {
-        let i, res = [];
-        for (i = 0; i < array.length; i++) {
-            if (predicate(array[i], i))
-                res.push(array[i]);
-        }
-        return res;
-    }
-    exports.grep = grep;
-})(require.bind(null, "node_modules/binder/src/handler/base/"),res[12]) || res[12];
-res[13] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    const mixin_1 = require("./base/mixin");
-    const $ = require("node_modules/jquery/dist/jquery");
-    function options(valueAccessor) {
-        return (element) => {
-            var $element = $(element);
-            $element.html("");
-            return () => {
-                var value = valueAccessor();
-                $element.html("");
-                $element.append(mixin_1.map(value, (item) => {
-                    var $opt = $("<option>");
-                    $opt.val(item.id);
-                    $opt.text(item.text);
-                    return $opt;
-                }));
-                $element.val($element.data("value"));
-            };
-        };
-    }
-    exports.options = options;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[13],res[12],res[6]) || res[13];
-res[14] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    const $ = require("node_modules/jquery/dist/jquery");
-    const binder_1 = require("../binder");
-    const mixin_1 = require("./base/mixin");
-    function each(valueAccessor) {
-        return (element) => {
-            var $element = $(element), template = $element.html();
-            $element.html("");
-            return () => {
-                var value = valueAccessor();
-                $element.html("");
-                value.forEach((item) => {
-                    var t = $(template);
-                    mixin_1.foreach(item, (valueAccessor, selector) => {
-                        (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
-                            new binder_1.Binder(el).bind(valueAccessor);
-                        });
-                    });
-                    $element.append(t);
-                });
-            };
-        };
-    }
-    exports.each = each;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[14],res[6],res[5],res[12]) || res[14];
-res[15] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    const $ = require("node_modules/jquery/dist/jquery");
-    function classes(valueAccessor) {
-        return (element) => {
-            var $element = $(element);
-            return () => {
-                var value = valueAccessor();
-                for (var key in value) {
-                    if (value[key]) {
-                        $element.addClass(key);
-                    }
-                    else {
-                        $element.removeClass(key);
-                    }
-                }
-            };
-        };
-    }
-    exports.classes = classes;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[15],res[6]) || res[15];
-res[16] = (function (require, exports) {
-    "use strict";
-    function __export(m) {
-        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    __export(require("./handler/attr"));
-    __export(require("./handler/change"));
-    __export(require("./handler/click"));
-    __export(require("./handler/text"));
-    __export(require("./handler/value"));
-    __export(require("./handler/options"));
-    __export(require("./handler/each"));
-    __export(require("./handler/class"));
-})(require.bind(null, "node_modules/binder/src/"),res[16],res[7],res[8],res[9],res[10],res[11],res[13],res[14],res[15]) || res[16];
-res[17] = (function (require, exports) {
-    "use strict";
-    function __export(m) {
-        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    __export(require("node_modules/observable/src/index"));
-    __export(require("./binder"));
-    __export(require("./handlers"));
-})(require.bind(null, "node_modules/binder/src/"),res[17],res[4],res[5],res[16]) || res[17];
-res[18] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
     var context = window;
     context.Reflect = context.Reflect || {};
     context.Reflect.metadata = (k, v) => {
@@ -416,8 +182,8 @@ res[18] = (function (require, exports) {
         return r;
     };
     exports.default = true;
-})(require.bind(null, "node_modules/reflect-decorator/src/"),res[18]) || res[18];
-res[19] = (function (require, exports) {
+})(require.bind(null, "node_modules/reflect-decorator/src/"),res[5]) || res[5];
+res[6] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     require("node_modules/reflect-decorator/src/index");
@@ -509,8 +275,8 @@ res[19] = (function (require, exports) {
         }
     }
     exports.DependencyInjector = DependencyInjector;
-})(require.bind(null, "node_modules/dependency-injection/src/"),res[19],res[18]) || res[19];
-res[20] = (function (require, exports) {
+})(require.bind(null, "node_modules/dependency-injection/src/"),res[6],res[5]) || res[6];
+res[7] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function foreach(item, callback) {
@@ -542,8 +308,8 @@ res[20] = (function (require, exports) {
         return res;
     }
     exports.grep = grep;
-})(require.bind(null, "src/"),res[20]) || res[20];
-res[21] = (function (require, exports) {
+})(require.bind(null, "src/"),res[7]) || res[7];
+res[8] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("node_modules/observable/src/index");
@@ -634,7 +400,239 @@ res[21] = (function (require, exports) {
             interface: INotifier
         })
     ], Notifier);
-})(require.bind(null, "src/"),res[21],res[4],res[19],res[20]) || res[21];
+})(require.bind(null, "src/"),res[8],res[4],res[6],res[7]) || res[8];
+res[9] = (function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    const index_1 = require("node_modules/observable/src/index");
+    class Binder {
+        constructor(element) {
+            this.element = element;
+        }
+        bind(callback) {
+            var fn = callback(this.element, this);
+            index_1.blind(() => index_1.observer(() => fn()));
+        }
+    }
+    exports.Binder = Binder;
+})(require.bind(null, "node_modules/binder/src/"),res[9],res[4]) || res[9];
+res[10] = (function anonymous() {
+return $;
+})() || res[10];
+res[11] = (function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    const $ = require("node_modules/jquery/dist/jquery");
+    function attr(valueAccessor) {
+        return (element) => {
+            var $element = $(element);
+            return () => {
+                var value = valueAccessor();
+                for (var key in value) {
+                    if (value[key] === undefined) {
+                        $element.removeAttr(key);
+                    }
+                    else {
+                        $element.attr(key, value[key]);
+                    }
+                }
+            };
+        };
+    }
+    exports.attr = attr;
+})(require.bind(null, "node_modules/binder/src/handler/"),res[11],res[10]) || res[11];
+res[12] = (function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    const $ = require("node_modules/jquery/dist/jquery");
+    function change(valueAccessor) {
+        return (element) => {
+            $(element).change((e) => {
+                return valueAccessor().call(element, e);
+            });
+            return () => { };
+        };
+    }
+    exports.change = change;
+})(require.bind(null, "node_modules/binder/src/handler/"),res[12],res[10]) || res[12];
+res[13] = (function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    const $ = require("node_modules/jquery/dist/jquery");
+    function click(valueAccessor) {
+        return (element) => {
+            $(element).click((e) => {
+                return valueAccessor().call(element, e);
+            });
+            return () => { };
+        };
+    }
+    exports.click = click;
+})(require.bind(null, "node_modules/binder/src/handler/"),res[13],res[10]) || res[13];
+res[14] = (function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    const $ = require("node_modules/jquery/dist/jquery");
+    function text(valueAccessor) {
+        return (element) => {
+            var $element = $(element);
+            return () => {
+                var value = valueAccessor();
+                $element.text(value);
+            };
+        };
+    }
+    exports.text = text;
+})(require.bind(null, "node_modules/binder/src/handler/"),res[14],res[10]) || res[14];
+res[15] = (function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    const $ = require("node_modules/jquery/dist/jquery");
+    function value(valueAccessor) {
+        return (element) => {
+            var $element = $(element);
+            $element.change(() => {
+                valueAccessor.set($element.val());
+            });
+            return () => {
+                var value = valueAccessor.get();
+                $element.val(value);
+            };
+        };
+    }
+    exports.value = value;
+})(require.bind(null, "node_modules/binder/src/handler/"),res[15],res[10]) || res[15];
+res[16] = (function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    function foreach(item, callback) {
+        let i;
+        if (item instanceof Array) {
+            for (i = 0; i < item.length; i++) {
+                callback(item[i], i);
+            }
+        }
+        else {
+            for (i in item) {
+                callback(item[i], i);
+            }
+        }
+    }
+    exports.foreach = foreach;
+    function map(array, parse) {
+        let res = [];
+        foreach(array, (x) => { res.push(parse(x)); return false; });
+        return res;
+    }
+    exports.map = map;
+    function grep(array, predicate) {
+        let i, res = [];
+        for (i = 0; i < array.length; i++) {
+            if (predicate(array[i], i))
+                res.push(array[i]);
+        }
+        return res;
+    }
+    exports.grep = grep;
+})(require.bind(null, "node_modules/binder/src/handler/base/"),res[16]) || res[16];
+res[17] = (function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    const mixin_1 = require("./base/mixin");
+    const $ = require("node_modules/jquery/dist/jquery");
+    function options(valueAccessor) {
+        return (element) => {
+            var $element = $(element);
+            $element.html("");
+            return () => {
+                var value = valueAccessor();
+                $element.html("");
+                $element.append(mixin_1.map(value, (item) => {
+                    var $opt = $("<option>");
+                    $opt.val(item.id);
+                    $opt.text(item.text);
+                    return $opt;
+                }));
+                $element.val($element.data("value"));
+            };
+        };
+    }
+    exports.options = options;
+})(require.bind(null, "node_modules/binder/src/handler/"),res[17],res[16],res[10]) || res[17];
+res[18] = (function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    const $ = require("node_modules/jquery/dist/jquery");
+    const binder_1 = require("../binder");
+    const mixin_1 = require("./base/mixin");
+    function each(valueAccessor) {
+        return (element) => {
+            var $element = $(element), template = $element.html();
+            $element.html("");
+            return () => {
+                var value = valueAccessor();
+                $element.html("");
+                value.forEach((item) => {
+                    var t = $(template);
+                    mixin_1.foreach(item, (valueAccessor, selector) => {
+                        (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
+                            new binder_1.Binder(el).bind(valueAccessor);
+                        });
+                    });
+                    $element.append(t);
+                });
+            };
+        };
+    }
+    exports.each = each;
+})(require.bind(null, "node_modules/binder/src/handler/"),res[18],res[10],res[9],res[16]) || res[18];
+res[19] = (function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    const $ = require("node_modules/jquery/dist/jquery");
+    function classes(valueAccessor) {
+        return (element) => {
+            var $element = $(element);
+            return () => {
+                var value = valueAccessor();
+                for (var key in value) {
+                    if (value[key]) {
+                        $element.addClass(key);
+                    }
+                    else {
+                        $element.removeClass(key);
+                    }
+                }
+            };
+        };
+    }
+    exports.classes = classes;
+})(require.bind(null, "node_modules/binder/src/handler/"),res[19],res[10]) || res[19];
+res[20] = (function (require, exports) {
+    "use strict";
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    __export(require("./handler/attr"));
+    __export(require("./handler/change"));
+    __export(require("./handler/click"));
+    __export(require("./handler/text"));
+    __export(require("./handler/value"));
+    __export(require("./handler/options"));
+    __export(require("./handler/each"));
+    __export(require("./handler/class"));
+})(require.bind(null, "node_modules/binder/src/"),res[20],res[11],res[12],res[13],res[14],res[15],res[17],res[18],res[19]) || res[20];
+res[21] = (function (require, exports) {
+    "use strict";
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    __export(require("node_modules/observable/src/index"));
+    __export(require("./binder"));
+    __export(require("./handlers"));
+})(require.bind(null, "node_modules/binder/src/"),res[21],res[4],res[9],res[20]) || res[21];
 res[22] = (function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -744,204 +742,24 @@ res[22] = (function (require, exports) {
         };
     }
     exports.view = view;
-})(require.bind(null, "src/"),res[22],res[17],res[21],res[20],res[6]) || res[22];
-res[23] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("node_modules/observable/src/index");
-    const view_1 = require("./view");
-    const service_1 = require("./service");
-    let StartView = class StartView {
-        constructor(_viewProvider) {
-            this._viewProvider = _viewProvider;
-            this.view = index_1.observable();
-        }
-        renderView(type) {
-            return new Promise((resolve) => {
-                if (type) {
-                    var v = this._viewProvider.newInstance(type);
-                    this.view(v);
-                    v && this._viewProvider.getNode(v).then((element) => {
-                        resolve(v);
-                    }) || resolve(v);
-                }
-            });
-        }
-    };
-    StartView = __decorate([
-        view_1.View({
-            html: "<div></div>",
-            binding: {
-                "this": (startView) => view_1.view(() => startView.view())
-            }
-        }),
-        __metadata("design:paramtypes", [view_1.IViewProvider])
-    ], StartView);
-    exports.StartView = StartView;
-    ;
-    let StartService = class StartService extends StartView {
-        constructor(viewProvider) {
-            super(viewProvider);
-        }
-    };
-    StartService = __decorate([
-        service_1.Service({
-            interface: StartView
-        }),
-        __metadata("design:paramtypes", [view_1.IViewProvider])
-    ], StartService);
-})(require.bind(null, "src/"),res[23],res[4],res[22],res[21]) || res[23];
-res[24] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class Cache {
-        constructor() {
-            this.cache = {};
-        }
-        promise(key, func) {
-            return new Promise((resolve, reject) => {
-                var me = this, reslv = function () {
-                    me.cache[key] = arguments[0];
-                    resolve.apply(this, arguments);
-                };
-                this.cache[key] ? resolve(this.cache[key]) : func(reslv, reject);
-            });
-        }
-    }
-    exports.Cache = Cache;
-})(require.bind(null, "src/"),res[24]) || res[24];
-res[25] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    const service_1 = require("./service");
-    class IConfig {
-        route(hash) {
-            return new Promise((resolve, reject) => {
-                window.require(`/${hash}`).then((module) => {
-                    for (var i in module) {
-                        resolve(module[i]);
-                        break;
-                    }
-                });
-            });
-        }
-        loaded(hash, view) { }
-    }
-    exports.IConfig = IConfig;
-    let Config = class Config extends IConfig {
-        constructor() {
-            super();
-        }
-    };
-    Config = __decorate([
-        service_1.Service({
-            interface: IConfig
-        }),
-        __metadata("design:paramtypes", [])
-    ], Config);
-    exports.Config = Config;
-})(require.bind(null, "src/"),res[25],res[21]) || res[25];
-res[26] = (function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    const service_1 = require("./service");
-    const $ = require("node_modules/jquery/dist/jquery");
-    const cache_1 = require("./cache");
-    const config_1 = require("./config");
-    class IRouter {
-    }
-    exports.IRouter = IRouter;
-    let Router = class Router extends IRouter {
-        constructor(_config) {
-            super();
-            this._config = _config;
-            this.cache = new cache_1.Cache();
-        }
-        onLoad(href) {
-            return this.cache.promise(href, (resolve, reject) => {
-                this._config.route(href).then(v => resolve(v));
-            });
-        }
-        goTo(href) {
-            return new Promise(resolve => {
-                $("body").trigger("location:href", { href: href, resolve: resolve });
-            });
-        }
-        onNext(href) {
-            history.pushState({}, '', href);
-            return this.onLoad(href);
-        }
-        onBack(href) {
-            return this.onLoad(href);
-        }
-        onLoaded(href, view) {
-            this._config.loaded(href, view);
-        }
-    };
-    Router = __decorate([
-        service_1.Service({
-            interface: IRouter
-        }),
-        __metadata("design:paramtypes", [config_1.IConfig])
-    ], Router);
-    exports.Router = Router;
-})(require.bind(null, "src/"),res[26],res[21],res[6],res[24],res[25]) || res[26];
-return res[27] = (function (require, exports) {
+})(require.bind(null, "src/"),res[22],res[21],res[8],res[7],res[10]) || res[22];
+return res[23] = (function (require, exports) {
     "use strict";
     function __export(m) {
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
     }
     Object.defineProperty(exports, "__esModule", { value: true });
-    const startview_1 = require("./startview");
     const service_1 = require("./service");
     const view_1 = require("./view");
-    const router_1 = require("./router");
-    const config_1 = require("./config");
     const $ = require("node_modules/jquery/dist/jquery");
     __export(require("node_modules/binder/src/index"));
     __export(require("node_modules/dependency-injection/src/index"));
     __export(require("./view"));
-    __export(require("./router"));
     __export(require("./service"));
-    function startup(callback) {
-        var context = window;
+    function startup(selector, view) {
         var viewProvider = service_1.serviceProvider.getService(view_1.IViewProvider);
-        var startview = viewProvider.newInstance(startview_1.StartView);
-        var href = (href) => href.replace(location.origin, "");
-        $("body").on("click", "a[href]", (event) => {
-            service_1.serviceProvider.getService(router_1.IRouter)
-                .onNext(href(event.currentTarget.href))
-                .then(view => startview.renderView(view))
-                .then((view) => service_1.serviceProvider.getService(router_1.IRouter).onLoaded(href(location.href), view));
-            return false;
-        });
-        $("body").on("location:href", (event, data) => {
-            service_1.serviceProvider.getService(router_1.IRouter)
-                .onNext(href(data.href))
-                .then(view => startview.renderView(view))
-                .then((view) => service_1.serviceProvider.getService(router_1.IRouter).onLoaded(href(location.href), view) || view)
-                .then((view) => data.resolve(view));
-            return false;
-        });
-        window.onpopstate = (state) => {
-            service_1.serviceProvider.getService(router_1.IRouter)
-                .onBack(href(location.href))
-                .then(view => startview.renderView(view))
-                .then((view) => service_1.serviceProvider.getService(router_1.IRouter).onLoaded(href(location.href), view));
-        };
-        context.addEventListener("hashchange", () => {
-            service_1.serviceProvider.getService(router_1.IRouter)
-                .onNext(href(location.href))
-                .then(view => startview.renderView(view))
-                .then((view) => service_1.serviceProvider.getService(router_1.IRouter).onLoaded(href(location.href), view));
-        }, false);
-        callback(service_1.serviceProvider.getService(config_1.IConfig));
-        service_1.serviceProvider.getService(router_1.IRouter)
-            .onNext(href(location.href))
-            .then(view => startview.renderView(view))
-            .then((view) => service_1.serviceProvider.getService(router_1.IRouter).onLoaded(href(location.href), view));
-        viewProvider.getNode(startview).then((el) => $(service_1.serviceProvider.getService(config_1.IConfig).container).append(el));
+        viewProvider.getNode(viewProvider.newInstance(view)).then((el) => $(selector).append(el));
     }
     exports.startup = startup;
-})(require.bind(null, "src/"),res[27],res[23],res[21],res[22],res[26],res[25],res[6],res[17],res[19],res[22],res[26],res[21]) || res[27];
+})(require.bind(null, "src/"),res[23],res[8],res[22],res[10],res[21],res[6],res[22],res[8]) || res[23];
 }, typeof window !== 'undefined' && (window.Artist = {}) || {})
