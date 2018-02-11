@@ -491,7 +491,7 @@ res[15] = (function (require, exports) {
     function value(valueAccessor) {
         return (element) => {
             var $element = $(element);
-            $element.change(() => {
+            $element.on("input", () => {
                 valueAccessor.set($element.val());
             });
             return () => {
