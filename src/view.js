@@ -50,6 +50,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             view && view.initialize && view.initialize(arg);
             viewType && (view.__elt__ = viewType.html.then(template => {
                 var t = $(template);
+                t.attr("artist-view", true);
                 mixin_1.foreach(binding, (valueAccessor, selector) => {
                     (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
                         var binder = valueAccessor(view);
@@ -89,31 +90,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                 Promise.all(array.map((item) => service_1.serviceProvider.getService(IViewProvider).getNode(item)))
                     .then((elts) => {
                     $element.children().each((i, el) => {
-                        el.__view__parent = false;
                         $(el).appendTo($deleted);
                     });
-                    return elts;
-                }).then((elts) => {
                     elts.forEach((el) => {
                         $element.append(el);
-                        el.__view__added = el.__view__parent !== false;
-                        el.__view__parent = element;
-                    });
-                    return elts;
-                })
-                    .then((elts) => {
-                    $deleted.children().each((i, el) => {
-                        el.__view__parent = undefined;
-                        $(el).trigger("custom:view:remove", { from: element });
-                    });
-                    return elts;
-                })
-                    .then((elts) => {
-                    elts.forEach((el) => {
-                        if (el.__view__added) {
-                            $(el).trigger("custom:view:add", { into: element });
-                        }
-                        delete el.__view__added;
                     });
                     return elts;
                 });
@@ -121,5 +101,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         };
     }
     exports.view = view;
+    function dom(option) {
+        return (element) => {
+            var $element = $(element);
+            $element.on('custom:view:dom:remove', (e) => {
+                if (e.target === e.currentTarget) {
+                    option.out(e);
+                }
+            });
+            $element.on('custom:view:dom:added', (e) => {
+                if (e.target === e.currentTarget) {
+                    option.in(e);
+                }
+            });
+            return () => { };
+        };
+    }
+    exports.dom = dom;
 });
 //# sourceMappingURL=view.js.map

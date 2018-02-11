@@ -20,6 +20,19 @@
     __export(require("./view"));
     __export(require("./service"));
     function startup(selector, view) {
+        var observer = new MutationObserver((records) => {
+            records.forEach(record => {
+                var $removedNodes = $(record.removedNodes);
+                var $addedNodes = $(record.addedNodes);
+                var $removeViews = $(Array.prototype.map.call($removedNodes.filter("[artist-view=true][loaded]"), x => x).concat(Array.prototype.map.call($removedNodes.find("[artist-view=true][loaded]"), x => x)));
+                var $addedViews = $(Array.prototype.map.call($addedNodes.filter("[artist-view=true]:not([loaded])"), x => x).concat(Array.prototype.map.call($addedNodes.find("[artist-view=true]:not([loaded])"), x => x)));
+                $addedViews.attr("loaded", true);
+                $removeViews.removeAttr("loaded");
+                $removeViews.trigger("custom:view:dom:remove");
+                $addedViews.trigger("custom:view:dom:added");
+            });
+        });
+        observer.observe($("body")[0], { childList: true, subtree: true });
         var viewProvider = service_1.serviceProvider.getService(view_1.IViewProvider);
         viewProvider.getNode(viewProvider.newInstance(view)).then((el) => $(selector).append(el));
     }

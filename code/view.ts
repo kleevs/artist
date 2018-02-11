@@ -3,6 +3,7 @@ import { Binder } from 'node_modules/binder/src/index';
 import { serviceProvider, config, Service } from './service';
 import { foreach, map, grep } from './mixin';
 import * as $ from 'node_modules/jquery/dist/jquery';
+import { Event } from 'index';
 
 
 export declare type ViewOption<TModel> = {
@@ -61,6 +62,7 @@ class ViewProvider {
         view && view.initialize && view.initialize(arg);
         viewType && (view.__elt__ = viewType.html.then(template => {
             var t = $(template);
+            t.attr("artist-view", true);
             foreach(binding, (valueAccessor, selector) => {
                 (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
                     var binder = valueAccessor(view);
@@ -101,40 +103,36 @@ export function view(valueAccessor: () => any) {
 			var $added = $("<div>");
             Promise.all(array.map((item) => serviceProvider.getService(IViewProvider).getNode(item)))
 				.then((elts) => {
-					$element.children().each((i, el) => { 
-						el.__view__parent = false;
+
+                    $element.children().each((i, el) => {
 						$(el).appendTo($deleted); 
-					});
-					
-					return elts;
-				}).then((elts) => {
+                    });
+                    
 					elts.forEach((el: any) => { 
 						$element.append(el);
-						el.__view__added = el.__view__parent !== false;
-						el.__view__parent = element;
 					});
 					
 					return elts;
-				})
-				.then((elts) => {
-					$deleted.children().each((i, el: any) => { 
-						el.__view__parent = undefined;
-						$(el).trigger("custom:view:remove", { from: element }); 
-					});
-					
-					return elts;
-  				})
-				.then((elts) => {
-					elts.forEach((el: any) => { 
-						if (el.__view__added) { 
-							$(el).trigger("custom:view:add", { into: element });
-						} 
-						
-						delete el.__view__added;
-					});
-					
-					return elts;
-  				});
+				});
 		};
 	};
+}
+
+export function dom(option: { in: (e: Event) => void, out: (e: Event) => void }) {
+    return (element) => {
+        var $element = $(element);
+        $element.on('custom:view:dom:remove', (e) => {
+            if (e.target === e.currentTarget) {
+                option.out(e);
+            }
+        });
+
+        $element.on('custom:view:dom:added', (e) => {
+            if (e.target === e.currentTarget) {
+                option.in(e);
+            }
+        });
+
+        return () => {};
+    };
 }

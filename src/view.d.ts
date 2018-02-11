@@ -1,3 +1,4 @@
+import { Event } from 'index';
 export declare type ViewOption<TModel> = {
     selector?: string;
     template?: string;
@@ -21,3 +22,7 @@ export declare abstract class IViewProvider {
     abstract getView(element: Element): any;
 }
 export declare function view(valueAccessor: () => any): (element: any) => () => void;
+export declare function dom(option: {
+    in: (e: Event) => void;
+    out: (e: Event) => void;
+}): (element: any) => () => void;

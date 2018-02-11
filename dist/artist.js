@@ -671,6 +671,7 @@ res[22] = (function (require, exports) {
             view && view.initialize && view.initialize(arg);
             viewType && (view.__elt__ = viewType.html.then(template => {
                 var t = $(template);
+                t.attr("artist-view", true);
                 mixin_1.foreach(binding, (valueAccessor, selector) => {
                     (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
                         var binder = valueAccessor(view);
@@ -710,31 +711,10 @@ res[22] = (function (require, exports) {
                 Promise.all(array.map((item) => service_1.serviceProvider.getService(IViewProvider).getNode(item)))
                     .then((elts) => {
                     $element.children().each((i, el) => {
-                        el.__view__parent = false;
                         $(el).appendTo($deleted);
                     });
-                    return elts;
-                }).then((elts) => {
                     elts.forEach((el) => {
                         $element.append(el);
-                        el.__view__added = el.__view__parent !== false;
-                        el.__view__parent = element;
-                    });
-                    return elts;
-                })
-                    .then((elts) => {
-                    $deleted.children().each((i, el) => {
-                        el.__view__parent = undefined;
-                        $(el).trigger("custom:view:remove", { from: element });
-                    });
-                    return elts;
-                })
-                    .then((elts) => {
-                    elts.forEach((el) => {
-                        if (el.__view__added) {
-                            $(el).trigger("custom:view:add", { into: element });
-                        }
-                        delete el.__view__added;
                     });
                     return elts;
                 });
@@ -742,6 +722,23 @@ res[22] = (function (require, exports) {
         };
     }
     exports.view = view;
+    function dom(option) {
+        return (element) => {
+            var $element = $(element);
+            $element.on('custom:view:dom:remove', (e) => {
+                if (e.target === e.currentTarget) {
+                    option.out(e);
+                }
+            });
+            $element.on('custom:view:dom:added', (e) => {
+                if (e.target === e.currentTarget) {
+                    option.in(e);
+                }
+            });
+            return () => { };
+        };
+    }
+    exports.dom = dom;
 })(require.bind(null, "src/"),res[22],res[21],res[8],res[7],res[10]) || res[22];
 return res[23] = (function (require, exports) {
     "use strict";
@@ -757,6 +754,19 @@ return res[23] = (function (require, exports) {
     __export(require("./view"));
     __export(require("./service"));
     function startup(selector, view) {
+        var observer = new MutationObserver((records) => {
+            records.forEach(record => {
+                var $removedNodes = $(record.removedNodes);
+                var $addedNodes = $(record.addedNodes);
+                var $removeViews = $(Array.prototype.map.call($removedNodes.filter("[artist-view=true][loaded]"), x => x).concat(Array.prototype.map.call($removedNodes.find("[artist-view=true][loaded]"), x => x)));
+                var $addedViews = $(Array.prototype.map.call($addedNodes.filter("[artist-view=true]:not([loaded])"), x => x).concat(Array.prototype.map.call($addedNodes.find("[artist-view=true]:not([loaded])"), x => x)));
+                $addedViews.attr("loaded", true);
+                $removeViews.removeAttr("loaded");
+                $removeViews.trigger("custom:view:dom:remove");
+                $addedViews.trigger("custom:view:dom:added");
+            });
+        });
+        observer.observe($("body")[0], { childList: true, subtree: true });
         var viewProvider = service_1.serviceProvider.getService(view_1.IViewProvider);
         viewProvider.getNode(viewProvider.newInstance(view)).then((el) => $(selector).append(el));
     }
