@@ -21,7 +21,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     var injector = new index_2.DependencyInjector();
     exports.config = injector.getConfig();
     exports.serviceProvider = injector.getProvider();
-    exports.Service = injector.getDecorator();
+    exports.Injectable = injector.getDecorator();
     class IObservablizer {
     }
     exports.IObservablizer = IObservablizer;
@@ -61,8 +61,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         }
     };
     Observablizer = __decorate([
-        exports.Service({
-            interface: IObservablizer
+        exports.Injectable({
+            key: IObservablizer
         })
     ], Observablizer);
     class Event {
@@ -99,8 +99,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         }
     };
     Notifier = __decorate([
-        exports.Service({
-            interface: INotifier
+        exports.Injectable({
+            key: INotifier
         })
     ], Notifier);
 });

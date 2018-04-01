@@ -23,10 +23,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     const $ = require("node_modules/jquery/dist/jquery");
     class IList {
     }
-    IList.SelectUserEvent = "SelectUserEvent";
-    IList.SaveUsersEvent = "SaveUsersEvent";
+    IList.SelectUserEvent = new artist_1.Event("SelectUserEvent");
+    IList.SaveUsersEvent = new artist_1.Event("SaveUsersEvent");
     exports.IList = IList;
-    let List = List_1 = class List extends IList {
+    let List = class List extends IList {
         constructor(_observalizer, _notifier) {
             super();
             this._observalizer = _observalizer;
@@ -39,16 +39,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             this.observable.users.push(this._observalizer.convert(user));
         }
         select(user) {
-            this._notifier.notify(this, IList.SelectUserEvent, user);
+            this._notifier.forEvent(IList.SelectUserEvent).notify(this, user);
         }
         save() {
-            this._notifier.notify(this, IList.SaveUsersEvent, JSON.parse(JSON.stringify(this.observable.users)));
+            this._notifier.forEvent(IList.SaveUsersEvent).notify(this, JSON.parse(JSON.stringify(this.observable.users)));
         }
         clear() {
             this.observable.users = [];
         }
     };
-    List = List_1 = __decorate([
+    List = __decorate([
         artist_1.View({
             template: "formulaire/tmpl/list.html",
             binding: {
@@ -68,9 +68,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
                 })
             }
         }),
-        artist_1.Service({ interface: List_1 }),
         __metadata("design:paramtypes", [artist_1.IObservablizer, artist_1.INotifier])
     ], List);
-    var List_1;
 });
 //# sourceMappingURL=list.js.map

@@ -1,4 +1,4 @@
-import { View, view, IViewProvider, Service, IObservablizer, INotifier } from '../../../dist/artist';
+import { View, view, IViewProvider, IObservablizer, INotifier } from '../../../dist/artist';
 import { IForm } from '../view/form';
 import { IDetail } from '../view/detail';
 import { IList } from '../view/list';
@@ -23,31 +23,18 @@ class LayoutView extends ILayout {
         detail: IDetail;
     };
 
-    constructor(value: {
-        list: IList;
-        saved: ISaved;
-        form: IForm;
-        detail: IDetail;
-    }) {
-        super();
-        this.observable = value;
-    }
-}
-
-@Service({
-    interface: LayoutView
-})
-class LayoutService extends LayoutView {
     constructor(viewProvider: IViewProvider, observalizer: IObservablizer, notifier: INotifier) {
-        super(observalizer.convert({
+        super();
+
+        this.observable = observalizer.convert({
             list: viewProvider.newInstance(IList),
             saved: viewProvider.newInstance(ISaved),
             form: viewProvider.newInstance(IForm),
             detail: viewProvider.newInstance(IDetail)
-        }));
-        
-		notifier.listen(this.observable.form, IForm.AddUserEvent, (usr) => this.observable.list.add(usr));
-		notifier.listen(this.observable.list, IList.SaveUsersEvent, (usrs) => this.observable.saved.save(usrs));
-		notifier.listen(this.observable.list, IList.SelectUserEvent, (usr) => this.observable.detail.select(usr));       
+        });
+
+        notifier.forEvent(IForm.AddUserEvent).listen(this.observable.form, (usr) => this.observable.list.add(usr));
+        notifier.forEvent(IList.SaveUsersEvent).listen(this.observable.list, (usrs) => this.observable.saved.save(usrs));
+        notifier.forEvent(IList.SelectUserEvent).listen(this.observable.list, (usr) => this.observable.detail.select(usr));     
     }
 }

@@ -24,7 +24,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     class ISaved {
     }
     exports.ISaved = ISaved;
-    let Saved = Saved_1 = class Saved extends ISaved {
+    let Saved = class Saved extends ISaved {
         constructor(observalizer) {
             super();
             this.observable = observalizer.convert({
@@ -35,7 +35,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             this.observable.users = users;
         }
     };
-    Saved = Saved_1 = __decorate([
+    Saved = __decorate([
         artist_1.View({
             template: "formulaire/tmpl/saved.html",
             binding: {
@@ -52,9 +52,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
                 })
             }
         }),
-        artist_1.Service({ interface: Saved_1 }),
         __metadata("design:paramtypes", [artist_1.IObservablizer])
     ], Saved);
-    var Saved_1;
 });
 //# sourceMappingURL=saved.js.map

@@ -36,6 +36,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                     })();
                 })
             });
+            service_1.Injectable({ key: constructor, registerable: false })(constructor, metadata);
         };
     }
     exports.View = View;
@@ -74,8 +75,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         }
     };
     ViewProvider = __decorate([
-        service_1.Service({
-            interface: IViewProvider
+        service_1.Injectable({
+            key: IViewProvider
         })
     ], ViewProvider);
     function view(valueAccessor) {

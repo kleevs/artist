@@ -1,5 +1,5 @@
 import { text, value, click } from 'node_modules/binder/src/index';
-import { View, Service, IObservablizer } from '../../../dist/artist';
+import { View, IObservablizer } from '../../../dist/artist';
 import { User } from '../model/user';
 
 export abstract class IDetail {
@@ -15,7 +15,6 @@ export abstract class IDetail {
         "#age": (view) => value({ get: () => (view.observable.user.age || '').toString(), set: (v) => view.observable.user.age = parseInt(v) || undefined })
     }
 })
-@Service({ interface: Detail })
 class Detail extends IDetail {
     private readonly observable: {
         user: User;

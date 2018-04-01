@@ -11,11 +11,6 @@
     Object.defineProperty(exports, "__esModule", { value: true });
     const artist_1 = require("../../dist/artist");
     const layout_1 = require("./layout/layout");
-    artist_1.startup((config) => {
-        config.container = "[layout]";
-        config.route = () => {
-            return new Promise((resolve) => resolve(layout_1.ILayout));
-        };
-    });
+    artist_1.startup("[layout]", layout_1.ILayout);
 });
 //# sourceMappingURL=config.js.map

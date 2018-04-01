@@ -1,12 +1,12 @@
 import { text, value, click, each } from 'node_modules/binder/src/index';
-import { View, Service, IObservablizer, INotifier } from '../../../dist/artist';
+import { View, Event, IObservablizer, INotifier } from '../../../dist/artist';
 import * as $ from 'node_modules/jquery/dist/jquery';
 import { User } from '../model/user';
 
 export abstract class IList {
     abstract add(user: User);
-    static SelectUserEvent = "SelectUserEvent";
-    static SaveUsersEvent = "SaveUsersEvent";
+    static SelectUserEvent = new Event<IList, User>("SelectUserEvent");
+    static SaveUsersEvent = new Event<IList, User[]>("SaveUsersEvent");
 }
 
 @View<List>({
@@ -28,7 +28,6 @@ export abstract class IList {
         })
     }
 })
-@Service({ interface: List })
 class List extends IList {
     private readonly observable: {
         users: User[]
@@ -46,11 +45,11 @@ class List extends IList {
     }
 
     public select(user: User) : void {
-		this._notifier.notify(this, IList.SelectUserEvent, user);
+		this._notifier.forEvent(IList.SelectUserEvent).notify(this, user);
     }
 
     public save() : void {
-		this._notifier.notify(this, IList.SaveUsersEvent, JSON.parse(JSON.stringify(this.observable.users)));
+		this._notifier.forEvent(IList.SaveUsersEvent).notify(this, JSON.parse(JSON.stringify(this.observable.users)));
     }
 
     private clear(): void {

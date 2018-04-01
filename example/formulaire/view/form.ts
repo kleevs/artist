@@ -1,9 +1,9 @@
 import { text, value, click } from 'node_modules/binder/src/index';
-import { View, Service, IObservablizer, INotifier } from '../../../dist/artist';
+import { View, Event, IObservablizer, INotifier } from '../../../dist/artist';
 import { User } from '../model/user';
 
 export abstract class IForm {
-    static AddUserEvent = "AddUserEvent";
+    static AddUserEvent = new Event<IForm, User>("AddUserEvent");
 }
 
 @View<Form>({
@@ -17,7 +17,6 @@ export abstract class IForm {
         "[data-action=clear]": (view) => click(() => () => view.clear() || false)
     }
 })
-@Service({ interface: Form })
 class Form extends IForm {
     private readonly observable: {
         last: string;
@@ -40,7 +39,7 @@ class Form extends IForm {
         usr.last = this.observable.last;
         usr.first = this.observable.first;
         usr.age = this.observable.age;
-        this._notifier.notify(this, IForm.AddUserEvent, usr);
+        this._notifier.forEvent(IForm.AddUserEvent).notify(this, usr);
     }
 
     private clear() {

@@ -23,9 +23,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     const user_1 = require("../model/user");
     class IForm {
     }
-    IForm.AddUserEvent = "AddUserEvent";
+    IForm.AddUserEvent = new artist_1.Event("AddUserEvent");
     exports.IForm = IForm;
-    let Form = Form_1 = class Form extends IForm {
+    let Form = class Form extends IForm {
         constructor(observalizer, _notifier) {
             super();
             this._notifier = _notifier;
@@ -40,7 +40,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             usr.last = this.observable.last;
             usr.first = this.observable.first;
             usr.age = this.observable.age;
-            this._notifier.notify(this, IForm.AddUserEvent, usr);
+            this._notifier.forEvent(IForm.AddUserEvent).notify(this, usr);
         }
         clear() {
             this.observable.last = undefined;
@@ -48,7 +48,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             this.observable.age = undefined;
         }
     };
-    Form = Form_1 = __decorate([
+    Form = __decorate([
         artist_1.View({
             template: "formulaire/tmpl/form.html",
             binding: {
@@ -60,9 +60,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
                 "[data-action=clear]": (view) => index_1.click(() => () => view.clear() || false)
             }
         }),
-        artist_1.Service({ interface: Form_1 }),
         __metadata("design:paramtypes", [artist_1.IObservablizer, artist_1.INotifier])
     ], Form);
-    var Form_1;
 });
 //# sourceMappingURL=form.js.map

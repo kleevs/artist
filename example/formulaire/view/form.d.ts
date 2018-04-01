@@ -1,3 +1,5 @@
+import { Event } from '../../../dist/artist';
+import { User } from '../model/user';
 export declare abstract class IForm {
-    static AddUserEvent: string;
+    static AddUserEvent: Event<IForm, User>;
 }

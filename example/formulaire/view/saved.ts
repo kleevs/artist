@@ -1,5 +1,5 @@
 import { text, value, click, each } from 'node_modules/binder/src/index';
-import { View, Service, IObservablizer } from '../../../dist/artist';
+import { View, IObservablizer } from '../../../dist/artist';
 import * as $ from 'node_modules/jquery/dist/jquery';
 import { User } from '../model/user';
 
@@ -23,7 +23,6 @@ export abstract class ISaved {
         })
     }
 })
-@Service({ interface: Saved })
 class Saved extends ISaved {
     private readonly observable: {
         users: User[]

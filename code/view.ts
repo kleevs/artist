@@ -1,6 +1,6 @@
 import { observable } from 'node_modules/observable/src/index';
 import { Binder } from 'node_modules/binder/src/index';
-import { serviceProvider, config, Service } from './service';
+import { serviceProvider, config, Injectable } from './service';
 import { foreach, map, grep } from './mixin';
 import * as $ from 'node_modules/jquery/dist/jquery';
 import { Event } from 'index';
@@ -37,6 +37,8 @@ export function View<T>(options: ViewOption<T>) {
                 })();
             })
         });
+
+        (<any>Injectable({ key: constructor, registerable: false }))(<any>constructor, metadata);
     };
 }
 
@@ -48,8 +50,8 @@ export abstract class IViewProvider {
     abstract getView(element: Element): any;
 }
 
-@Service({
-    interface: IViewProvider
+@Injectable({
+    key: IViewProvider
 })
 class ViewProvider {
 	public newInstance<T>(type: Function & { prototype: T }): T;

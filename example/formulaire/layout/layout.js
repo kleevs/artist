@@ -27,9 +27,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     }
     exports.ILayout = ILayout;
     let LayoutView = class LayoutView extends ILayout {
-        constructor(value) {
+        constructor(viewProvider, observalizer, notifier) {
             super();
-            this.observable = value;
+            this.observable = observalizer.convert({
+                list: viewProvider.newInstance(list_1.IList),
+                saved: viewProvider.newInstance(saved_1.ISaved),
+                form: viewProvider.newInstance(form_1.IForm),
+                detail: viewProvider.newInstance(detail_1.IDetail)
+            });
+            notifier.forEvent(form_1.IForm.AddUserEvent).listen(this.observable.form, (usr) => this.observable.list.add(usr));
+            notifier.forEvent(list_1.IList.SaveUsersEvent).listen(this.observable.list, (usrs) => this.observable.saved.save(usrs));
+            notifier.forEvent(list_1.IList.SelectUserEvent).listen(this.observable.list, (usr) => this.observable.detail.select(usr));
         }
     };
     LayoutView = __decorate([
@@ -42,26 +50,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
                 "[saved]": (layout) => artist_1.view(() => layout.observable.saved),
             }
         }),
-        __metadata("design:paramtypes", [Object])
-    ], LayoutView);
-    let LayoutService = class LayoutService extends LayoutView {
-        constructor(viewProvider, observalizer, notifier) {
-            super(observalizer.convert({
-                list: viewProvider.newInstance(list_1.IList),
-                saved: viewProvider.newInstance(saved_1.ISaved),
-                form: viewProvider.newInstance(form_1.IForm),
-                detail: viewProvider.newInstance(detail_1.IDetail)
-            }));
-            notifier.listen(this.observable.form, form_1.IForm.AddUserEvent, (usr) => this.observable.list.add(usr));
-            notifier.listen(this.observable.list, list_1.IList.SaveUsersEvent, (usrs) => this.observable.saved.save(usrs));
-            notifier.listen(this.observable.list, list_1.IList.SelectUserEvent, (usr) => this.observable.detail.select(usr));
-        }
-    };
-    LayoutService = __decorate([
-        artist_1.Service({
-            interface: LayoutView
-        }),
         __metadata("design:paramtypes", [artist_1.IViewProvider, artist_1.IObservablizer, artist_1.INotifier])
-    ], LayoutService);
+    ], LayoutView);
 });
 //# sourceMappingURL=layout.js.map

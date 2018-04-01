@@ -200,19 +200,6 @@ res[6] = (function (require, exports) {
             }
         }
     }
-    function grep(array, predicate) {
-        let i, res = [];
-        for (i = 0; i < array.length; i++) {
-            if (predicate(array[i], i))
-                res.push(array[i]);
-        }
-        return res;
-    }
-    function map(array, parse) {
-        let res = [];
-        foreach(array, (x) => { res.push(parse(x)); return false; });
-        return res;
-    }
     class IProvider {
     }
     exports.IProvider = IProvider;
@@ -239,8 +226,10 @@ res[6] = (function (require, exports) {
             return this.create(service);
         }
         getService(key) {
-            var result = map(grep(this._register, (item) => item.key === key), (item) => item.value)[0];
-            result || this._register.push({ key: key, value: (result = this.createService(key)) });
+            var result = this._register.filter((item) => item.key === key).map((item) => item.value)[0];
+            var registerable = !result && this._config.getService(key).registerable;
+            result = result || this.createService(key);
+            registerable && this._register.push({ key: key, value: result });
             return result;
         }
     }
@@ -249,12 +238,12 @@ res[6] = (function (require, exports) {
             super();
             this._register = [];
         }
-        addService(key, value, parameters) {
-            this._register.unshift({ key: key, value: value, parameters: parameters });
+        addService(key, value, parameters, registerable) {
+            this._register.unshift({ key: key, value: value, parameters: parameters, registerable: registerable });
         }
         getService(key) {
-            return map(grep(this._register, (item) => item.key === key), (item) => {
-                return { value: item.value, parameters: item.parameters };
+            return this._register.filter((item) => item.key === key).map((item) => {
+                return { value: item.value, parameters: item.parameters, registerable: item.registerable };
             })[0];
         }
     }
@@ -268,7 +257,7 @@ res[6] = (function (require, exports) {
         getDecorator() {
             return (options) => {
                 var res = (target, metadata) => {
-                    this._config.addService(options.interface, target, metadata && metadata["design:paramtypes"] || []);
+                    this._config.addService(options.key, target, metadata && metadata["design:paramtypes"] || [], options.registerable || options.registerable === undefined);
                 };
                 return res;
             };
@@ -318,7 +307,7 @@ res[8] = (function (require, exports) {
     var injector = new index_2.DependencyInjector();
     exports.config = injector.getConfig();
     exports.serviceProvider = injector.getProvider();
-    exports.Service = injector.getDecorator();
+    exports.Injectable = injector.getDecorator();
     class IObservablizer {
     }
     exports.IObservablizer = IObservablizer;
@@ -358,8 +347,8 @@ res[8] = (function (require, exports) {
         }
     };
     Observablizer = __decorate([
-        exports.Service({
-            interface: IObservablizer
+        exports.Injectable({
+            key: IObservablizer
         })
     ], Observablizer);
     class Event {
@@ -396,8 +385,8 @@ res[8] = (function (require, exports) {
         }
     };
     Notifier = __decorate([
-        exports.Service({
-            interface: INotifier
+        exports.Injectable({
+            key: INotifier
         })
     ], Notifier);
 })(require.bind(null, "src/"),res[8],res[4],res[6],res[7]) || res[8];
@@ -657,6 +646,7 @@ res[22] = (function (require, exports) {
                     })();
                 })
             });
+            service_1.Injectable({ key: constructor, registerable: false })(constructor, metadata);
         };
     }
     exports.View = View;
@@ -695,8 +685,8 @@ res[22] = (function (require, exports) {
         }
     };
     ViewProvider = __decorate([
-        service_1.Service({
-            interface: IViewProvider
+        service_1.Injectable({
+            key: IViewProvider
         })
     ], ViewProvider);
     function view(valueAccessor) {

@@ -24,7 +24,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     class IDetail {
     }
     exports.IDetail = IDetail;
-    let Detail = Detail_1 = class Detail extends IDetail {
+    let Detail = class Detail extends IDetail {
         constructor(observalizer) {
             super();
             this.observable = observalizer.convert({ user: new user_1.User() });
@@ -33,7 +33,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             this.observable.user = user;
         }
     };
-    Detail = Detail_1 = __decorate([
+    Detail = __decorate([
         artist_1.View({
             template: "formulaire/tmpl/detail.html",
             binding: {
@@ -43,9 +43,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
                 "#age": (view) => index_1.value({ get: () => (view.observable.user.age || '').toString(), set: (v) => view.observable.user.age = parseInt(v) || undefined })
             }
         }),
-        artist_1.Service({ interface: Detail_1 }),
         __metadata("design:paramtypes", [artist_1.IObservablizer])
     ], Detail);
-    var Detail_1;
 });
 //# sourceMappingURL=detail.js.map
