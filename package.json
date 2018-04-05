@@ -5,7 +5,9 @@
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
   "scripts": {
-    "build": "tsc && node node_modules/amd-loader/bin/build.js build.json",
+    "tsc": "node_modules/.bin/tsc",
+	"tsc-example": "node_modules/.bin/tsc -p tsconfig.example.json",
+    "build": "npm run tsc && npm run tsc-example && node node_modules/amd-loader/bin/amd-loader.js build.js",
     "start": "node node_modules/server/.bin/server.js config.json"    
   },
   "dependencies": {

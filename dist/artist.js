@@ -1,54 +1,50 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-(function template(factory, root) {
-        if (typeof module === "object" && typeof module.exports === "object") {
-            var v = factory(require);
-            if (v !== undefined)
-                module.exports = v;
-        }
-        else if (typeof define === "function" && define.amd) {
-            define(["require"], (require) => factory(require));
-        }
-        else {
-            factory(null, root);
-        }
-    })(function anonymous(req
-/**/) {
-class Resolver {
-        constructor(paths = {}) {
-            this.paths = paths;
-        }
-        resolve(path, uri) {
-            var paths = this.paths;
-            path = (path ? [path] : []).concat([uri]).join("/");
-            var array = (path || "").replace(/\\/gi, "/").split("/");
-            var i;
-            uri = uri.replace(/\\/gi, "/");
-            for (i in paths) {
-                if (uri.indexOf(`${i}/`) === 0) {
-                    return uri.replace(i, paths[i]);
-                }
+(function(def, req) {
+
+var define = (function() {
+    var paths = [{ test: /^\/?(node_modules\/*)/, result: "/$1" }];
+    var modules = {};
+    var getUri = function(uri, context) {
+		var link = document.createElement("a");
+        paths.some(path => {
+            if (uri.match(path.test)) {
+                uri = uri.replace(path.test, path.result);
+                return true;
             }
-            for (i = 0; i < array.length; i++) {
-                if (!array[i] && i > 0)
-                    array.splice(i, 1) && i--;
-                else if (array[i] === ".")
-                    array.splice(i, 1) && i--;
-                else if (array[i] === ".." && i > 0 && array[i - 1] !== ".." && array[i - 1])
-                    array.splice(i - 1, 2) && (i -= 2);
-            }
-            return array.join("/");
-        }
+        });
+        var href = (uri && !uri.match(/^\//) && context && context.replace(/(\/?)[^\/]*$/, '$1') || '') + uri;
+        var res = href.replace(/^\/?(.*)$/, '/$1.js');
+		link.href = res.replace(/\\\\/gi, "/");
+        return link.pathname.replace(/^\//, '');
     }
-var resolver = new Resolver({"node_modules":"node_modules"});
-var names = ["node_modules/observable/src/core","node_modules/observable/src/observable","node_modules/observable/src/observer","node_modules/observable/src/blind","node_modules/observable/src/index","node_modules/reflect-decorator/src/index","node_modules/dependency-injection/src/index","src/mixin","src/service","node_modules/binder/src/binder","node_modules/jquery/dist/jquery","node_modules/binder/src/handler/attr","node_modules/binder/src/handler/change","node_modules/binder/src/handler/click","node_modules/binder/src/handler/text","node_modules/binder/src/handler/value","node_modules/binder/src/handler/base/mixin","node_modules/binder/src/handler/options","node_modules/binder/src/handler/each","node_modules/binder/src/handler/class","node_modules/binder/src/handlers","node_modules/binder/src/index","src/view","src/index"]
-var res = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
-var require = function(currentPath, name) { var n = resolver.resolve(currentPath, name); return names.indexOf(n) >= 0 && res[names.indexOf(n)] || req(name); }
-res[0] = (function (require, exports) {
+    var define = function (id, dependencies, factory) {
+        modules[id] = factory.apply(null, dependencies.map(function (d) { 
+            if (d !== "exports" && d !== "require") {
+                return modules[getUri(d, id)]; 
+            }
+            
+            if (d === "exports") {
+                return modules[id] = {};
+            }
+            
+            if (d === "require") {
+                return function (k) { var uri = getUri(k, id); return modules[uri]; };
+            }
+        })) || modules[id];
+    }
+    define.amd = true;
+	define("node_modules/jquery/dist/jquery", [], function() { return $; });
+    return define; 
+})();
+
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/observable/src/core.js', ["require", "exports"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function foreach(item, callback) {
@@ -118,8 +114,17 @@ res[0] = (function (require, exports) {
         })();
     }
     exports.blind = blind;
-})(require.bind(null, "node_modules/observable/src/"),res[0]) || res[0];
-res[1] = (function (require, exports) {
+});
+//# sourceMappingURL=core.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/observable/src/observable.js', ["require", "exports", "./core"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const core_1 = require("./core");
@@ -133,8 +138,17 @@ res[1] = (function (require, exports) {
         };
     }
     exports.create = create;
-})(require.bind(null, "node_modules/observable/src/"),res[1],res[0]) || res[1];
-res[2] = (function (require, exports) {
+});
+//# sourceMappingURL=observable.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/observable/src/observer.js', ["require", "exports", "./core"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const core_1 = require("./core");
@@ -142,8 +156,17 @@ res[2] = (function (require, exports) {
         return core_1.observer(fn);
     }
     exports.create = create;
-})(require.bind(null, "node_modules/observable/src/"),res[2],res[0]) || res[2];
-res[3] = (function (require, exports) {
+});
+//# sourceMappingURL=observer.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/observable/src/blind.js', ["require", "exports", "./core"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const core_1 = require("./core");
@@ -151,8 +174,17 @@ res[3] = (function (require, exports) {
         return core_1.blind(fn);
     }
     exports.create = create;
-})(require.bind(null, "node_modules/observable/src/"),res[3],res[0]) || res[3];
-res[4] = (function (require, exports) {
+});
+//# sourceMappingURL=blind.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/observable/src/index.js', ["require", "exports", "./observable", "./observer", "./blind"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var observable_1 = require("./observable");
@@ -161,8 +193,17 @@ res[4] = (function (require, exports) {
     exports.observer = observer_1.create;
     var blind_1 = require("./blind");
     exports.blind = blind_1.create;
-})(require.bind(null, "node_modules/observable/src/"),res[4],res[1],res[2],res[3]) || res[4];
-res[5] = (function (require, exports) {
+});
+//# sourceMappingURL=index.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/reflect-decorator/src/index.js', ["require", "exports"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var context = window;
@@ -182,8 +223,17 @@ res[5] = (function (require, exports) {
         return r;
     };
     exports.default = true;
-})(require.bind(null, "node_modules/reflect-decorator/src/"),res[5]) || res[5];
-res[6] = (function (require, exports) {
+});
+//# sourceMappingURL=index.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/dependency-injection/src/index.js', ["require", "exports", "node_modules/reflect-decorator/src/index"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     require("node_modules/reflect-decorator/src/index");
@@ -264,8 +314,17 @@ res[6] = (function (require, exports) {
         }
     }
     exports.DependencyInjector = DependencyInjector;
-})(require.bind(null, "node_modules/dependency-injection/src/"),res[6],res[5]) || res[6];
-res[7] = (function (require, exports) {
+});
+//# sourceMappingURL=index.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('src/mixin.js', ["require", "exports"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function foreach(item, callback) {
@@ -297,8 +356,23 @@ res[7] = (function (require, exports) {
         return res;
     }
     exports.grep = grep;
-})(require.bind(null, "src/"),res[7]) || res[7];
-res[8] = (function (require, exports) {
+});
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('src/service.js', ["require", "exports", "node_modules/observable/src/index", "node_modules/dependency-injection/src/index", "./mixin"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("node_modules/observable/src/index");
@@ -389,8 +463,17 @@ res[8] = (function (require, exports) {
             key: INotifier
         })
     ], Notifier);
-})(require.bind(null, "src/"),res[8],res[4],res[6],res[7]) || res[8];
-res[9] = (function (require, exports) {
+});
+
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/binder/src/binder.js', ["require", "exports", "node_modules/observable/src/index"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("node_modules/observable/src/index");
@@ -404,11 +487,17 @@ res[9] = (function (require, exports) {
         }
     }
     exports.Binder = Binder;
-})(require.bind(null, "node_modules/binder/src/"),res[9],res[4]) || res[9];
-res[10] = (function anonymous() {
-return $;
-})() || res[10];
-res[11] = (function (require, exports) {
+});
+//# sourceMappingURL=binder.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/binder/src/handler/attr.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const $ = require("node_modules/jquery/dist/jquery");
@@ -429,8 +518,17 @@ res[11] = (function (require, exports) {
         };
     }
     exports.attr = attr;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[11],res[10]) || res[11];
-res[12] = (function (require, exports) {
+});
+//# sourceMappingURL=attr.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/binder/src/handler/change.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const $ = require("node_modules/jquery/dist/jquery");
@@ -443,8 +541,17 @@ res[12] = (function (require, exports) {
         };
     }
     exports.change = change;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[12],res[10]) || res[12];
-res[13] = (function (require, exports) {
+});
+//# sourceMappingURL=change.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/binder/src/handler/click.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const $ = require("node_modules/jquery/dist/jquery");
@@ -457,8 +564,17 @@ res[13] = (function (require, exports) {
         };
     }
     exports.click = click;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[13],res[10]) || res[13];
-res[14] = (function (require, exports) {
+});
+//# sourceMappingURL=click.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/binder/src/handler/text.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const $ = require("node_modules/jquery/dist/jquery");
@@ -472,15 +588,24 @@ res[14] = (function (require, exports) {
         };
     }
     exports.text = text;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[14],res[10]) || res[14];
-res[15] = (function (require, exports) {
+});
+//# sourceMappingURL=text.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/binder/src/handler/value.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const $ = require("node_modules/jquery/dist/jquery");
     function value(valueAccessor) {
         return (element) => {
             var $element = $(element);
-            $element.on("input", () => {
+            $element.change(() => {
                 valueAccessor.set($element.val());
             });
             return () => {
@@ -490,8 +615,17 @@ res[15] = (function (require, exports) {
         };
     }
     exports.value = value;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[15],res[10]) || res[15];
-res[16] = (function (require, exports) {
+});
+//# sourceMappingURL=value.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/binder/src/handler/base/mixin.js', ["require", "exports"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function foreach(item, callback) {
@@ -523,8 +657,17 @@ res[16] = (function (require, exports) {
         return res;
     }
     exports.grep = grep;
-})(require.bind(null, "node_modules/binder/src/handler/base/"),res[16]) || res[16];
-res[17] = (function (require, exports) {
+});
+//# sourceMappingURL=mixin.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/binder/src/handler/options.js', ["require", "exports", "./base/mixin", "node_modules/jquery/dist/jquery"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const mixin_1 = require("./base/mixin");
@@ -547,8 +690,17 @@ res[17] = (function (require, exports) {
         };
     }
     exports.options = options;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[17],res[16],res[10]) || res[17];
-res[18] = (function (require, exports) {
+});
+//# sourceMappingURL=options.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/binder/src/handler/each.js', ["require", "exports", "node_modules/jquery/dist/jquery", "../binder", "./base/mixin"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const $ = require("node_modules/jquery/dist/jquery");
@@ -574,8 +726,17 @@ res[18] = (function (require, exports) {
         };
     }
     exports.each = each;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[18],res[10],res[9],res[16]) || res[18];
-res[19] = (function (require, exports) {
+});
+//# sourceMappingURL=each.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/binder/src/handler/class.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const $ = require("node_modules/jquery/dist/jquery");
@@ -596,8 +757,17 @@ res[19] = (function (require, exports) {
         };
     }
     exports.classes = classes;
-})(require.bind(null, "node_modules/binder/src/handler/"),res[19],res[10]) || res[19];
-res[20] = (function (require, exports) {
+});
+//# sourceMappingURL=class.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/binder/src/handlers.js', ["require", "exports", "./handler/attr", "./handler/change", "./handler/click", "./handler/text", "./handler/value", "./handler/options", "./handler/each", "./handler/class"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     function __export(m) {
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -611,8 +781,17 @@ res[20] = (function (require, exports) {
     __export(require("./handler/options"));
     __export(require("./handler/each"));
     __export(require("./handler/class"));
-})(require.bind(null, "node_modules/binder/src/"),res[20],res[11],res[12],res[13],res[14],res[15],res[17],res[18],res[19]) || res[20];
-res[21] = (function (require, exports) {
+});
+//# sourceMappingURL=handlers.js.map
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('node_modules/binder/src/index.js', ["require", "exports", "node_modules/observable/src/index", "./binder", "./handlers"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     function __export(m) {
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -621,8 +800,23 @@ res[21] = (function (require, exports) {
     __export(require("node_modules/observable/src/index"));
     __export(require("./binder"));
     __export(require("./handlers"));
-})(require.bind(null, "node_modules/binder/src/"),res[21],res[4],res[9],res[20]) || res[21];
-res[22] = (function (require, exports) {
+});
+//# sourceMappingURL=index.js.map
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('src/view.js', ["require", "exports", "node_modules/binder/src/index", "./service", "./mixin", "node_modules/jquery/dist/jquery"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("node_modules/binder/src/index");
@@ -646,7 +840,11 @@ res[22] = (function (require, exports) {
                     })();
                 })
             });
-            service_1.Injectable({ key: constructor, registerable: false })(constructor, metadata);
+            var key = constructor;
+            while (key && key.constructor !== key) {
+                service_1.Injectable({ key: key, registerable: false })(constructor, metadata);
+                key = Object.getPrototypeOf(key);
+            }
         };
     }
     exports.View = View;
@@ -729,8 +927,17 @@ res[22] = (function (require, exports) {
         };
     }
     exports.dom = dom;
-})(require.bind(null, "src/"),res[22],res[21],res[8],res[7],res[10]) || res[22];
-return res[23] = (function (require, exports) {
+});
+
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('src/index.js', ["require", "exports", "./service", "./view", "node_modules/jquery/dist/jquery", "node_modules/binder/src/index", "node_modules/dependency-injection/src/index", "./view", "./service"], factory);
+    }
+})(function (require, exports) {
     "use strict";
     function __export(m) {
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -761,5 +968,6 @@ return res[23] = (function (require, exports) {
         viewProvider.getNode(viewProvider.newInstance(view)).then((el) => $(selector).append(el));
     }
     exports.startup = startup;
-})(require.bind(null, "src/"),res[23],res[8],res[22],res[10],res[21],res[6],res[22],res[8]) || res[23];
-}, typeof window !== 'undefined' && (window.Artist = {}) || {})
+});
+
+})(typeof define !== 'undefined' && define, typeof require !== 'undefined' && require)

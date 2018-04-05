@@ -38,7 +38,11 @@ export function View<T>(options: ViewOption<T>) {
             })
         });
 
-        (<any>Injectable({ key: constructor, registerable: false }))(<any>constructor, metadata);
+		var key = constructor;
+		while (key && key.constructor !== key) {
+			(<any>Injectable({ key: key, registerable: false }))(<any>constructor, metadata);
+			key = Object.getPrototypeOf(key);
+		}
     };
 }
 

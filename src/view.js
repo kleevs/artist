@@ -36,7 +36,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                     })();
                 })
             });
-            service_1.Injectable({ key: constructor, registerable: false })(constructor, metadata);
+            var key = constructor;
+            while (key && key.constructor !== key) {
+                service_1.Injectable({ key: key, registerable: false })(constructor, metadata);
+                key = Object.getPrototypeOf(key);
+            }
         };
     }
     exports.View = View;
@@ -120,4 +124,3 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     }
     exports.dom = dom;
 });
-//# sourceMappingURL=view.js.map

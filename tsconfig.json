@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "code",    
     "experimentalDecorators": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "declaration": true,
     "module": "umd",
     "moduleResolution": "classic",
