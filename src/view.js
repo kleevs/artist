@@ -23,7 +23,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     function View(options) {
         return (constructor, metadata) => {
             options = constructor.prototype.__view__option__ = $.extend(true, constructor.prototype.__view__option__, options);
-            registeredView.push({
+            var viewType;
+            registeredView.push(viewType = {
                 construct: constructor,
                 binding: options.binding,
                 html: new Promise((resolve, reject) => {
@@ -38,7 +39,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             });
             var key = constructor;
             while (key && key.constructor !== key) {
-                service_1.Injectable({ key: key, registerable: false })(constructor, metadata);
+                service_1.Injectable({ key: key, registerable: false, initialize: (view) => {
+                        var binding = viewType.binding;
+                        view && view.initialize && view.initialize();
+                        viewType && (view.__elt__ = viewType.html.then(template => {
+                            var t = $(template);
+                            t.attr("artist-view", true);
+                            mixin_1.foreach(binding, (valueAccessor, selector) => {
+                                (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
+                                    var binder = valueAccessor(view);
+                                    var binders = binder && !(binder instanceof Array) && [binder] || binder;
+                                    binders.forEach(b => new index_1.Binder(el).bind(b));
+                                });
+                            });
+                            t[0].__view__ = view;
+                            return t[0];
+                        }));
+                    } })(constructor, metadata);
                 key = Object.getPrototypeOf(key);
             }
         };
@@ -51,21 +68,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         newInstance(type, arg) {
             var viewType = type && mixin_1.grep(registeredView, (view) => view.construct.prototype instanceof type || type === view.construct)[0];
             var view = viewType && (service_1.serviceProvider && service_1.config.getService(viewType.construct) && service_1.serviceProvider.createService(viewType.construct) || new viewType.construct());
-            var binding = viewType.binding;
-            view && view.initialize && view.initialize(arg);
-            viewType && (view.__elt__ = viewType.html.then(template => {
-                var t = $(template);
-                t.attr("artist-view", true);
-                mixin_1.foreach(binding, (valueAccessor, selector) => {
-                    (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
-                        var binder = valueAccessor(view);
-                        var binders = binder && !(binder instanceof Array) && [binder] || binder;
-                        binders.forEach(b => new index_1.Binder(el).bind(b));
-                    });
-                });
-                t[0].__view__ = view;
-                return t[0];
-            }));
             return view;
         }
         map(type) {
