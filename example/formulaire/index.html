@@ -16,9 +16,9 @@
     <script src="/node_modules/amd-loader/dist/amd-loader.js"></script>
     <script>
         require.config({
-            paths: { 
-                node_modules: "../../node_modules" 
-            }
+            path: [
+                { test: /^\/?(node_modules\/*)/, result: "/$1" } 
+            ]
         });
         require('/formulaire/config');
     </script>
