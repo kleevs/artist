@@ -39,7 +39,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             });
             var key = constructor;
             while (key && key.constructor !== key) {
-                service_1.Injectable({ key: key, registerable: false, initialize: (view) => {
+                service_1.Injectable({
+                    key: key,
+                    registerable: false,
+                    initialize: (view) => {
                         var binding = viewType.binding;
                         view && view.initialize && view.initialize();
                         viewType && (view.__elt__ = viewType.html.then(template => {
@@ -55,7 +58,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                             t[0].__view__ = view;
                             return t[0];
                         }));
-                    } })(constructor, metadata);
+                    }
+                })(constructor, metadata);
                 key = Object.getPrototypeOf(key);
             }
         };

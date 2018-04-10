@@ -235,19 +235,6 @@ var define = (function() {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     require("node_modules/reflect-decorator/src/index");
-    function foreach(item, callback) {
-        let i;
-        if (item instanceof Array) {
-            for (i = 0; i < item.length; i++) {
-                callback(item[i], i);
-            }
-        }
-        else {
-            for (i in item) {
-                callback(item[i], i);
-            }
-        }
-    }
     class IProvider {
     }
     exports.IProvider = IProvider;
@@ -265,7 +252,10 @@ var define = (function() {
             data && data.parameters && data.parameters.forEach((key) => {
                 param.push(this.getService(key));
             });
-            return data.value ? (param.length <= 0 ? new data.value() : new (data.value.bind.apply(data.value, [null].concat(param)))()) : undefined;
+            return data.value ?
+                (param.length <= 0 ?
+                    new data.value() :
+                    new (data.value.bind.apply(data.value, [null].concat(param)))()) : undefined;
         }
         createService(key, parameters) {
             let instance;
@@ -290,11 +280,26 @@ var define = (function() {
             this._register = [];
         }
         addService(key, value, options) {
-            this._register.unshift({ key: key, value: value, parameters: options.parameters, registerable: options.registerable, initialize: options.initialize });
+            this._register.unshift({
+                key: key,
+                value: value,
+                parameters: options.parameters,
+                registerable: options.registerable,
+                initialize: options.initialize,
+                test: options.test
+            });
         }
         getService(key) {
-            return this._register.filter((item) => item.key === key).map((item) => {
-                return { value: item.value, parameters: item.parameters, registerable: item.registerable, initialize: item.initialize };
+            return this._register
+                .filter((item) => item.key === key)
+                .filter(item => !item.test || item.test(item.value))
+                .map((item) => {
+                return {
+                    value: item.value,
+                    parameters: item.parameters,
+                    registerable: item.registerable,
+                    initialize: item.initialize
+                };
             })[0];
         }
     }
@@ -311,7 +316,8 @@ var define = (function() {
                     this._config.addService(options.key, target, {
                         parameters: metadata && metadata["design:paramtypes"] || [],
                         registerable: options.registerable || options.registerable === undefined,
-                        initialize: options.initialize
+                        initialize: options.initialize,
+                        test: options.test
                     });
                 };
                 return res;
@@ -849,7 +855,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             });
             var key = constructor;
             while (key && key.constructor !== key) {
-                service_1.Injectable({ key: key, registerable: false, initialize: (view) => {
+                service_1.Injectable({
+                    key: key,
+                    registerable: false,
+                    initialize: (view) => {
                         var binding = viewType.binding;
                         view && view.initialize && view.initialize();
                         viewType && (view.__elt__ = viewType.html.then(template => {
@@ -865,7 +874,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                             t[0].__view__ = view;
                             return t[0];
                         }));
-                    } })(constructor, metadata);
+                    }
+                })(constructor, metadata);
                 key = Object.getPrototypeOf(key);
             }
         };

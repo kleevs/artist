@@ -41,25 +41,29 @@ export function View<T>(options: ViewOption<T>) {
 
 		var key = constructor;
 		while (key && key.constructor !== key) {
-			(<any>Injectable({ key: key, registerable: false, initialize: (view) => {
-				var binding = viewType.binding;
+			(<any>Injectable({ 
+				key: key, 
+				registerable: false, 
+				initialize: (view) => {
+					var binding = viewType.binding;
 
-				view && view.initialize && view.initialize();
-				viewType && (view.__elt__ = viewType.html.then(template => {
-					var t = $(template);
-					t.attr("artist-view", true);
-					foreach(binding, (valueAccessor, selector) => {
-						(selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
-							var binder = valueAccessor(view);
-							var binders = binder && !(binder instanceof Array) && [binder] || binder;
-							binders.forEach(b => new Binder(el).bind(b));
+					view && view.initialize && view.initialize();
+					viewType && (view.__elt__ = viewType.html.then(template => {
+						var t = $(template);
+						t.attr("artist-view", true);
+						foreach(binding, (valueAccessor, selector) => {
+							(selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
+								var binder = valueAccessor(view);
+								var binders = binder && !(binder instanceof Array) && [binder] || binder;
+								binders.forEach(b => new Binder(el).bind(b));
+							});
 						});
-					});
 
-					t[0].__view__ = view;
-					return t[0];
-				}));
-			}}))(<any>constructor, metadata);
+						t[0].__view__ = view;
+						return t[0];
+					}));
+				}
+			}))(<any>constructor, metadata);
 			key = Object.getPrototypeOf(key);
 		}
     };

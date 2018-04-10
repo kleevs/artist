@@ -7,6 +7,7 @@ export declare let Injectable: <TKey, TValue extends TKey>(options: {
     };
     registerable?: boolean;
     initialize?: (instance: TKey) => void;
+    test?: (serviceClass: any) => boolean;
 }) => (target: new (...arg: any[]) => TValue) => void;
 export declare abstract class IObservablizer {
     abstract convert<T>(value: T & {}): T;
