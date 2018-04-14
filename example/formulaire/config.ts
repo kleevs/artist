@@ -1,4 +1,12 @@
-import { startup } from '../../dist/artist';
-import { ILayout } from './layout/layout';
+declare let AMDLoader;
 
-startup("[layout]", ILayout);
+let conf = {
+    path: [
+        { test: /^\/jquery/, result: "/node_modules/jquery/dist/jquery" } ,
+        { test: /^\/?(node_modules\/*)/, result: "/$1" } 
+    ]
+};
+
+export default conf;
+
+typeof AMDLoader !== "undefined" && AMDLoader && AMDLoader.config(conf);

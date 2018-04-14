@@ -4,7 +4,7 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./service", "./view", "node_modules/jquery/dist/jquery", "node_modules/binder/src/index", "node_modules/dependency-injection/src/index", "./view", "./service"], factory);
+        define(["require", "exports", "./service", "./view", "node_modules/amd-loader/src/index", "node_modules/jquery/dist/jquery", "node_modules/binder/src/index", "node_modules/dependency-injection/src/index", "./view", "./service"], factory);
     }
 })(function (require, exports) {
     "use strict";
@@ -14,6 +14,7 @@
     Object.defineProperty(exports, "__esModule", { value: true });
     const service_1 = require("./service");
     const view_1 = require("./view");
+    const index_1 = require("node_modules/amd-loader/src/index");
     const $ = require("node_modules/jquery/dist/jquery");
     __export(require("node_modules/binder/src/index"));
     __export(require("node_modules/dependency-injection/src/index"));
@@ -37,4 +38,17 @@
         viewProvider.getNode(viewProvider.newInstance(view)).then((el) => $(selector).append(el));
     }
     exports.startup = startup;
+    if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {
+        var scripts = document.getElementsByTagName('script');
+        var script = scripts[scripts.length - 1];
+        var configFileName = script.getAttribute("config");
+        var mainFileName = script.getAttribute("main");
+        var placeHolder = script.getAttribute("placeholder");
+        index_1.define(script.src, [], () => { return exports; })();
+        placeHolder && ((configFileName && index_1.load(configFileName).then((conf) => index_1.config(conf && conf.default || {})) || Promise.resolve())
+            .then(() => index_1.load(mainFileName).then(modules => {
+            var clss = modules[Object.keys(modules)[0]];
+            clss && startup(placeHolder, clss);
+        })));
+    }
 });

@@ -70,7 +70,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     exports.IViewProvider = IViewProvider;
     let ViewProvider = class ViewProvider {
         newInstance(type, arg) {
-            var viewType = type && mixin_1.grep(registeredView, (view) => view.construct.prototype instanceof type || type === view.construct)[0];
+            var viewType = type && mixin_1.grep(registeredView, (view) => (view.construct.prototype instanceof type) || (type === view.construct))[0];
             var view = viewType && (service_1.serviceProvider && service_1.config.getService(viewType.construct) && service_1.serviceProvider.createService(viewType.construct) || new viewType.construct());
             return view;
         }

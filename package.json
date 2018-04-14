@@ -13,12 +13,12 @@
   "dependencies": {
     "jquery": "^3.2.1",
     "dependency-injection": "git+https://github.com/kleevs/dependency-injection.git",
+    "amd-loader": "git+https://github.com/kleevs/amd-loader.git",
     "binder": "git+https://github.com/kleevs/binder.git" 
   },
   "devDependencies": {
     "@types/node": "^7.0.14",
     "bootstrap": "^3.3.7",
-    "amd-loader": "git+https://github.com/kleevs/amd-loader.git",
     "server": "git+https://github.com/kleevs/server.git"
   },
   "repository": {

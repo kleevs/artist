@@ -12,11 +12,7 @@
     <div layout class="container">
 
     </div>
-    <script src="/node_modules/amd-loader/dist/amd-loader.js"></script>
-    <script>
-        AMDLoader.load('/formulaire/config').then(function() {
-            AMDLoader.load('/formulaire/startup');
-        });
-    </script>
+    <script src="/node_modules/jquery/dist/jquery.js"></script>
+    <script src="/dist/artist.js" placeholder="[layout]" config="/formulaire/config" main="/formulaire/layout/layout"></script>
 </body>
 </html>

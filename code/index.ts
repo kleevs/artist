@@ -1,6 +1,9 @@
 import { serviceProvider } from './service';
 import { IViewProvider } from './view';
+import { load, config, define } from 'node_modules/amd-loader/src/index';
 import * as $ from 'node_modules/jquery/dist/jquery';
+
+declare let __META__: any;
 
 export * from 'node_modules/binder/src/index';
 export * from 'node_modules/dependency-injection/src/index';
@@ -30,4 +33,20 @@ export function startup(selector, view) {
     observer.observe($("body")[0], { childList: true, subtree: true });
 	var viewProvider = serviceProvider.getService(IViewProvider);
     viewProvider.getNode(viewProvider.newInstance(view)).then((el) => $(selector).append(el));
+}
+
+if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {
+    var scripts = document.getElementsByTagName('script');
+    var script = scripts[scripts.length-1];
+    var configFileName = script.getAttribute("config");
+    var mainFileName = script.getAttribute("main");
+    var placeHolder = script.getAttribute("placeholder");
+    define(script.src, [], () => { return exports; })();
+    placeHolder && (
+        (configFileName && load(configFileName).then((conf: any) => config(conf && conf.default || {})) || Promise.resolve())
+            .then(() => load(mainFileName).then(modules => {
+                var clss = modules[Object.keys(modules)[0]];
+                clss && startup(placeHolder, clss);
+            }))
+    );
 }

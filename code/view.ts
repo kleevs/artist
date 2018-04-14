@@ -84,7 +84,7 @@ class ViewProvider {
 	public newInstance<T>(type: Function & { prototype: T }): T;
 	public newInstance<T>(type: Function & { prototype: T }, arg: any): T;
     public newInstance<T>(type: Function & { prototype: T }, arg?: any): T {
-        var viewType = type && grep(registeredView, (view) => view.construct.prototype instanceof type || type === view.construct)[0];
+        var viewType = type && grep(registeredView, (view) => (view.construct.prototype instanceof type) || (type === view.construct))[0];
         var view = viewType && (serviceProvider && config.getService(viewType.construct) && serviceProvider.createService(viewType.construct) || new viewType.construct());
 		return view;
     }

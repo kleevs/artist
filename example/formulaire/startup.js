@@ -4,18 +4,13 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports"], factory);
+        define(["require", "exports", "../../dist/artist", "./layout/layout"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    let conf = {
-        path: [
-            { test: /^\/jquery/, result: "/node_modules/jquery/dist/jquery" },
-            { test: /^\/?(node_modules\/*)/, result: "/$1" }
-        ]
-    };
-    exports.default = conf;
-    typeof AMDLoader !== "undefined" && AMDLoader && AMDLoader.config(conf);
+    const artist_1 = require("../../dist/artist");
+    const layout_1 = require("./layout/layout");
+    artist_1.startup("[layout]", layout_1.ILayout);
 });
-//# sourceMappingURL=config.js.map
+//# sourceMappingURL=startup.js.map
