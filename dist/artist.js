@@ -1081,7 +1081,7 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/index.js', ["require", "exports", "./service", "./view", "node_modules/amd-loader/src/index", "node_modules/jquery/dist/jquery", "node_modules/binder/src/index", "node_modules/dependency-injection/src/index", "./view", "./service"], factory);
+	        define('src/index.js', ["require", "exports", "./service", "./view", "node_modules/amd-loader/src/index", "node_modules/jquery/dist/jquery", "node_modules/amd-loader/src/index", "node_modules/binder/src/index", "node_modules/dependency-injection/src/index", "./view", "./service"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
@@ -1093,6 +1093,8 @@ __MODE__ = undefined;
 	    const view_1 = require("./view");
 	    const index_1 = require("node_modules/amd-loader/src/index");
 	    const $ = require("node_modules/jquery/dist/jquery");
+	    var index_2 = require("node_modules/amd-loader/src/index");
+	    exports.load = index_2.load;
 	    __export(require("node_modules/binder/src/index"));
 	    __export(require("node_modules/dependency-injection/src/index"));
 	    __export(require("./view"));
