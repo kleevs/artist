@@ -40,13 +40,13 @@ if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {
     var scripts = document.getElementsByTagName('script');
     var script = scripts[scripts.length-1];
     var configFileName = script.getAttribute("config");
-    var mainFileName = script.getAttribute("main");
+    var mainFileName = script.getAttribute("startup");
     var placeHolder = script.getAttribute("placeholder");
     define(script.src, [], () => { return exports; })();
     placeHolder && (
         (configFileName && load(configFileName).then((conf: any) => config(conf && conf.default || {})) || Promise.resolve())
-            .then(() => load(mainFileName).then(modules => {
-                var clss = modules[Object.keys(modules)[0]];
+            .then(() => (mainFileName && load(mainFileName) || Promise.resolve(null)).then(modules => {
+                var clss = modules && modules[Object.keys(modules)[0]];
                 clss && startup(placeHolder, clss);
             }))
     );

@@ -34,8 +34,25 @@ __MODE__ = undefined;
 	var define = (function() {
 		var paths = [{ test: /^\/?(node_modules\/*)/, result: "/$1" }];
 		var modules = {};
+		var normalize = function (path) {
+			var tmp = path.split("/");
+			var i = 0;
+			var last = -1;
+			while (i <tmp.length) {
+				if (tmp[i] === "..") {
+					tmp[i] = ".";
+					last > 0 && (tmp[last] = ".");
+					last-=2;
+				} else if (tmp[i] === ".") {
+					last--;
+				}
+				last++;
+				i++;
+			}
+
+			return tmp.filter(_ => _ !== ".").join("/");
+		}
 		var getUri = function(uri, context) {
-			var link = document.createElement("a");
 			paths.some(path => {
 				if (uri.match(path.test)) {
 					uri = uri.replace(path.test, path.result);
@@ -43,9 +60,10 @@ __MODE__ = undefined;
 				}
 			});
 			var href = (uri && !uri.match(/^\//) && context && context.replace(/(\/?)[^\/]*$/, '$1') || '') + uri;
-			var res = href.replace(/^\/?(.*)$/, '/$1.js');
-			link.href = res.replace(/\\/gi, "/");
-			return link.pathname.replace(/^\//, '');
+			href = href.replace(/^\/?(.*)$/, '/$1.js');
+			href = href.replace(/\\/gi, "/");
+			href = normalize(href);
+			return href.replace(/^\//, '');
 		}
 
 		var define = function (id, dependencies, factory) {
@@ -994,8 +1012,25 @@ __MODE__ = undefined;
 	    var allmodules = { "...": {} };
 	    var loadedmodules = {};
 	    var configuration;
+	    var normalize = function (path) {
+	        var tmp = path.split("/");
+	        var i = 0;
+	        var last = -1;
+	        while (i < tmp.length) {
+	            if (tmp[i] === "..") {
+	                tmp[i] = ".";
+	                last > 0 && (tmp[last] = ".");
+	                last -= 2;
+	            }
+	            else if (tmp[i] === ".") {
+	                last--;
+	            }
+	            last++;
+	            i++;
+	        }
+	        return tmp.filter(_ => _ !== ".").join("/");
+	    };
 	    var getAbsoluteUri = (uri, context) => {
-	        var link = document.createElement("a");
 	        if (configuration && configuration.path) {
 	            configuration.path.some(path => {
 	                if (uri.match(path.test)) {
@@ -1004,8 +1039,10 @@ __MODE__ = undefined;
 	                }
 	            });
 	        }
-	        link.href = (uri && !uri.match(/^\//) && context && context.replace(/(\/?)[^\/]*$/, '$1') || '') + uri;
-	        return link.href.replace(/^(.*)$/, '$1.js');
+	        var href = (uri && !uri.match(/^\//) && context && context.replace(/(\/?)[^\/]*$/, '$1') || '') + uri;
+	        href = href.replace(/^(.*)$/, '$1.js');
+	        href = normalize(href);
+	        return href;
 	    };
 	    function load(uri) {
 	        return new Promise(resolve => {
@@ -1038,10 +1075,11 @@ __MODE__ = undefined;
 	                if (dependency === "exports")
 	                    return exp = {};
 	                var src = getAbsoluteUri(dependency, context);
+	                var script = document.createElement('script');
+	                script.src = src;
+	                src = script.src;
+	                script.async = true;
 	                return allmodules[src] = allmodules[src] || new Promise(resolve => {
-	                    var script = document.createElement('script');
-	                    script.async = true;
-	                    script.src = src;
 	                    document.head.appendChild(script);
 	                    script.onload = script.onreadystatechange = () => {
 	                        allmodules[src] = allmodules["..."]["..."];
@@ -1121,12 +1159,12 @@ __MODE__ = undefined;
 	        var scripts = document.getElementsByTagName('script');
 	        var script = scripts[scripts.length - 1];
 	        var configFileName = script.getAttribute("config");
-	        var mainFileName = script.getAttribute("main");
+	        var mainFileName = script.getAttribute("startup");
 	        var placeHolder = script.getAttribute("placeholder");
 	        index_1.define(script.src, [], () => { return exports; })();
 	        placeHolder && ((configFileName && index_1.load(configFileName).then((conf) => index_1.config(conf && conf.default || {})) || Promise.resolve())
-	            .then(() => index_1.load(mainFileName).then(modules => {
-	            var clss = modules[Object.keys(modules)[0]];
+	            .then(() => (mainFileName && index_1.load(mainFileName) || Promise.resolve(null)).then(modules => {
+	            var clss = modules && modules[Object.keys(modules)[0]];
 	            clss && startup(placeHolder, clss);
 	        })));
 	    }

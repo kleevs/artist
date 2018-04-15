@@ -44,12 +44,12 @@
         var scripts = document.getElementsByTagName('script');
         var script = scripts[scripts.length - 1];
         var configFileName = script.getAttribute("config");
-        var mainFileName = script.getAttribute("main");
+        var mainFileName = script.getAttribute("startup");
         var placeHolder = script.getAttribute("placeholder");
         index_1.define(script.src, [], () => { return exports; })();
         placeHolder && ((configFileName && index_1.load(configFileName).then((conf) => index_1.config(conf && conf.default || {})) || Promise.resolve())
-            .then(() => index_1.load(mainFileName).then(modules => {
-            var clss = modules[Object.keys(modules)[0]];
+            .then(() => (mainFileName && index_1.load(mainFileName) || Promise.resolve(null)).then(modules => {
+            var clss = modules && modules[Object.keys(modules)[0]];
             clss && startup(placeHolder, clss);
         })));
     }
