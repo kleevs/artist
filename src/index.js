@@ -49,7 +49,7 @@
         index_1.define(script.src, [], () => { return exports; })();
         placeHolder && ((configFileName && index_1.load(configFileName).then((conf) => index_1.config(conf && conf.default || {})) || Promise.resolve())
             .then(() => (mainFileName && index_1.load(mainFileName) || Promise.resolve(null)).then(modules => {
-            var clss = modules && modules[Object.keys(modules)[0]];
+            var clss = modules && modules[Object.keys(modules).filter(_ => _.indexOf("_") !== 0)[0]];
             clss && startup(placeHolder, clss);
         })));
     }

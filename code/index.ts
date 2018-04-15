@@ -46,7 +46,7 @@ if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {
     placeHolder && (
         (configFileName && load(configFileName).then((conf: any) => config(conf && conf.default || {})) || Promise.resolve())
             .then(() => (mainFileName && load(mainFileName) || Promise.resolve(null)).then(modules => {
-                var clss = modules && modules[Object.keys(modules)[0]];
+                var clss = modules && modules[Object.keys(modules).filter(_ => _.indexOf("_") !== 0)[0]];
                 clss && startup(placeHolder, clss);
             }))
     );
