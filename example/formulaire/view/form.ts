@@ -1,5 +1,4 @@
-import { text, value, click } from 'node_modules/binder/src/index';
-import { View, Event, IObservablizer, INotifier } from '../../../dist/artist';
+import { View, Event, IObservablizer, INotifier, text, value, click } from 'artist';
 import { User } from '../model/user';
 
 export abstract class IForm {

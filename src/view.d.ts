@@ -1,10 +1,11 @@
+import { IServiceProvider } from './service';
 import { Event } from 'index';
 export declare type ViewOption<TModel> = {
     selector?: string;
     template?: string;
     html?: string;
     binding?: {
-        [s: string]: (model: TModel) => ((element) => () => any) | ((element) => () => any)[];
+        [s: string]: (model: TModel) => ((element, serviceProvider?: IServiceProvider) => () => any) | ((element, serviceProvider?: IServiceProvider) => () => any)[];
     };
 };
 export declare function View<T>(options: ViewOption<T>): (constructor: Function, metadata?: any) => void;
@@ -21,8 +22,8 @@ export declare abstract class IViewProvider {
     abstract getNode(view: any): Promise<Element>;
     abstract getView(element: Element): any;
 }
-export declare function view(valueAccessor: () => any): (element: any) => () => void;
+export declare function view(valueAccessor: () => any): (element: any, serviceProvider: any) => () => void;
 export declare function dom(option: {
     in: (e: Event) => void;
     out: (e: Event) => void;
-}): (element: any) => () => void;
+}): (element: any, serviceProvider: any) => () => void;

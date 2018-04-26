@@ -13,12 +13,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../../../dist/artist", "../view/form", "../view/detail", "../view/list", "../view/saved"], factory);
+        define(["require", "exports", "artist", "../view/form", "../view/detail", "../view/list", "../view/saved"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const artist_1 = require("../../../dist/artist");
+    const artist_1 = require("artist");
     const form_1 = require("../view/form");
     const detail_1 = require("../view/detail");
     const list_1 = require("../view/list");

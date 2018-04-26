@@ -13,13 +13,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/binder/src/index", "../../../dist/artist", "../model/user"], factory);
+        define(["require", "exports", "artist", "../model/user"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("node_modules/binder/src/index");
-    const artist_1 = require("../../../dist/artist");
+    const artist_1 = require("artist");
     const user_1 = require("../model/user");
     class IDetail {
     }
@@ -37,10 +36,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         artist_1.View({
             template: "formulaire/tmpl/detail.html",
             binding: {
-                "[panel-title]": (view) => index_1.text(() => "Detail"),
-                "#last": (view) => index_1.value({ get: () => view.observable.user.last, set: (v) => view.observable.user.last = v }),
-                "#first": (view) => index_1.value({ get: () => view.observable.user.first, set: (v) => view.observable.user.first = v }),
-                "#age": (view) => index_1.value({ get: () => (view.observable.user.age || '').toString(), set: (v) => view.observable.user.age = parseInt(v) || undefined })
+                "[panel-title]": (view) => artist_1.text(() => "Detail"),
+                "#last": (view) => artist_1.value({ get: () => view.observable.user.last, set: (v) => view.observable.user.last = v }),
+                "#first": (view) => artist_1.value({ get: () => view.observable.user.first, set: (v) => view.observable.user.first = v }),
+                "#age": (view) => artist_1.value({ get: () => (view.observable.user.age || '').toString(), set: (v) => view.observable.user.age = parseInt(v) || undefined })
             }
         }),
         __metadata("design:paramtypes", [artist_1.IObservablizer])

@@ -23,19 +23,4 @@
         }
     }
     exports.foreach = foreach;
-    function map(array, parse) {
-        let res = [];
-        foreach(array, (x) => { res.push(parse(x)); return false; });
-        return res;
-    }
-    exports.map = map;
-    function grep(array, predicate) {
-        let i, res = [];
-        for (i = 0; i < array.length; i++) {
-            if (predicate(array[i], i))
-                res.push(array[i]);
-        }
-        return res;
-    }
-    exports.grep = grep;
 });

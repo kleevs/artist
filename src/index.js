@@ -4,7 +4,7 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./service", "./view", "node_modules/amd-loader/src/index", "node_modules/jquery/dist/jquery", "node_modules/amd-loader/src/index", "node_modules/binder/src/index", "node_modules/dependency-injection/src/index", "./view", "./service"], factory);
+        define(["require", "exports", "./service", "./view", "node_modules/amd-loader/src/index", "node_modules/jquery/dist/jquery", "node_modules/amd-loader/src/index", "node_modules/binder/src/index", "./view", "./service"], factory);
     }
 })(function (require, exports) {
     "use strict";
@@ -19,9 +19,17 @@
     var index_2 = require("node_modules/amd-loader/src/index");
     exports.load = index_2.load;
     __export(require("node_modules/binder/src/index"));
-    __export(require("node_modules/dependency-injection/src/index"));
-    __export(require("./view"));
-    __export(require("./service"));
+    var view_2 = require("./view");
+    exports.View = view_2.View;
+    exports.view = view_2.view;
+    exports.dom = view_2.dom;
+    exports.IViewProvider = view_2.IViewProvider;
+    var service_2 = require("./service");
+    exports.IServiceProvider = service_2.IServiceProvider;
+    exports.INotifier = service_2.INotifier;
+    exports.IObservablizer = service_2.IObservablizer;
+    exports.Service = service_2.Service;
+    exports.Event = service_2.Event;
     function startup(selector, view) {
         var observer = new MutationObserver((records) => {
             records.forEach(record => {

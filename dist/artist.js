@@ -403,21 +403,6 @@ __MODE__ = undefined;
 	        }
 	    }
 	    exports.foreach = foreach;
-	    function map(array, parse) {
-	        let res = [];
-	        foreach(array, (x) => { res.push(parse(x)); return false; });
-	        return res;
-	    }
-	    exports.map = map;
-	    function grep(array, predicate) {
-	        let i, res = [];
-	        for (i = 0; i < array.length; i++) {
-	            if (predicate(array[i], i))
-	                res.push(array[i]);
-	        }
-	        return res;
-	    }
-	    exports.grep = grep;
 	});
 	
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -443,13 +428,26 @@ __MODE__ = undefined;
 	    var injector = new index_2.DependencyInjector();
 	    exports.config = injector.getConfig();
 	    exports.serviceProvider = injector.getProvider();
-	    exports.Injectable = injector.getDecorator();
+	    exports.Service = injector.getDecorator();
+	    class IServiceProvider {
+	    }
+	    exports.IServiceProvider = IServiceProvider;
 	    class IObservablizer {
 	    }
 	    exports.IObservablizer = IObservablizer;
 	    class INotifier {
 	    }
 	    exports.INotifier = INotifier;
+	    let ServiceProvider = class ServiceProvider extends IServiceProvider {
+	        getService(type) {
+	            return exports.serviceProvider.getService(type);
+	        }
+	    };
+	    ServiceProvider = __decorate([
+	        exports.Service({
+	            key: IServiceProvider
+	        })
+	    ], ServiceProvider);
 	    let Observablizer = class Observablizer extends IObservablizer {
 	        convert(value) {
 	            var res = value && Object.create(value) || undefined;
@@ -483,7 +481,7 @@ __MODE__ = undefined;
 	        }
 	    };
 	    Observablizer = __decorate([
-	        exports.Injectable({
+	        exports.Service({
 	            key: IObservablizer
 	        })
 	    ], Observablizer);
@@ -521,7 +519,7 @@ __MODE__ = undefined;
 	        }
 	    };
 	    Notifier = __decorate([
-	        exports.Injectable({
+	        exports.Service({
 	            key: INotifier
 	        })
 	    ], Notifier);
@@ -540,11 +538,12 @@ __MODE__ = undefined;
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    const index_1 = require("node_modules/observable/src/index");
 	    class Binder {
-	        constructor(element) {
+	        constructor(element, data = undefined) {
 	            this.element = element;
+	            this.data = data;
 	        }
 	        bind(callback) {
-	            var fn = callback(this.element, this);
+	            var fn = callback(this.element, this.data, this);
 	            index_1.blind(() => index_1.observer(() => fn()));
 	        }
 	    }
@@ -906,7 +905,7 @@ __MODE__ = undefined;
 	            });
 	            var key = constructor;
 	            while (key && key.constructor !== key) {
-	                service_1.Injectable({
+	                service_1.Service({
 	                    key: key,
 	                    registerable: false,
 	                    initialize: (view) => {
@@ -919,7 +918,7 @@ __MODE__ = undefined;
 	                                (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
 	                                    var binder = valueAccessor(view);
 	                                    var binders = binder && !(binder instanceof Array) && [binder] || binder;
-	                                    binders.forEach(b => new index_1.Binder(el).bind(b));
+	                                    binders.forEach(b => new index_1.Binder(el, service_1.serviceProvider).bind(b));
 	                                });
 	                            });
 	                            t[0].__view__ = view;
@@ -937,7 +936,7 @@ __MODE__ = undefined;
 	    exports.IViewProvider = IViewProvider;
 	    let ViewProvider = class ViewProvider {
 	        newInstance(type, arg) {
-	            var viewType = type && mixin_1.grep(registeredView, (view) => (view.construct.prototype instanceof type) || (type === view.construct))[0];
+	            var viewType = type && registeredView.filter((view) => (view.construct.prototype instanceof type) || (type === view.construct))[0];
 	            var view = viewType && (service_1.serviceProvider && service_1.config.getService(viewType.construct) && service_1.serviceProvider.createService(viewType.construct) || new viewType.construct());
 	            return view;
 	        }
@@ -952,12 +951,12 @@ __MODE__ = undefined;
 	        }
 	    };
 	    ViewProvider = __decorate([
-	        service_1.Injectable({
+	        service_1.Service({
 	            key: IViewProvider
 	        })
 	    ], ViewProvider);
 	    function view(valueAccessor) {
-	        return (element) => {
+	        return (element, serviceProvider) => {
 	            var $element = $(element);
 	            $element.html("");
 	            return () => {
@@ -965,7 +964,7 @@ __MODE__ = undefined;
 	                var array = !value || value instanceof Array ? (value || []) : [value];
 	                var $deleted = $("<div>");
 	                var $added = $("<div>");
-	                Promise.all(array.map((item) => service_1.serviceProvider.getService(IViewProvider).getNode(item)))
+	                Promise.all(array.map((item) => serviceProvider.getService(IViewProvider).getNode(item)))
 	                    .then((elts) => {
 	                    $element.children().each((i, el) => {
 	                        $(el).appendTo($deleted);
@@ -980,7 +979,7 @@ __MODE__ = undefined;
 	    }
 	    exports.view = view;
 	    function dom(option) {
-	        return (element) => {
+	        return (element, serviceProvider) => {
 	            var $element = $(element);
 	            $element.on('custom:view:dom:remove', (e) => {
 	                if (e.target === e.currentTarget) {
@@ -1122,7 +1121,7 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/index.js', ["require", "exports", "./service", "./view", "node_modules/amd-loader/src/index", "node_modules/jquery/dist/jquery", "node_modules/amd-loader/src/index", "node_modules/binder/src/index", "node_modules/dependency-injection/src/index", "./view", "./service"], factory);
+	        define('src/index.js', ["require", "exports", "./service", "./view", "node_modules/amd-loader/src/index", "node_modules/jquery/dist/jquery", "node_modules/amd-loader/src/index", "node_modules/binder/src/index", "./view", "./service"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
@@ -1137,9 +1136,17 @@ __MODE__ = undefined;
 	    var index_2 = require("node_modules/amd-loader/src/index");
 	    exports.load = index_2.load;
 	    __export(require("node_modules/binder/src/index"));
-	    __export(require("node_modules/dependency-injection/src/index"));
-	    __export(require("./view"));
-	    __export(require("./service"));
+	    var view_2 = require("./view");
+	    exports.View = view_2.View;
+	    exports.view = view_2.view;
+	    exports.dom = view_2.dom;
+	    exports.IViewProvider = view_2.IViewProvider;
+	    var service_2 = require("./service");
+	    exports.IServiceProvider = service_2.IServiceProvider;
+	    exports.INotifier = service_2.INotifier;
+	    exports.IObservablizer = service_2.IObservablizer;
+	    exports.Service = service_2.Service;
+	    exports.Event = service_2.Event;
 	    function startup(selector, view) {
 	        var observer = new MutationObserver((records) => {
 	            records.forEach(record => {

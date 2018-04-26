@@ -8,6 +8,11 @@
     "moduleResolution": "classic",
     "emitDecoratorMetadata": true,
     "target": "es6",
+    "baseUrl": "./example",
+    "paths": {
+      "artist": ["../dist/artist"],
+      "jquery": ["../node_modules/jquery/dist/jquery"]
+	  },
     "typeRoots": [
       "../node_modules/@types"
     ],

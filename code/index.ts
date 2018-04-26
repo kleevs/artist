@@ -7,9 +7,8 @@ declare let __META__: any;
 
 export { load } from 'node_modules/amd-loader/src/index';
 export * from 'node_modules/binder/src/index';
-export * from 'node_modules/dependency-injection/src/index';
-export * from './view';
-export * from './service';
+export { View, ViewOption, view, dom, IViewProvider } from './view';
+export { IServiceProvider, INotifier, IObservablizer, Service, Event } from './service';
 export function startup(selector, view) {
     var observer = new MutationObserver((records) => {
         records.forEach(record => { 

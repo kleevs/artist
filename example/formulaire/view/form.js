@@ -13,13 +13,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/binder/src/index", "../../../dist/artist", "../model/user"], factory);
+        define(["require", "exports", "artist", "../model/user"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("node_modules/binder/src/index");
-    const artist_1 = require("../../../dist/artist");
+    const artist_1 = require("artist");
     const user_1 = require("../model/user");
     class IForm {
     }
@@ -52,12 +51,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         artist_1.View({
             template: "formulaire/tmpl/form.html",
             binding: {
-                "[panel-title]": (view) => index_1.text(() => "Formulaire"),
-                "#last": (view) => index_1.value({ get: () => view.observable.last, set: (v) => view.observable.last = v }),
-                "#first": (view) => index_1.value({ get: () => view.observable.first, set: (v) => view.observable.first = v }),
-                "#age": (view) => index_1.value({ get: () => (view.observable.age || '').toString(), set: (v) => view.observable.age = parseInt(v) || undefined }),
-                "[data-action=add]": (view) => index_1.click(() => () => view.add() || false),
-                "[data-action=clear]": (view) => index_1.click(() => () => view.clear() || false)
+                "[panel-title]": (view) => artist_1.text(() => "Formulaire"),
+                "#last": (view) => artist_1.value({ get: () => view.observable.last, set: (v) => view.observable.last = v }),
+                "#first": (view) => artist_1.value({ get: () => view.observable.first, set: (v) => view.observable.first = v }),
+                "#age": (view) => artist_1.value({ get: () => (view.observable.age || '').toString(), set: (v) => view.observable.age = parseInt(v) || undefined }),
+                "[data-action=add]": (view) => artist_1.click(() => () => view.add() || false),
+                "[data-action=clear]": (view) => artist_1.click(() => () => view.clear() || false)
             }
         }),
         __metadata("design:paramtypes", [artist_1.IObservablizer, artist_1.INotifier])

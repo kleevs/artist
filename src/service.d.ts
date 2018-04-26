@@ -1,7 +1,7 @@
 import { IProvider, IConfig } from 'node_modules/dependency-injection/src/index';
 export declare let config: IConfig;
 export declare let serviceProvider: IProvider;
-export declare let Injectable: <TKey, TValue extends TKey>(options: {
+export declare let Service: <TKey, TValue extends TKey>(options: {
     key: {
         prototype: TKey;
     };
@@ -9,6 +9,11 @@ export declare let Injectable: <TKey, TValue extends TKey>(options: {
     initialize?: (instance: TKey) => void;
     test?: (serviceClass: any) => boolean;
 }) => (target: new (...arg: any[]) => TValue) => void;
+export declare abstract class IServiceProvider {
+    abstract getService<T>(type: Function & {
+        prototype: T;
+    }): T;
+}
 export declare abstract class IObservablizer {
     abstract convert<T>(value: T & {}): T;
 }

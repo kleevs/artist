@@ -13,13 +13,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/binder/src/index", "../../../dist/artist", "node_modules/jquery/dist/jquery"], factory);
+        define(["require", "exports", "artist", "node_modules/jquery/dist/jquery"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("node_modules/binder/src/index");
-    const artist_1 = require("../../../dist/artist");
+    const artist_1 = require("artist");
     const $ = require("node_modules/jquery/dist/jquery");
     class ISaved {
     }
@@ -39,14 +38,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         artist_1.View({
             template: "formulaire/tmpl/saved.html",
             binding: {
-                "[panel-title]": (view) => index_1.text(() => "Saved"),
-                "table tbody": (view) => index_1.each(() => {
+                "[panel-title]": (view) => artist_1.text(() => "Saved"),
+                "table tbody": (view) => artist_1.each(() => {
                     return $.map(view.observable.users, (row) => {
                         return {
-                            "[first]": index_1.text(() => row.first),
-                            "[last]": index_1.text(() => row.last),
-                            "[full]": index_1.text(() => $.grep([row.first, row.last], (item) => !!item).join(" ")),
-                            "[age]": index_1.text(() => row.age)
+                            "[first]": artist_1.text(() => row.first),
+                            "[last]": artist_1.text(() => row.last),
+                            "[full]": artist_1.text(() => $.grep([row.first, row.last], (item) => !!item).join(" ")),
+                            "[age]": artist_1.text(() => row.age)
                         };
                     });
                 })

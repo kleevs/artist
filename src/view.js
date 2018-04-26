@@ -39,7 +39,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             });
             var key = constructor;
             while (key && key.constructor !== key) {
-                service_1.Injectable({
+                service_1.Service({
                     key: key,
                     registerable: false,
                     initialize: (view) => {
@@ -52,7 +52,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                                 (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
                                     var binder = valueAccessor(view);
                                     var binders = binder && !(binder instanceof Array) && [binder] || binder;
-                                    binders.forEach(b => new index_1.Binder(el).bind(b));
+                                    binders.forEach(b => new index_1.Binder(el, service_1.serviceProvider).bind(b));
                                 });
                             });
                             t[0].__view__ = view;
@@ -70,7 +70,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     exports.IViewProvider = IViewProvider;
     let ViewProvider = class ViewProvider {
         newInstance(type, arg) {
-            var viewType = type && mixin_1.grep(registeredView, (view) => (view.construct.prototype instanceof type) || (type === view.construct))[0];
+            var viewType = type && registeredView.filter((view) => (view.construct.prototype instanceof type) || (type === view.construct))[0];
             var view = viewType && (service_1.serviceProvider && service_1.config.getService(viewType.construct) && service_1.serviceProvider.createService(viewType.construct) || new viewType.construct());
             return view;
         }
@@ -85,12 +85,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         }
     };
     ViewProvider = __decorate([
-        service_1.Injectable({
+        service_1.Service({
             key: IViewProvider
         })
     ], ViewProvider);
     function view(valueAccessor) {
-        return (element) => {
+        return (element, serviceProvider) => {
             var $element = $(element);
             $element.html("");
             return () => {
@@ -98,7 +98,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                 var array = !value || value instanceof Array ? (value || []) : [value];
                 var $deleted = $("<div>");
                 var $added = $("<div>");
-                Promise.all(array.map((item) => service_1.serviceProvider.getService(IViewProvider).getNode(item)))
+                Promise.all(array.map((item) => serviceProvider.getService(IViewProvider).getNode(item)))
                     .then((elts) => {
                     $element.children().each((i, el) => {
                         $(el).appendTo($deleted);
@@ -113,7 +113,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     }
     exports.view = view;
     function dom(option) {
-        return (element) => {
+        return (element, serviceProvider) => {
             var $element = $(element);
             $element.on('custom:view:dom:remove', (e) => {
                 if (e.target === e.currentTarget) {

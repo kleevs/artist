@@ -1,5 +1,4 @@
-import { text, value, click } from 'node_modules/binder/src/index';
-import { View, IObservablizer } from '../../../dist/artist';
+import { View, IObservablizer, text, value, click } from 'artist';
 import { User } from '../model/user';
 
 export abstract class IDetail {

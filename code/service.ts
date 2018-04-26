@@ -5,7 +5,11 @@ import { foreach } from './mixin';
 var injector = new DependencyInjector();
 export let config = injector.getConfig();
 export let serviceProvider = injector.getProvider();
-export let Injectable = injector.getDecorator();
+export let Service = injector.getDecorator();
+
+export abstract class IServiceProvider {
+    abstract getService<T>(type: Function & { prototype: T; }): T;
+}
 
 export abstract class IObservablizer {
     abstract convert<T>(value: T & {}): T;
@@ -18,7 +22,16 @@ export abstract class INotifier {
     }
 }
 
-@Injectable({
+@Service({
+    key: IServiceProvider
+})
+class ServiceProvider extends IServiceProvider {
+    getService<T>(type: Function & { prototype: T; }): T {
+        return serviceProvider.getService(type);
+    }
+}
+
+@Service({
     key: IObservablizer
 })
 class Observablizer extends IObservablizer {
@@ -62,7 +75,7 @@ export class Event<TContext=void, TArgument=void> {
     constructor(public key: string) {}
 };
 
-@Injectable({
+@Service({
     key: INotifier
 })
 class Notifier extends INotifier {

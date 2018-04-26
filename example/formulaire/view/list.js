@@ -13,13 +13,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/binder/src/index", "../../../dist/artist", "node_modules/jquery/dist/jquery"], factory);
+        define(["require", "exports", "artist", "node_modules/jquery/dist/jquery"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("node_modules/binder/src/index");
-    const artist_1 = require("../../../dist/artist");
+    const artist_1 = require("artist");
     const $ = require("node_modules/jquery/dist/jquery");
     class IList {
     }
@@ -52,17 +51,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         artist_1.View({
             template: "formulaire/tmpl/list.html",
             binding: {
-                "[panel-title]": (view) => index_1.text(() => "List"),
-                "[data-action=save]": (view) => index_1.click(() => () => view.save() || false),
-                "[data-action=clear]": (view) => index_1.click(() => () => view.clear() || false),
-                "table tbody": (view) => index_1.each(() => {
+                "[panel-title]": (view) => artist_1.text(() => "List"),
+                "[data-action=save]": (view) => artist_1.click(() => () => view.save() || false),
+                "[data-action=clear]": (view) => artist_1.click(() => () => view.clear() || false),
+                "table tbody": (view) => artist_1.each(() => {
                     return $.map(view.observable.users, (row) => {
                         return {
-                            "this": index_1.click(() => () => view.select(row) || false),
-                            "[first]": index_1.text(() => row.first),
-                            "[last]": index_1.text(() => row.last),
-                            "[full]": index_1.text(() => $.grep([row.first, row.last], (item) => !!item).join(" ")),
-                            "[age] input": index_1.value({ get: () => (row.age || "").toString(), set: (v) => row.age = parseInt(v) || undefined })
+                            "this": artist_1.click(() => () => view.select(row) || false),
+                            "[first]": artist_1.text(() => row.first),
+                            "[last]": artist_1.text(() => row.last),
+                            "[full]": artist_1.text(() => $.grep([row.first, row.last], (item) => !!item).join(" ")),
+                            "[age] input": artist_1.value({ get: () => (row.age || "").toString(), set: (v) => row.age = parseInt(v) || undefined })
                         };
                     });
                 })

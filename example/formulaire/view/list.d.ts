@@ -1,4 +1,4 @@
-import { Event } from '../../../dist/artist';
+import { Event } from 'artist';
 import { User } from '../model/user';
 export declare abstract class IList {
     abstract add(user: User): any;

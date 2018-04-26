@@ -1,7 +1,7 @@
 import { observable } from 'node_modules/observable/src/index';
 import { Binder } from 'node_modules/binder/src/index';
-import { serviceProvider, config, Injectable } from './service';
-import { foreach, map, grep } from './mixin';
+import { serviceProvider, config, Service, IServiceProvider } from './service';
+import { foreach } from './mixin';
 import * as $ from 'node_modules/jquery/dist/jquery';
 import { Event } from 'index';
 
@@ -10,12 +10,12 @@ export declare type ViewOption<TModel> = {
     selector?: string,
     template?: string,
     html?: string,
-    binding?: { [s:string]: (model: TModel) => ((element) => () => any) | ((element) => () => any)[] }
+    binding?: { [s:string]: (model: TModel) => ((element, serviceProvider?: IServiceProvider) => () => any) | ((element, serviceProvider?: IServiceProvider) => () => any)[] }
 };
 
 declare type RegisteredView<TModel> = {
     construct: {new(...args:any[]): any},
-    binding: { [s:string]: (model: TModel) => ((element) => () => any) | ((element) => () => any)[] }
+    binding: { [s:string]: (model: TModel) => ((element, serviceProvider?: IServiceProvider) => () => any) | ((element, serviceProvider?: IServiceProvider) => () => any)[] }
     html: Promise<string> 
 };
 
@@ -41,7 +41,7 @@ export function View<T>(options: ViewOption<T>) {
 
 		var key = constructor;
 		while (key && key.constructor !== key) {
-			(<any>Injectable({ 
+			(<any>Service({ 
 				key: key, 
 				registerable: false, 
 				initialize: (view) => {
@@ -55,7 +55,7 @@ export function View<T>(options: ViewOption<T>) {
 							(selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
 								var binder = valueAccessor(view);
 								var binders = binder && !(binder instanceof Array) && [binder] || binder;
-								binders.forEach(b => new Binder(el).bind(b));
+								binders.forEach(b => new Binder(el, serviceProvider).bind(b));
 							});
 						});
 
@@ -77,14 +77,14 @@ export abstract class IViewProvider {
     abstract getView(element: Element): any;
 }
 
-@Injectable({
+@Service({
     key: IViewProvider
 })
 class ViewProvider {
 	public newInstance<T>(type: Function & { prototype: T }): T;
 	public newInstance<T>(type: Function & { prototype: T }, arg: any): T;
     public newInstance<T>(type: Function & { prototype: T }, arg?: any): T {
-        var viewType = type && grep(registeredView, (view) => (view.construct.prototype instanceof type) || (type === view.construct))[0];
+        var viewType = type && registeredView.filter((view) => (view.construct.prototype instanceof type) || (type === view.construct))[0];
         var view = viewType && (serviceProvider && config.getService(viewType.construct) && serviceProvider.createService(viewType.construct) || new viewType.construct());
 		return view;
     }
@@ -103,7 +103,7 @@ class ViewProvider {
 }
 
 export function view(valueAccessor: () => any) {
-	return (element) => {
+	return (element, serviceProvider: any) => {
 		var $element = $(element);
         $element.html("");
         
@@ -130,7 +130,7 @@ export function view(valueAccessor: () => any) {
 }
 
 export function dom(option: { in: (e: Event) => void, out: (e: Event) => void }) {
-    return (element) => {
+    return (element, serviceProvider) => {
         var $element = $(element);
         $element.on('custom:view:dom:remove', (e) => {
             if (e.target === e.currentTarget) {

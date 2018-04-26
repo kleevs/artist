@@ -4,12 +4,12 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../../dist/artist", "./layout/layout"], factory);
+        define(["require", "exports", "artist", "./layout/layout"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const artist_1 = require("../../dist/artist");
+    const artist_1 = require("artist");
     const layout_1 = require("./layout/layout");
     artist_1.startup("[layout]", layout_1.ILayout);
 });
