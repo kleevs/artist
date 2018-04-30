@@ -4,13 +4,14 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "core/index"], factory);
+        define(["require", "exports", "./core"], factory);
     }
 })(function (require, exports) {
     "use strict";
-    function __export(m) {
-        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
     Object.defineProperty(exports, "__esModule", { value: true });
-    __export(require("core/index"));
+    const core_1 = require("./core");
+    function create(fn) {
+        return core_1.blind(fn);
+    }
+    exports.create = create;
 });
