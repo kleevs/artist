@@ -91,166 +91,7 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/observable/src/core.js', ["require", "exports"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    function foreach(item, callback) {
-	        let i;
-	        if (item instanceof Array) {
-	            for (i = 0; i < item.length; i++) {
-	                callback(item[i], i);
-	            }
-	        }
-	        else {
-	            for (i in item) {
-	                callback(item[i], i);
-	            }
-	        }
-	    }
-	    function contains(array, item) {
-	        let res = false;
-	        foreach(array, (x) => { res = res || item === x; });
-	        return res;
-	    }
-	    let stack = [];
-	    function push(func) {
-	        stack.push({ func: func });
-	    }
-	    function pop() {
-	        return stack.pop();
-	    }
-	    function peek() {
-	        return stack[stack.length - 1];
-	    }
-	    function observable(fn) {
-	        var listeners = [], defaultValue = {}, value = defaultValue;
-	        return () => {
-	            var observer = peek() && peek().func, firstCall = defaultValue === value;
-	            if (observer && !contains(listeners, observer)) {
-	                listeners.push(observer);
-	            }
-	            if (observer && !firstCall) {
-	                return value;
-	            }
-	            if (value !== (value = fn.apply(this, arguments)) && !firstCall) {
-	                var tmp = listeners;
-	                listeners = [];
-	                tmp.forEach((observer) => observer());
-	            }
-	            return value;
-	        };
-	    }
-	    exports.observable = observable;
-	    function observer(fn) {
-	        var me;
-	        (me = () => {
-	            push(me);
-	            var res = fn();
-	            pop();
-	            return res;
-	        })();
-	    }
-	    exports.observer = observer;
-	    function blind(fn) {
-	        var me;
-	        (me = () => {
-	            push(null);
-	            var res = fn();
-	            pop();
-	            return res;
-	        })();
-	    }
-	    exports.blind = blind;
-	});
-	//# sourceMappingURL=core.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/observable/src/observable.js', ["require", "exports", "./core"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const core_1 = require("./core");
-	    function create(value) {
-	        var result = value;
-	        var obj = core_1.observable(() => result);
-	        return function (value) {
-	            arguments.length > 0 && (result = value);
-	            obj.apply(this);
-	            return result;
-	        };
-	    }
-	    exports.create = create;
-	});
-	//# sourceMappingURL=observable.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/observable/src/observer.js', ["require", "exports", "./core"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const core_1 = require("./core");
-	    function create(fn) {
-	        return core_1.observer(fn);
-	    }
-	    exports.create = create;
-	});
-	//# sourceMappingURL=observer.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/observable/src/blind.js', ["require", "exports", "./core"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const core_1 = require("./core");
-	    function create(fn) {
-	        return core_1.blind(fn);
-	    }
-	    exports.create = create;
-	});
-	//# sourceMappingURL=blind.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/observable/src/index.js', ["require", "exports", "./observable", "./observer", "./blind"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    var observable_1 = require("./observable");
-	    exports.observable = observable_1.create;
-	    var observer_1 = require("./observer");
-	    exports.observer = observer_1.create;
-	    var blind_1 = require("./blind");
-	    exports.blind = blind_1.create;
-	});
-	//# sourceMappingURL=index.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/reflect-decorator/src/index.js', ["require", "exports"], factory);
+	        define('src/lib/reflection/index.js', ["require", "exports"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
@@ -273,19 +114,19 @@ __MODE__ = undefined;
 	    };
 	    exports.default = true;
 	});
-	//# sourceMappingURL=index.js.map
+	
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
 	        var v = factory(require, exports);
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/dependency-injection/src/index.js', ["require", "exports", "node_modules/reflect-decorator/src/index"], factory);
+	        define('src/lib/dependency-injection/index.js', ["require", "exports", "../reflection/index"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    require("node_modules/reflect-decorator/src/index");
+	    require("../reflection/index");
 	    class IProvider {
 	    }
 	    exports.IProvider = IProvider;
@@ -377,14 +218,38 @@ __MODE__ = undefined;
 	    }
 	    exports.DependencyInjector = DependencyInjector;
 	});
-	//# sourceMappingURL=index.js.map
+	
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
 	        var v = factory(require, exports);
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/mixin.js', ["require", "exports"], factory);
+	        define('src/core/service.js', ["require", "exports", "../lib/dependency-injection/index"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const index_1 = require("../lib/dependency-injection/index");
+	    var injector = new index_1.DependencyInjector();
+	    exports.config = injector.getConfig();
+	    exports.serviceProvider = injector.getProvider();
+	    exports.Service = injector.getDecorator();
+	    class IServiceProvider {
+	    }
+	    exports.IServiceProvider = IServiceProvider;
+	    class IObservablizer {
+	    }
+	    exports.IObservablizer = IObservablizer;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/lib/observable/core.js', ["require", "exports"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
@@ -402,127 +267,60 @@ __MODE__ = undefined;
 	            }
 	        }
 	    }
-	    exports.foreach = foreach;
-	});
-	
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
+	    function contains(array, item) {
+	        let res = false;
+	        foreach(array, (x) => { res = res || item === x; });
+	        return res;
 	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('src/service.js', ["require", "exports", "node_modules/observable/src/index", "node_modules/dependency-injection/src/index", "./mixin"], factory);
+	    let stack = [];
+	    function push(func) {
+	        stack.push({ func: func });
 	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const index_1 = require("node_modules/observable/src/index");
-	    const index_2 = require("node_modules/dependency-injection/src/index");
-	    const mixin_1 = require("./mixin");
-	    var injector = new index_2.DependencyInjector();
-	    exports.config = injector.getConfig();
-	    exports.serviceProvider = injector.getProvider();
-	    exports.Service = injector.getDecorator();
-	    class IServiceProvider {
+	    function pop() {
+	        return stack.pop();
 	    }
-	    exports.IServiceProvider = IServiceProvider;
-	    class IObservablizer {
+	    function peek() {
+	        return stack[stack.length - 1];
 	    }
-	    exports.IObservablizer = IObservablizer;
-	    class INotifier {
+	    function observable(fn) {
+	        var listeners = [], defaultValue = {}, value = defaultValue;
+	        return () => {
+	            var observer = peek() && peek().func, firstCall = defaultValue === value;
+	            if (observer && !contains(listeners, observer)) {
+	                listeners.push(observer);
+	            }
+	            if (observer && !firstCall) {
+	                return value;
+	            }
+	            if (value !== (value = fn.apply(this, arguments)) && !firstCall) {
+	                var tmp = listeners;
+	                listeners = [];
+	                tmp.forEach((observer) => observer());
+	            }
+	            return value;
+	        };
 	    }
-	    exports.INotifier = INotifier;
-	    let ServiceProvider = class ServiceProvider extends IServiceProvider {
-	        getService(type) {
-	            return exports.serviceProvider.getService(type);
-	        }
-	    };
-	    ServiceProvider = __decorate([
-	        exports.Service({
-	            key: IServiceProvider
-	        })
-	    ], ServiceProvider);
-	    let Observablizer = class Observablizer extends IObservablizer {
-	        convert(value) {
-	            var res = value && Object.create(value) || undefined;
-	            value && mixin_1.foreach(value, (item, key) => {
-	                var descriptor = Object.getOwnPropertyDescriptor(value, key);
-	                var observable;
-	                !descriptor.get && !descriptor.set &&
-	                    (() => {
-	                        observable = index_1.observable({});
-	                        descriptor.get = () => observable().value;
-	                        descriptor.set = (v) => {
-	                            v instanceof Array && (v.push = function () {
-	                                var res = Array.prototype.push.apply(this, arguments);
-	                                observable({ value: this });
-	                                return res;
-	                            });
-	                            v instanceof Array && (v.splice = function () {
-	                                var res = Array.prototype.splice.apply(this, arguments);
-	                                observable({ value: this });
-	                                return res;
-	                            });
-	                            observable({ value: v });
-	                        };
-	                        delete descriptor.value;
-	                        delete descriptor.writable;
-	                        Object.defineProperty(res, key, descriptor);
-	                        res[key] = item;
-	                    })();
-	            });
+	    exports.observable = observable;
+	    function observer(fn) {
+	        var me;
+	        (me = () => {
+	            push(me);
+	            var res = fn();
+	            pop();
 	            return res;
-	        }
-	    };
-	    Observablizer = __decorate([
-	        exports.Service({
-	            key: IObservablizer
-	        })
-	    ], Observablizer);
-	    class Event {
-	        constructor(key) {
-	            this.key = key;
-	        }
+	        })();
 	    }
-	    exports.Event = Event;
-	    ;
-	    let Notifier = class Notifier extends INotifier {
-	        constructor() {
-	            super(...arguments);
-	            this._callbacks = {};
-	        }
-	        notify(obj, key, data) {
-	            var callbacks = this.register(obj, key);
-	            callbacks && callbacks.forEach((callback) => {
-	                callback(data);
-	            });
-	        }
-	        listen(obj, key, callback) {
-	            var callbacks = this.register(obj, key);
-	            callbacks.push(callback);
-	        }
-	        forEvent(event) {
-	            return {
-	                listen: (obj, callback) => this.listen(obj, event.key, callback),
-	                notify: (obj, data) => this.notify(obj, event.key, data)
-	            };
-	        }
-	        register(obj, key) {
-	            obj.__notifier__id__ = obj.__notifier__id__ || [new Date().getTime(), Math.random() * 100].join("");
-	            return this._callbacks[obj.__notifier__id__ + "_" + key] = this._callbacks[obj.__notifier__id__ + "_" + key] || [];
-	        }
-	    };
-	    Notifier = __decorate([
-	        exports.Service({
-	            key: INotifier
-	        })
-	    ], Notifier);
+	    exports.observer = observer;
+	    function blind(fn) {
+	        var me;
+	        (me = () => {
+	            push(null);
+	            var res = fn();
+	            pop();
+	            return res;
+	        })();
+	    }
+	    exports.blind = blind;
 	});
 	
 	(function (factory) {
@@ -531,12 +329,91 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/binder/src/binder.js', ["require", "exports", "node_modules/observable/src/index"], factory);
+	        define('src/lib/observable/observable.js', ["require", "exports", "./core"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const index_1 = require("node_modules/observable/src/index");
+	    const core_1 = require("./core");
+	    function create(value) {
+	        var result = value;
+	        var obj = core_1.observable(() => result);
+	        return function (value) {
+	            arguments.length > 0 && (result = value);
+	            obj.apply(this);
+	            return result;
+	        };
+	    }
+	    exports.create = create;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/lib/observable/observer.js', ["require", "exports", "./core"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const core_1 = require("./core");
+	    function create(fn) {
+	        return core_1.observer(fn);
+	    }
+	    exports.create = create;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/lib/observable/blind.js', ["require", "exports", "./core"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const core_1 = require("./core");
+	    function create(fn) {
+	        return core_1.blind(fn);
+	    }
+	    exports.create = create;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/lib/observable/index.js', ["require", "exports", "./observable", "./observer", "./blind"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    var observable_1 = require("./observable");
+	    exports.observable = observable_1.create;
+	    var observer_1 = require("./observer");
+	    exports.observer = observer_1.create;
+	    var blind_1 = require("./blind");
+	    exports.blind = blind_1.create;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/lib/binder/index.js', ["require", "exports", "../observable/index"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const index_1 = require("../observable/index");
 	    class Binder {
 	        constructor(element, data = undefined) {
 	            this.element = element;
@@ -549,7 +426,7 @@ __MODE__ = undefined;
 	    }
 	    exports.Binder = Binder;
 	});
-	//# sourceMappingURL=binder.js.map
+	
 	define('node_modules/jquery/dist/jquery.js', [], function() { return jQuery; });
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
@@ -557,139 +434,14 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/binder/src/handler/attr.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	        define('src/core/view.js', ["require", "exports", "../lib/binder/index", "./service", "node_modules/jquery/dist/jquery"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const index_1 = require("../lib/binder/index");
+	    const service_1 = require("./service");
 	    const $ = require("node_modules/jquery/dist/jquery");
-	    function attr(valueAccessor) {
-	        return (element) => {
-	            var $element = $(element);
-	            return () => {
-	                var value = valueAccessor();
-	                for (var key in value) {
-	                    if (value[key] === undefined) {
-	                        $element.removeAttr(key);
-	                    }
-	                    else {
-	                        $element.attr(key, value[key]);
-	                    }
-	                }
-	            };
-	        };
-	    }
-	    exports.attr = attr;
-	});
-	//# sourceMappingURL=attr.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/binder/src/handler/change.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
-	    function change(valueAccessor) {
-	        return (element) => {
-	            $(element).change((e) => {
-	                return valueAccessor().call(element, e);
-	            });
-	            return () => { };
-	        };
-	    }
-	    exports.change = change;
-	});
-	//# sourceMappingURL=change.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/binder/src/handler/click.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
-	    function click(valueAccessor) {
-	        return (element) => {
-	            $(element).click((e) => {
-	                return valueAccessor().call(element, e);
-	            });
-	            return () => { };
-	        };
-	    }
-	    exports.click = click;
-	});
-	//# sourceMappingURL=click.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/binder/src/handler/text.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
-	    function text(valueAccessor) {
-	        return (element) => {
-	            var $element = $(element);
-	            return () => {
-	                var value = valueAccessor();
-	                $element.text(value);
-	            };
-	        };
-	    }
-	    exports.text = text;
-	});
-	//# sourceMappingURL=text.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/binder/src/handler/value.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
-	    function value(valueAccessor) {
-	        return (element) => {
-	            var $element = $(element);
-	            $element.on("input", () => {
-	                valueAccessor.set($element.val());
-	            });
-	            return () => {
-	                var value = valueAccessor.get();
-	                $element.val(value);
-	            };
-	        };
-	    }
-	    exports.value = value;
-	});
-	//# sourceMappingURL=value.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/binder/src/handler/base/mixin.js', ["require", "exports"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
 	    function foreach(item, callback) {
 	        let i;
 	        if (item instanceof Array) {
@@ -703,194 +455,12 @@ __MODE__ = undefined;
 	            }
 	        }
 	    }
-	    exports.foreach = foreach;
-	    function map(array, parse) {
-	        let res = [];
-	        foreach(array, (x) => { res.push(parse(x)); return false; });
-	        return res;
-	    }
-	    exports.map = map;
-	    function grep(array, predicate) {
-	        let i, res = [];
-	        for (i = 0; i < array.length; i++) {
-	            if (predicate(array[i], i))
-	                res.push(array[i]);
-	        }
-	        return res;
-	    }
-	    exports.grep = grep;
-	});
-	//# sourceMappingURL=mixin.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/binder/src/handler/options.js', ["require", "exports", "./base/mixin", "node_modules/jquery/dist/jquery"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const mixin_1 = require("./base/mixin");
-	    const $ = require("node_modules/jquery/dist/jquery");
-	    function options(valueAccessor) {
-	        return (element) => {
-	            var $element = $(element);
-	            $element.html("");
-	            return () => {
-	                var value = valueAccessor();
-	                $element.html("");
-	                $element.append(mixin_1.map(value, (item) => {
-	                    var $opt = $("<option>");
-	                    $opt.val(item.id);
-	                    $opt.text(item.text);
-	                    return $opt;
-	                }));
-	                $element.val($element.data("value"));
-	            };
-	        };
-	    }
-	    exports.options = options;
-	});
-	//# sourceMappingURL=options.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/binder/src/handler/each.js', ["require", "exports", "node_modules/jquery/dist/jquery", "../binder", "./base/mixin"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
-	    const binder_1 = require("../binder");
-	    const mixin_1 = require("./base/mixin");
-	    function each(valueAccessor) {
-	        return (element) => {
-	            var $element = $(element), template = $element.html();
-	            $element.html("");
-	            return () => {
-	                var value = valueAccessor();
-	                $element.html("");
-	                value.forEach((item) => {
-	                    var t = $(template);
-	                    mixin_1.foreach(item, (valueAccessor, selector) => {
-	                        (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
-	                            new binder_1.Binder(el).bind(valueAccessor);
-	                        });
-	                    });
-	                    $element.append(t);
-	                });
-	            };
-	        };
-	    }
-	    exports.each = each;
-	});
-	//# sourceMappingURL=each.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/binder/src/handler/class.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
-	    function classes(valueAccessor) {
-	        return (element) => {
-	            var $element = $(element);
-	            return () => {
-	                var value = valueAccessor();
-	                for (var key in value) {
-	                    if (value[key]) {
-	                        $element.addClass(key);
-	                    }
-	                    else {
-	                        $element.removeClass(key);
-	                    }
-	                }
-	            };
-	        };
-	    }
-	    exports.classes = classes;
-	});
-	//# sourceMappingURL=class.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/binder/src/handlers.js', ["require", "exports", "./handler/attr", "./handler/change", "./handler/click", "./handler/text", "./handler/value", "./handler/options", "./handler/each", "./handler/class"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    function __export(m) {
-	        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-	    }
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    __export(require("./handler/attr"));
-	    __export(require("./handler/change"));
-	    __export(require("./handler/click"));
-	    __export(require("./handler/text"));
-	    __export(require("./handler/value"));
-	    __export(require("./handler/options"));
-	    __export(require("./handler/each"));
-	    __export(require("./handler/class"));
-	});
-	//# sourceMappingURL=handlers.js.map
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('node_modules/binder/src/index.js', ["require", "exports", "node_modules/observable/src/index", "./binder", "./handlers"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    function __export(m) {
-	        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-	    }
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    __export(require("node_modules/observable/src/index"));
-	    __export(require("./binder"));
-	    __export(require("./handlers"));
-	});
-	//# sourceMappingURL=index.js.map
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('src/view.js', ["require", "exports", "node_modules/binder/src/index", "./service", "./mixin", "node_modules/jquery/dist/jquery"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const index_1 = require("node_modules/binder/src/index");
-	    const service_1 = require("./service");
-	    const mixin_1 = require("./mixin");
-	    const $ = require("node_modules/jquery/dist/jquery");
-	    let registeredView = [];
+	    exports.registeredView = [];
 	    function View(options) {
 	        return (constructor, metadata) => {
 	            options = constructor.prototype.__view__option__ = $.extend(true, constructor.prototype.__view__option__, options);
 	            var viewType;
-	            registeredView.push(viewType = {
+	            exports.registeredView.push(viewType = {
 	                construct: constructor,
 	                binding: options.binding,
 	                html: new Promise((resolve, reject) => {
@@ -914,7 +484,7 @@ __MODE__ = undefined;
 	                        viewType && (view.__elt__ = viewType.html.then(template => {
 	                            var t = $(template);
 	                            t.attr("artist-view", true);
-	                            mixin_1.foreach(binding, (valueAccessor, selector) => {
+	                            foreach(binding, (valueAccessor, selector) => {
 	                                (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
 	                                    var binder = valueAccessor(view);
 	                                    var binders = binder && !(binder instanceof Array) && [binder] || binder;
@@ -931,13 +501,40 @@ __MODE__ = undefined;
 	        };
 	    }
 	    exports.View = View;
+	});
+	
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/service/viewProvider.js', ["require", "exports", "../core/service", "../core/view"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const service_1 = require("../core/service");
+	    const view_1 = require("../core/view");
 	    class IViewProvider {
 	    }
 	    exports.IViewProvider = IViewProvider;
 	    let ViewProvider = class ViewProvider {
+	        constructor(_serviceProvider) {
+	            this._serviceProvider = _serviceProvider;
+	        }
 	        newInstance(type, arg) {
-	            var viewType = type && registeredView.filter((view) => (view.construct.prototype instanceof type) || (type === view.construct))[0];
-	            var view = viewType && (service_1.serviceProvider && service_1.config.getService(viewType.construct) && service_1.serviceProvider.createService(viewType.construct) || new viewType.construct());
+	            var viewType = type && view_1.registeredView.filter((view) => (view.construct.prototype instanceof type) || (type === view.construct))[0];
+	            var view = viewType && (this._serviceProvider && service_1.config.getService(viewType.construct) && this._serviceProvider.createService(viewType.construct) || new viewType.construct());
 	            return view;
 	        }
 	        map(type) {
@@ -953,48 +550,10 @@ __MODE__ = undefined;
 	    ViewProvider = __decorate([
 	        service_1.Service({
 	            key: IViewProvider
-	        })
+	        }),
+	        __metadata("design:paramtypes", [service_1.IServiceProvider])
 	    ], ViewProvider);
-	    function view(valueAccessor) {
-	        return (element, serviceProvider) => {
-	            var $element = $(element);
-	            $element.html("");
-	            return () => {
-	                var value = valueAccessor();
-	                var array = !value || value instanceof Array ? (value || []) : [value];
-	                var $deleted = $("<div>");
-	                var $added = $("<div>");
-	                Promise.all(array.map((item) => serviceProvider.getService(IViewProvider).getNode(item)))
-	                    .then((elts) => {
-	                    $element.children().each((i, el) => {
-	                        $(el).appendTo($deleted);
-	                    });
-	                    elts.forEach((el) => {
-	                        $element.append(el);
-	                    });
-	                    return elts;
-	                });
-	            };
-	        };
-	    }
-	    exports.view = view;
-	    function dom(option) {
-	        return (element, serviceProvider) => {
-	            var $element = $(element);
-	            $element.on('custom:view:dom:remove', (e) => {
-	                if (e.target === e.currentTarget) {
-	                    option.out(e);
-	                }
-	            });
-	            $element.on('custom:view:dom:added', (e) => {
-	                if (e.target === e.currentTarget) {
-	                    option.in(e);
-	                }
-	            });
-	            return () => { };
-	        };
-	    }
-	    exports.dom = dom;
+	    exports.ViewProvider = ViewProvider;
 	});
 	
 	(function (factory) {
@@ -1115,13 +674,489 @@ __MODE__ = undefined;
 	    }
 	});
 	
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
 	        var v = factory(require, exports);
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/index.js', ["require", "exports", "./service", "./view", "node_modules/amd-loader/src/index", "node_modules/jquery/dist/jquery", "node_modules/amd-loader/src/index", "node_modules/binder/src/index", "./view", "./service"], factory);
+	        define('src/service/serviceProvider.js', ["require", "exports", "../core/service"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const service_1 = require("../core/service");
+	    let ServiceProvider = class ServiceProvider extends service_1.IServiceProvider {
+	        getService(type) {
+	            return service_1.serviceProvider.getService(type);
+	        }
+	        createService(key, parameters) {
+	            return service_1.serviceProvider.createService(key, parameters);
+	        }
+	    };
+	    ServiceProvider = __decorate([
+	        service_1.Service({
+	            key: service_1.IServiceProvider
+	        })
+	    ], ServiceProvider);
+	    exports.ServiceProvider = ServiceProvider;
+	});
+	
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/service/notifier.js', ["require", "exports", "../core/service"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const service_1 = require("../core/service");
+	    class INotifier {
+	    }
+	    exports.INotifier = INotifier;
+	    class Event {
+	        constructor(key) {
+	            this.key = key;
+	        }
+	    }
+	    exports.Event = Event;
+	    ;
+	    let Notifier = class Notifier extends INotifier {
+	        constructor() {
+	            super(...arguments);
+	            this._callbacks = {};
+	        }
+	        notify(obj, key, data) {
+	            var callbacks = this.register(obj, key);
+	            callbacks && callbacks.forEach((callback) => {
+	                callback(data);
+	            });
+	        }
+	        listen(obj, key, callback) {
+	            var callbacks = this.register(obj, key);
+	            callbacks.push(callback);
+	        }
+	        forEvent(event) {
+	            return {
+	                listen: (obj, callback) => this.listen(obj, event.key, callback),
+	                notify: (obj, data) => this.notify(obj, event.key, data)
+	            };
+	        }
+	        register(obj, key) {
+	            obj.__notifier__id__ = obj.__notifier__id__ || [new Date().getTime(), Math.random() * 100].join("");
+	            return this._callbacks[obj.__notifier__id__ + "_" + key] = this._callbacks[obj.__notifier__id__ + "_" + key] || [];
+	        }
+	    };
+	    Notifier = __decorate([
+	        service_1.Service({
+	            key: INotifier
+	        })
+	    ], Notifier);
+	    exports.Notifier = Notifier;
+	});
+	
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/service/observalizer.js', ["require", "exports", "../core/service", "../lib/observable/index"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const service_1 = require("../core/service");
+	    const index_1 = require("../lib/observable/index");
+	    function foreach(item, callback) {
+	        let i;
+	        if (item instanceof Array) {
+	            for (i = 0; i < item.length; i++) {
+	                callback(item[i], i);
+	            }
+	        }
+	        else {
+	            for (i in item) {
+	                callback(item[i], i);
+	            }
+	        }
+	    }
+	    let Observablizer = class Observablizer extends service_1.IObservablizer {
+	        convert(value) {
+	            var res = value && Object.create(value) || undefined;
+	            value && foreach(value, (item, key) => {
+	                var descriptor = Object.getOwnPropertyDescriptor(value, key);
+	                var observable;
+	                !descriptor.get && !descriptor.set &&
+	                    (() => {
+	                        observable = index_1.observable({});
+	                        descriptor.get = () => observable().value;
+	                        descriptor.set = (v) => {
+	                            v instanceof Array && (v.push = function () {
+	                                var res = Array.prototype.push.apply(this, arguments);
+	                                observable({ value: this });
+	                                return res;
+	                            });
+	                            v instanceof Array && (v.splice = function () {
+	                                var res = Array.prototype.splice.apply(this, arguments);
+	                                observable({ value: this });
+	                                return res;
+	                            });
+	                            observable({ value: v });
+	                        };
+	                        delete descriptor.value;
+	                        delete descriptor.writable;
+	                        Object.defineProperty(res, key, descriptor);
+	                        res[key] = item;
+	                    })();
+	            });
+	            return res;
+	        }
+	    };
+	    Observablizer = __decorate([
+	        service_1.Service({
+	            key: service_1.IObservablizer
+	        })
+	    ], Observablizer);
+	    exports.Observablizer = Observablizer;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/directive/view.js', ["require", "exports", "node_modules/jquery/dist/jquery", "../service/viewProvider"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const $ = require("node_modules/jquery/dist/jquery");
+	    const viewProvider_1 = require("../service/viewProvider");
+	    function view(valueAccessor) {
+	        return (element, serviceProvider) => {
+	            var $element = $(element);
+	            $element.html("");
+	            return () => {
+	                var value = valueAccessor();
+	                var array = !value || value instanceof Array ? (value || []) : [value];
+	                var $deleted = $("<div>");
+	                var $added = $("<div>");
+	                Promise.all(array.map((item) => serviceProvider.getService(viewProvider_1.IViewProvider).getNode(item)))
+	                    .then((elts) => {
+	                    $element.children().each((i, el) => {
+	                        $(el).appendTo($deleted);
+	                    });
+	                    elts.forEach((el) => {
+	                        $element.append(el);
+	                    });
+	                    return elts;
+	                });
+	            };
+	        };
+	    }
+	    exports.view = view;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/directive/dom.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const $ = require("node_modules/jquery/dist/jquery");
+	    function dom(option) {
+	        return (element, serviceProvider) => {
+	            var $element = $(element);
+	            $element.on('custom:view:dom:remove', (e) => {
+	                if (e.target === e.currentTarget) {
+	                    option.out(e);
+	                }
+	            });
+	            $element.on('custom:view:dom:added', (e) => {
+	                if (e.target === e.currentTarget) {
+	                    option.in(e);
+	                }
+	            });
+	            return () => { };
+	        };
+	    }
+	    exports.dom = dom;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/directive/attr.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const $ = require("node_modules/jquery/dist/jquery");
+	    function attr(valueAccessor) {
+	        return (element) => {
+	            var $element = $(element);
+	            return () => {
+	                var value = valueAccessor();
+	                for (var key in value) {
+	                    if (value[key] === undefined) {
+	                        $element.removeAttr(key);
+	                    }
+	                    else {
+	                        $element.attr(key, value[key]);
+	                    }
+	                }
+	            };
+	        };
+	    }
+	    exports.attr = attr;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/directive/change.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const $ = require("node_modules/jquery/dist/jquery");
+	    function change(valueAccessor) {
+	        return (element) => {
+	            $(element).change((e) => {
+	                return valueAccessor().call(element, e);
+	            });
+	            return () => { };
+	        };
+	    }
+	    exports.change = change;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/directive/click.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const $ = require("node_modules/jquery/dist/jquery");
+	    function click(valueAccessor) {
+	        return (element) => {
+	            $(element).click((e) => {
+	                return valueAccessor().call(element, e);
+	            });
+	            return () => { };
+	        };
+	    }
+	    exports.click = click;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/directive/text.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const $ = require("node_modules/jquery/dist/jquery");
+	    function text(valueAccessor) {
+	        return (element) => {
+	            var $element = $(element);
+	            return () => {
+	                var value = valueAccessor();
+	                $element.text(value);
+	            };
+	        };
+	    }
+	    exports.text = text;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/directive/value.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const $ = require("node_modules/jquery/dist/jquery");
+	    function value(valueAccessor) {
+	        return (element) => {
+	            var $element = $(element);
+	            $element.on("input", () => {
+	                valueAccessor.set($element.val());
+	            });
+	            return () => {
+	                var value = valueAccessor.get();
+	                $element.val(value);
+	            };
+	        };
+	    }
+	    exports.value = value;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/directive/options.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const $ = require("node_modules/jquery/dist/jquery");
+	    function options(valueAccessor) {
+	        return (element) => {
+	            var $element = $(element);
+	            $element.html("");
+	            return () => {
+	                var value = valueAccessor();
+	                $element.html("");
+	                $element.append(value.map((item) => {
+	                    var $opt = $("<option>");
+	                    $opt.val(item.id);
+	                    $opt.text(item.text);
+	                    return $opt;
+	                }));
+	                $element.val($element.data("value"));
+	            };
+	        };
+	    }
+	    exports.options = options;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/directive/each.js', ["require", "exports", "node_modules/jquery/dist/jquery", "../lib/binder/index"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const $ = require("node_modules/jquery/dist/jquery");
+	    const index_1 = require("../lib/binder/index");
+	    function foreach(item, callback) {
+	        let i;
+	        if (item instanceof Array) {
+	            for (i = 0; i < item.length; i++) {
+	                callback(item[i], i);
+	            }
+	        }
+	        else {
+	            for (i in item) {
+	                callback(item[i], i);
+	            }
+	        }
+	    }
+	    function each(valueAccessor) {
+	        return (element) => {
+	            var $element = $(element), template = $element.html();
+	            $element.html("");
+	            return () => {
+	                var value = valueAccessor();
+	                $element.html("");
+	                value.forEach((item) => {
+	                    var t = $(template);
+	                    foreach(item, (valueAccessor, selector) => {
+	                        (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
+	                            new index_1.Binder(el).bind(valueAccessor);
+	                        });
+	                    });
+	                    $element.append(t);
+	                });
+	            };
+	        };
+	    }
+	    exports.each = each;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/directive/class.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const $ = require("node_modules/jquery/dist/jquery");
+	    function classes(valueAccessor) {
+	        return (element) => {
+	            var $element = $(element);
+	            return () => {
+	                var value = valueAccessor();
+	                for (var key in value) {
+	                    if (value[key]) {
+	                        $element.addClass(key);
+	                    }
+	                    else {
+	                        $element.removeClass(key);
+	                    }
+	                }
+	            };
+	        };
+	    }
+	    exports.classes = classes;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/core/index.js', ["require", "exports", "./service", "../service/viewProvider", "node_modules/amd-loader/src/index", "node_modules/jquery/dist/jquery", "node_modules/amd-loader/src/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
@@ -1130,23 +1165,38 @@ __MODE__ = undefined;
 	    }
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    const service_1 = require("./service");
-	    const view_1 = require("./view");
+	    const viewProvider_1 = require("../service/viewProvider");
 	    const index_1 = require("node_modules/amd-loader/src/index");
 	    const $ = require("node_modules/jquery/dist/jquery");
 	    var index_2 = require("node_modules/amd-loader/src/index");
 	    exports.load = index_2.load;
-	    __export(require("node_modules/binder/src/index"));
-	    var view_2 = require("./view");
-	    exports.View = view_2.View;
-	    exports.view = view_2.view;
-	    exports.dom = view_2.dom;
-	    exports.IViewProvider = view_2.IViewProvider;
+	    var view_1 = require("./view");
+	    exports.View = view_1.View;
 	    var service_2 = require("./service");
 	    exports.IServiceProvider = service_2.IServiceProvider;
-	    exports.INotifier = service_2.INotifier;
 	    exports.IObservablizer = service_2.IObservablizer;
 	    exports.Service = service_2.Service;
-	    exports.Event = service_2.Event;
+	    var serviceProvider_1 = require("../service/serviceProvider");
+	    exports.ServiceProvider = serviceProvider_1.ServiceProvider;
+	    var notifier_1 = require("../service/notifier");
+	    exports.INotifier = notifier_1.INotifier;
+	    exports.Notifier = notifier_1.Notifier;
+	    exports.Event = notifier_1.Event;
+	    var viewProvider_2 = require("../service/viewProvider");
+	    exports.IViewProvider = viewProvider_2.IViewProvider;
+	    exports.ViewProvider = viewProvider_2.ViewProvider;
+	    var observalizer_1 = require("../service/observalizer");
+	    exports.Observablizer = observalizer_1.Observablizer;
+	    __export(require("../directive/view"));
+	    __export(require("../directive/dom"));
+	    __export(require("../directive/attr"));
+	    __export(require("../directive/change"));
+	    __export(require("../directive/click"));
+	    __export(require("../directive/text"));
+	    __export(require("../directive/value"));
+	    __export(require("../directive/options"));
+	    __export(require("../directive/each"));
+	    __export(require("../directive/class"));
 	    function startup(selector, view) {
 	        var observer = new MutationObserver((records) => {
 	            records.forEach(record => {
@@ -1161,7 +1211,7 @@ __MODE__ = undefined;
 	            });
 	        });
 	        observer.observe($("body")[0], { childList: true, subtree: true });
-	        var viewProvider = service_1.serviceProvider.getService(view_1.IViewProvider);
+	        var viewProvider = service_1.serviceProvider.getService(viewProvider_1.IViewProvider);
 	        viewProvider.getNode(viewProvider.newInstance(view)).then((el) => $(selector).append(el));
 	    }
 	    exports.startup = startup;
@@ -1178,6 +1228,23 @@ __MODE__ = undefined;
 	            clss && startup(placeHolder, clss);
 	        })));
 	    }
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/index.js', ["require", "exports", "core/index"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    function __export(m) {
+	        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	    }
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    __export(require("core/index"));
 	});
 	
 

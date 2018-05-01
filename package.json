@@ -6,15 +6,13 @@
   "typings": "./src/index.d.ts",
   "scripts": {
     "tsc": "node_modules/.bin/tsc",
-	"tsc-example": "node_modules/.bin/tsc -p tsconfig.example.json",
+    "tsc-example": "node_modules/.bin/tsc -p tsconfig.example.json",
     "build": "npm run tsc && npm run tsc-example && node node_modules/amd-loader/bin/amd-loader.js build.js",
     "start": "node node_modules/server/.bin/server.js config.json"    
   },
   "dependencies": {
     "jquery": "^3.2.1",
-    "dependency-injection": "git+https://github.com/kleevs/dependency-injection.git",
-    "amd-loader": "git+https://github.com/kleevs/amd-loader.git",
-    "binder": "git+https://github.com/kleevs/binder.git" 
+    "amd-loader": "git+https://github.com/kleevs/amd-loader.git"
   },
   "devDependencies": {
     "@types/node": "^7.0.14",
