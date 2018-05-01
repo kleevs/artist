@@ -16,7 +16,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const service_1 = require("../core/service");
-    let ServiceProvider = class ServiceProvider extends service_1.IServiceProvider {
+    class IServiceProvider {
+    }
+    exports.IServiceProvider = IServiceProvider;
+    let ServiceProvider = class ServiceProvider extends IServiceProvider {
         getService(type) {
             return service_1.serviceProvider.getService(type);
         }
@@ -26,7 +29,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     };
     ServiceProvider = __decorate([
         service_1.Service({
-            key: service_1.IServiceProvider
+            key: IServiceProvider
         })
     ], ServiceProvider);
     exports.ServiceProvider = ServiceProvider;

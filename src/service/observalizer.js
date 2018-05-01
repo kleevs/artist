@@ -30,7 +30,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             }
         }
     }
-    let Observablizer = class Observablizer extends service_1.IObservablizer {
+    class IObservablizer {
+    }
+    exports.IObservablizer = IObservablizer;
+    let Observablizer = class Observablizer extends IObservablizer {
         convert(value) {
             var res = value && Object.create(value) || undefined;
             value && foreach(value, (item, key) => {
@@ -64,7 +67,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     };
     Observablizer = __decorate([
         service_1.Service({
-            key: service_1.IObservablizer
+            key: IObservablizer
         })
     ], Observablizer);
     exports.Observablizer = Observablizer;

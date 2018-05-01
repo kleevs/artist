@@ -1,4 +1,4 @@
-import { IServiceProvider } from './service';
+import { IServiceProvider } from '../service/serviceProvider';
 export declare type ViewOption<TModel> = {
     selector?: string;
     template?: string;

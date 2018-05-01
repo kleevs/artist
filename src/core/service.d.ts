@@ -9,17 +9,3 @@ export declare let Service: <TKey, TValue extends TKey>(options: {
     initialize?: (instance: TKey) => void;
     test?: (serviceClass: any) => boolean;
 }) => (target: new (...arg: any[]) => TValue) => void;
-export declare abstract class IServiceProvider {
-    abstract getService<T>(type: Function & {
-        prototype: T;
-    }): T;
-    abstract getService<T>(type: Function & {
-        prototype: T;
-    }): T;
-    abstract createService<T>(key: Function & {
-        prototype: T;
-    }, parameters?: any[]): T;
-}
-export declare abstract class IObservablizer {
-    abstract convert<T>(value: T & {}): T;
-}

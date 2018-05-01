@@ -13,12 +13,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../core/service", "../core/view"], factory);
+        define(["require", "exports", "../core/service", "../service/serviceProvider", "../core/view"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const service_1 = require("../core/service");
+    const serviceProvider_1 = require("../service/serviceProvider");
     const view_1 = require("../core/view");
     class IViewProvider {
     }
@@ -46,7 +47,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         service_1.Service({
             key: IViewProvider
         }),
-        __metadata("design:paramtypes", [service_1.IServiceProvider])
+        __metadata("design:paramtypes", [serviceProvider_1.IServiceProvider])
     ], ViewProvider);
     exports.ViewProvider = ViewProvider;
 });

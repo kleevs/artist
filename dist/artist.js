@@ -235,12 +235,43 @@ __MODE__ = undefined;
 	    exports.config = injector.getConfig();
 	    exports.serviceProvider = injector.getProvider();
 	    exports.Service = injector.getDecorator();
+	});
+	
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/service/serviceProvider.js', ["require", "exports", "../core/service"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const service_1 = require("../core/service");
 	    class IServiceProvider {
 	    }
 	    exports.IServiceProvider = IServiceProvider;
-	    class IObservablizer {
-	    }
-	    exports.IObservablizer = IObservablizer;
+	    let ServiceProvider = class ServiceProvider extends IServiceProvider {
+	        getService(type) {
+	            return service_1.serviceProvider.getService(type);
+	        }
+	        createService(key, parameters) {
+	            return service_1.serviceProvider.createService(key, parameters);
+	        }
+	    };
+	    ServiceProvider = __decorate([
+	        service_1.Service({
+	            key: IServiceProvider
+	        })
+	    ], ServiceProvider);
+	    exports.ServiceProvider = ServiceProvider;
 	});
 	
 	(function (factory) {
@@ -518,12 +549,13 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/service/viewProvider.js', ["require", "exports", "../core/service", "../core/view"], factory);
+	        define('src/service/viewProvider.js', ["require", "exports", "../core/service", "../service/serviceProvider", "../core/view"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    const service_1 = require("../core/service");
+	    const serviceProvider_1 = require("../service/serviceProvider");
 	    const view_1 = require("../core/view");
 	    class IViewProvider {
 	    }
@@ -551,7 +583,7 @@ __MODE__ = undefined;
 	        service_1.Service({
 	            key: IViewProvider
 	        }),
-	        __metadata("design:paramtypes", [service_1.IServiceProvider])
+	        __metadata("design:paramtypes", [serviceProvider_1.IServiceProvider])
 	    ], ViewProvider);
 	    exports.ViewProvider = ViewProvider;
 	});
@@ -686,40 +718,6 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/service/serviceProvider.js', ["require", "exports", "../core/service"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const service_1 = require("../core/service");
-	    let ServiceProvider = class ServiceProvider extends service_1.IServiceProvider {
-	        getService(type) {
-	            return service_1.serviceProvider.getService(type);
-	        }
-	        createService(key, parameters) {
-	            return service_1.serviceProvider.createService(key, parameters);
-	        }
-	    };
-	    ServiceProvider = __decorate([
-	        service_1.Service({
-	            key: service_1.IServiceProvider
-	        })
-	    ], ServiceProvider);
-	    exports.ServiceProvider = ServiceProvider;
-	});
-	
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
 	        define('src/service/notifier.js', ["require", "exports", "../core/service"], factory);
 	    }
 	})(function (require, exports) {
@@ -802,7 +800,10 @@ __MODE__ = undefined;
 	            }
 	        }
 	    }
-	    let Observablizer = class Observablizer extends service_1.IObservablizer {
+	    class IObservablizer {
+	    }
+	    exports.IObservablizer = IObservablizer;
+	    let Observablizer = class Observablizer extends IObservablizer {
 	        convert(value) {
 	            var res = value && Object.create(value) || undefined;
 	            value && foreach(value, (item, key) => {
@@ -836,7 +837,7 @@ __MODE__ = undefined;
 	    };
 	    Observablizer = __decorate([
 	        service_1.Service({
-	            key: service_1.IObservablizer
+	            key: IObservablizer
 	        })
 	    ], Observablizer);
 	    exports.Observablizer = Observablizer;
@@ -1173,10 +1174,9 @@ __MODE__ = undefined;
 	    var view_1 = require("./view");
 	    exports.View = view_1.View;
 	    var service_2 = require("./service");
-	    exports.IServiceProvider = service_2.IServiceProvider;
-	    exports.IObservablizer = service_2.IObservablizer;
 	    exports.Service = service_2.Service;
 	    var serviceProvider_1 = require("../service/serviceProvider");
+	    exports.IServiceProvider = serviceProvider_1.IServiceProvider;
 	    exports.ServiceProvider = serviceProvider_1.ServiceProvider;
 	    var notifier_1 = require("../service/notifier");
 	    exports.INotifier = notifier_1.INotifier;
@@ -1186,6 +1186,7 @@ __MODE__ = undefined;
 	    exports.IViewProvider = viewProvider_2.IViewProvider;
 	    exports.ViewProvider = viewProvider_2.ViewProvider;
 	    var observalizer_1 = require("../service/observalizer");
+	    exports.IObservablizer = observalizer_1.IObservablizer;
 	    exports.Observablizer = observalizer_1.Observablizer;
 	    __export(require("../directive/view"));
 	    __export(require("../directive/dom"));

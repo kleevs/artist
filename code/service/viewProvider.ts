@@ -1,4 +1,5 @@
-import { IServiceProvider, Service, config } from "../core/service";
+import { Service, config } from "../core/service";
+import { IServiceProvider } from '../service/serviceProvider';
 import { registeredView } from '../core/view';
 
 export abstract class IViewProvider {

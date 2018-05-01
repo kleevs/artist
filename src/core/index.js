@@ -21,10 +21,9 @@
     var view_1 = require("./view");
     exports.View = view_1.View;
     var service_2 = require("./service");
-    exports.IServiceProvider = service_2.IServiceProvider;
-    exports.IObservablizer = service_2.IObservablizer;
     exports.Service = service_2.Service;
     var serviceProvider_1 = require("../service/serviceProvider");
+    exports.IServiceProvider = serviceProvider_1.IServiceProvider;
     exports.ServiceProvider = serviceProvider_1.ServiceProvider;
     var notifier_1 = require("../service/notifier");
     exports.INotifier = notifier_1.INotifier;
@@ -34,6 +33,7 @@
     exports.IViewProvider = viewProvider_2.IViewProvider;
     exports.ViewProvider = viewProvider_2.ViewProvider;
     var observalizer_1 = require("../service/observalizer");
+    exports.IObservablizer = observalizer_1.IObservablizer;
     exports.Observablizer = observalizer_1.Observablizer;
     __export(require("../directive/view"));
     __export(require("../directive/dom"));

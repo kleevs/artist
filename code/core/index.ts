@@ -7,12 +7,12 @@ declare let __META__: any;
 
 export { load } from 'node_modules/amd-loader/src/index';
 export { View, ViewOption } from './view';
-export { IServiceProvider, IObservablizer, Service } from './service';
+export { Service } from './service';
 
-export { ServiceProvider } from '../service/serviceProvider';
+export { IServiceProvider, ServiceProvider } from '../service/serviceProvider';
 export { INotifier, Notifier, Event } from '../service/notifier';
 export { IViewProvider, ViewProvider } from '../service/viewProvider';
-export { Observablizer } from '../service/observalizer';
+export { IObservablizer, Observablizer } from '../service/observalizer';
 
 export * from '../directive/view';
 export * from '../directive/dom';

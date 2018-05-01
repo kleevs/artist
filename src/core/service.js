@@ -14,10 +14,4 @@
     exports.config = injector.getConfig();
     exports.serviceProvider = injector.getProvider();
     exports.Service = injector.getDecorator();
-    class IServiceProvider {
-    }
-    exports.IServiceProvider = IServiceProvider;
-    class IObservablizer {
-    }
-    exports.IObservablizer = IObservablizer;
 });

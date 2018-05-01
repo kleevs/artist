@@ -1,5 +1,6 @@
 import { Binder } from '../lib/binder/index';
-import { serviceProvider, IServiceProvider, Service } from './service';
+import { serviceProvider, Service } from './service';
+import { IServiceProvider } from '../service/serviceProvider';
 import * as $ from 'node_modules/jquery/dist/jquery';
 
 function foreach<T>(item, callback) {

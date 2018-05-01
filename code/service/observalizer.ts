@@ -1,4 +1,4 @@
-import { IObservablizer, Service } from '../core/service';
+import { Service } from '../core/service';
 import { observable as object } from '../lib/observable/index';
 
 function foreach<T>(item, callback) {
@@ -12,6 +12,10 @@ function foreach<T>(item, callback) {
             callback(item[i], i);
         }
     }
+}
+
+export abstract class IObservablizer {
+    abstract convert<T>(value: T & {}): T;
 }
 
 @Service({

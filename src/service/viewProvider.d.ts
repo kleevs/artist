@@ -1,4 +1,4 @@
-import { IServiceProvider } from "../core/service";
+import { IServiceProvider } from '../service/serviceProvider';
 export declare abstract class IViewProvider {
     abstract newInstance<T>(type: Function & {
         prototype: T;
