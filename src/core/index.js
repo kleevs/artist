@@ -45,6 +45,11 @@
     __export(require("../directive/options"));
     __export(require("../directive/each"));
     __export(require("../directive/class"));
+    /** @description Startup du framework pour lancer l'application.
+     * @param {selector} string sélecteur css pour cibler l'élément du DOM root de l'application.
+     * @param {view} class vue qui sera instanciée en tant que vue root de l'application.
+     * @return
+     */
     function startup(selector, view) {
         var observer = new MutationObserver((records) => {
             records.forEach(record => {

@@ -18,7 +18,29 @@ function foreach<T>(item: { [s:string]: T }, callback: (item: T, key: string) =>
 
 export declare type Binder = BBinder<IServiceProvider>;
 
-export class BindManager extends BBindManager<IServiceProvider> {}
+/** @description Classe permettant de lier une partie du DOM à un binder
+ */  
+export class BindManager extends BBindManager<IServiceProvider> {
+
+    /** @description Constructeur de la classe.  
+     * @param {element} Element Elément à lier au binder. 
+     * @param {data} IServiceProvider Fournisseur de service de l'application.  
+     * @return
+     */  
+    constructor(element: Element);
+    constructor(element: Element, data: IServiceProvider);
+    constructor(element: Element, data: IServiceProvider = undefined) {
+        super(element, data);
+    }
+    
+    /** @description Applique le lien entre l'élément du DOM et le binder.  
+     * @param {callback} Binder Binder à lier.
+     * @return void
+     */  
+    public manage(callback: Binder) {
+		super.manage(callback);
+    }
+}
 
 export declare type ViewOption<TModel> = {
     selector?: string,

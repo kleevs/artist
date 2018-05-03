@@ -15,4 +15,9 @@ export * from '../directive/value';
 export * from '../directive/options';
 export * from '../directive/each';
 export * from '../directive/class';
+/** @description Startup du framework pour lancer l'application.
+ * @param {selector} string sélecteur css pour cibler l'élément du DOM root de l'application.
+ * @param {view} class vue qui sera instanciée en tant que vue root de l'application.
+ * @return
+ */
 export declare function startup(selector: any, view: any): void;

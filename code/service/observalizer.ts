@@ -14,8 +14,15 @@ function foreach<T>(item, callback) {
     }
 }
 
+/** @description Interface du service gérant la création d'objet observable.  
+ */  
 export abstract class IObservablizer {
-    abstract convert<T>(value: T & {}): T;
+
+    /** @description Crée un observable ayant les valeurs de l'objet passé en paramètre.  
+	 * @param {value} Object Objet à convertir en observable.
+	 * @return Observable.
+	 */  
+    abstract convert<T extends {[s:string]: any}>(value: T): T;
 }
 
 @Service({
