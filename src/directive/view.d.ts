@@ -1,1 +1,3 @@
-export declare function view(valueAccessor: () => any): (element: any, serviceProvider: any) => () => void;
+import { Binder } from '../core/view';
+export declare function view(valueAccessor: () => any): Binder;
+export declare function view(valueAccessor: () => any, callback: (view: any) => void): Binder;

@@ -10,15 +10,15 @@
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("../observable/index");
-    class Binder {
+    class BindManager {
         constructor(element, data = undefined) {
             this.element = element;
             this.data = data;
         }
-        bind(callback) {
+        manage(callback) {
             var fn = callback(this.element, this.data, this);
             index_1.blind(() => index_1.observer(() => fn()));
         }
     }
-    exports.Binder = Binder;
+    exports.BindManager = BindManager;
 });

@@ -1,5 +1,5 @@
 export { load } from 'node_modules/amd-loader/src/index';
-export { View, ViewOption } from './view';
+export { View, ViewOption, Binder } from './view';
 export { Service } from './service';
 export { IServiceProvider, ServiceProvider } from '../service/serviceProvider';
 export { INotifier, Notifier, Event } from '../service/notifier';

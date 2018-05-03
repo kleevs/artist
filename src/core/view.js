@@ -25,6 +25,9 @@
             }
         }
     }
+    class BindManager extends index_1.BindManager {
+    }
+    exports.BindManager = BindManager;
     exports.registeredView = [];
     function View(options) {
         return (constructor, metadata) => {
@@ -58,7 +61,7 @@
                                 (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
                                     var binder = valueAccessor(view);
                                     var binders = binder && !(binder instanceof Array) && [binder] || binder;
-                                    binders.forEach(b => new index_1.Binder(el, service_1.serviceProvider).bind(b));
+                                    binders.forEach(b => new BindManager(el, service_1.serviceProvider).manage(b));
                                 });
                             });
                             t[0].__view__ = view;

@@ -1,8 +1,7 @@
-export declare class Binder {
+export declare type Binder<T> = (element: Element, data: T, manager: BindManager<T>) => () => void;
+export declare class BindManager<T> {
     private element;
     private data;
-    constructor(element: any, data?: any);
-    bind(callback: (element) => Function): any;
-    bind(callback: (element, data: any) => Function): any;
-    bind(callback: (element, data: any, binder: Binder) => Function): any;
+    constructor(element: Element, data?: T);
+    manage(callback: Binder<T>): void;
 }

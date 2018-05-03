@@ -1,5 +1,5 @@
 import * as $ from 'node_modules/jquery/dist/jquery';
-import { Binder } from '../lib/binder/index';
+import { Binder, BindManager } from '../core/view';
 
 function foreach<T>(item, callback) {
     let i;
@@ -14,8 +14,8 @@ function foreach<T>(item, callback) {
     }
 }
 
-export function each(valueAccessor: () => {[s: string]: (element) => Function}[]) { 
-	return (element) => {
+export function each(valueAccessor: () => {[s: string]: (element) => Function}[]) : Binder { 
+	return (element, serviceProvider) => {
 		var $element = $(element),
 			template = $element.html();
 
@@ -28,7 +28,7 @@ export function each(valueAccessor: () => {[s: string]: (element) => Function}[]
 				var t = $(template);
 				foreach(item, (valueAccessor, selector) => {
 					(selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
-						new Binder(el).bind(valueAccessor);
+						new BindManager(el, serviceProvider).manage(valueAccessor);
 					});
 				});
 				$element.append(t);

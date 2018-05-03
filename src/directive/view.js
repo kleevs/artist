@@ -11,7 +11,7 @@
     Object.defineProperty(exports, "__esModule", { value: true });
     const $ = require("node_modules/jquery/dist/jquery");
     const viewProvider_1 = require("../service/viewProvider");
-    function view(valueAccessor) {
+    function view(valueAccessor, callback) {
         return (element, serviceProvider) => {
             var $element = $(element);
             $element.html("");
@@ -28,6 +28,7 @@
                     elts.forEach((el) => {
                         $element.append(el);
                     });
+                    callback && callback(value);
                     return elts;
                 });
             };

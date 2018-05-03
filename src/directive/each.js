@@ -4,13 +4,13 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/jquery/dist/jquery", "../lib/binder/index"], factory);
+        define(["require", "exports", "node_modules/jquery/dist/jquery", "../core/view"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const $ = require("node_modules/jquery/dist/jquery");
-    const index_1 = require("../lib/binder/index");
+    const view_1 = require("../core/view");
     function foreach(item, callback) {
         let i;
         if (item instanceof Array) {
@@ -25,7 +25,7 @@
         }
     }
     function each(valueAccessor) {
-        return (element) => {
+        return (element, serviceProvider) => {
             var $element = $(element), template = $element.html();
             $element.html("");
             return () => {
@@ -35,7 +35,7 @@
                     var t = $(template);
                     foreach(item, (valueAccessor, selector) => {
                         (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
-                            new index_1.Binder(el).bind(valueAccessor);
+                            new view_1.BindManager(el, serviceProvider).manage(valueAccessor);
                         });
                     });
                     $element.append(t);

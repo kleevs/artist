@@ -1,10 +1,14 @@
+import { Binder as BBinder, BindManager as BBindManager } from '../lib/binder/index';
 import { IServiceProvider } from '../service/serviceProvider';
+export declare type Binder = BBinder<IServiceProvider>;
+export declare class BindManager extends BBindManager<IServiceProvider> {
+}
 export declare type ViewOption<TModel> = {
     selector?: string;
     template?: string;
     html?: string;
     binding?: {
-        [s: string]: (model: TModel) => ((element, serviceProvider?: IServiceProvider) => () => any) | ((element, serviceProvider?: IServiceProvider) => () => any)[];
+        [s: string]: (model: TModel) => Binder | Binder[];
     };
 };
 export declare type RegisteredView<TModel> = {
@@ -12,7 +16,7 @@ export declare type RegisteredView<TModel> = {
         new (...args: any[]): any;
     };
     binding: {
-        [s: string]: (model: TModel) => ((element, serviceProvider?: IServiceProvider) => () => any) | ((element, serviceProvider?: IServiceProvider) => () => any)[];
+        [s: string]: (model: TModel) => Binder | Binder[];
     };
     html: Promise<string>;
 };

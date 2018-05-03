@@ -1,1 +1,2 @@
-export declare function text(valueAccessor: () => string): (element: any) => () => void;
+import { Binder } from '../core/view';
+export declare function text(valueAccessor: () => string): Binder;

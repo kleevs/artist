@@ -1,9 +1,9 @@
-import { Binder } from '../lib/binder/index';
+import { Binder as BBinder, BindManager as BBindManager } from '../lib/binder/index';
 import { serviceProvider, Service } from './service';
 import { IServiceProvider } from '../service/serviceProvider';
 import * as $ from 'node_modules/jquery/dist/jquery';
 
-function foreach<T>(item, callback) {
+function foreach<T>(item: { [s:string]: T }, callback: (item: T, key: string) => void) {
     let i;
     if (item instanceof Array) {
         for (i=0; i<item.length;i++) {
@@ -16,16 +16,20 @@ function foreach<T>(item, callback) {
     }
 }
 
+export declare type Binder = BBinder<IServiceProvider>;
+
+export class BindManager extends BBindManager<IServiceProvider> {}
+
 export declare type ViewOption<TModel> = {
     selector?: string,
     template?: string,
     html?: string,
-    binding?: { [s:string]: (model: TModel) => ((element, serviceProvider?: IServiceProvider) => () => any) | ((element, serviceProvider?: IServiceProvider) => () => any)[] }
+    binding?: { [s:string]: (model: TModel) => Binder | Binder[] }
 };
 
 export declare type RegisteredView<TModel> = {
     construct: {new(...args:any[]): any},
-    binding: { [s:string]: (model: TModel) => ((element, serviceProvider?: IServiceProvider) => () => any) | ((element, serviceProvider?: IServiceProvider) => () => any)[] }
+    binding: { [s:string]: (model: TModel) => Binder | Binder[] }
     html: Promise<string> 
 };
 
@@ -64,8 +68,8 @@ export function View<T>(options: ViewOption<T>) {
 						foreach(binding, (valueAccessor, selector) => {
 							(selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
 								var binder = valueAccessor(view);
-								var binders = binder && !(binder instanceof Array) && [binder] || binder;
-								binders.forEach(b => new Binder(el, serviceProvider).bind(b));
+								var binders = binder && !(binder instanceof Array) && <Binder[]>[binder] || <Binder[]>binder;
+								binders.forEach(b => new BindManager(el, serviceProvider).manage(b));
 							});
 						});
 

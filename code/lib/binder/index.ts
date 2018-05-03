@@ -1,13 +1,12 @@
 import { observer, blind } from '../observable/index';
 
-export class Binder {
-    constructor(private element, private data = undefined) {
+export declare type Binder<T> = (element: Element, data: T, manager: BindManager<T>) => () => void;
+
+export class BindManager<T> {
+    constructor(private element: Element, private data: T = undefined) {
     }
     
-    public bind(callback: (element) => Function)
-    public bind(callback: (element, data: any) => Function)
-    public bind(callback: (element, data: any, binder: Binder) => Function)
-	public bind(callback: (element, data?: any, binder?: Binder) => Function) {
+    public manage(callback: Binder<T>) {
 		var fn = callback(this.element, this.data, this);
         blind(() => observer(() => fn()));
     }

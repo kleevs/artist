@@ -445,17 +445,17 @@ __MODE__ = undefined;
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    const index_1 = require("../observable/index");
-	    class Binder {
+	    class BindManager {
 	        constructor(element, data = undefined) {
 	            this.element = element;
 	            this.data = data;
 	        }
-	        bind(callback) {
+	        manage(callback) {
 	            var fn = callback(this.element, this.data, this);
 	            index_1.blind(() => index_1.observer(() => fn()));
 	        }
 	    }
-	    exports.Binder = Binder;
+	    exports.BindManager = BindManager;
 	});
 	
 	define('node_modules/jquery/dist/jquery.js', [], function() { return jQuery; });
@@ -486,6 +486,9 @@ __MODE__ = undefined;
 	            }
 	        }
 	    }
+	    class BindManager extends index_1.BindManager {
+	    }
+	    exports.BindManager = BindManager;
 	    exports.registeredView = [];
 	    function View(options) {
 	        return (constructor, metadata) => {
@@ -519,7 +522,7 @@ __MODE__ = undefined;
 	                                (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
 	                                    var binder = valueAccessor(view);
 	                                    var binders = binder && !(binder instanceof Array) && [binder] || binder;
-	                                    binders.forEach(b => new index_1.Binder(el, service_1.serviceProvider).bind(b));
+	                                    binders.forEach(b => new BindManager(el, service_1.serviceProvider).manage(b));
 	                                });
 	                            });
 	                            t[0].__view__ = view;
@@ -856,7 +859,7 @@ __MODE__ = undefined;
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    const $ = require("node_modules/jquery/dist/jquery");
 	    const viewProvider_1 = require("../service/viewProvider");
-	    function view(valueAccessor) {
+	    function view(valueAccessor, callback) {
 	        return (element, serviceProvider) => {
 	            var $element = $(element);
 	            $element.html("");
@@ -873,6 +876,7 @@ __MODE__ = undefined;
 	                    elts.forEach((el) => {
 	                        $element.append(el);
 	                    });
+	                    callback && callback(value);
 	                    return elts;
 	                });
 	            };
@@ -1078,13 +1082,13 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/directive/each.js', ["require", "exports", "node_modules/jquery/dist/jquery", "../lib/binder/index"], factory);
+	        define('src/directive/each.js', ["require", "exports", "node_modules/jquery/dist/jquery", "../core/view"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    const $ = require("node_modules/jquery/dist/jquery");
-	    const index_1 = require("../lib/binder/index");
+	    const view_1 = require("../core/view");
 	    function foreach(item, callback) {
 	        let i;
 	        if (item instanceof Array) {
@@ -1099,7 +1103,7 @@ __MODE__ = undefined;
 	        }
 	    }
 	    function each(valueAccessor) {
-	        return (element) => {
+	        return (element, serviceProvider) => {
 	            var $element = $(element), template = $element.html();
 	            $element.html("");
 	            return () => {
@@ -1109,7 +1113,7 @@ __MODE__ = undefined;
 	                    var t = $(template);
 	                    foreach(item, (valueAccessor, selector) => {
 	                        (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
-	                            new index_1.Binder(el).bind(valueAccessor);
+	                            new view_1.BindManager(el, serviceProvider).manage(valueAccessor);
 	                        });
 	                    });
 	                    $element.append(t);

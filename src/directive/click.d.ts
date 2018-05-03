@@ -1,1 +1,2 @@
-export declare function click(valueAccessor: () => (e: Event) => boolean): (element: any) => () => void;
+import { Binder } from '../core/view';
+export declare function click(valueAccessor: () => (e: Event) => boolean): Binder;

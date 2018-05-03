@@ -1,6 +1,7 @@
 import * as $ from 'node_modules/jquery/dist/jquery';
+import { Binder } from '../core/view';
 
-export function options(valueAccessor: () => { id: string; text: string }[]) { 
+export function options(valueAccessor: () => { id: string; text: string }[]) : Binder { 
 	return (element) => {
 		var $element = $(element);
         $element.html("");

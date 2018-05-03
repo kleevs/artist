@@ -1,6 +1,7 @@
 import * as $ from 'node_modules/jquery/dist/jquery';
+import { Binder } from '../core/view';
 
-export function attr(valueAccessor: () => {[s:string]: string}) { 
+export function attr(valueAccessor: () => {[s:string]: string}): Binder { 
 	return (element) => { 
 		var $element = $(element);
 		

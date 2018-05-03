@@ -1,6 +1,7 @@
 import * as $ from 'node_modules/jquery/dist/jquery';
+import { Binder } from '../core/view';
 
-export function dom(option: { in: (e: Event) => void, out: (e: Event) => void }) {
+export function dom(option: { in: (e: Event) => void, out: (e: Event) => void }) : Binder {
     return (element, serviceProvider) => {
         var $element = $(element);
         $element.on('custom:view:dom:remove', (e) => {
