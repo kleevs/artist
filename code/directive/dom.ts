@@ -1,21 +1,23 @@
-import * as $ from 'node_modules/jquery/dist/jquery';
 import { Binder } from '../core/view';
+import { on } from 'on';
 
-export function dom(option: { in: (e: Event) => void, out: (e: Event) => void }) : Binder {
-    return (element, serviceProvider) => {
-        var $element = $(element);
-        $element.on('custom:view:dom:remove', (e) => {
+export function dom(option: { in: (e: Event) => void, out: (e: Event) => void }) : Binder[] {
+    return [
+        on('custom:view:dom:remove', () => (e) => { 
             if (e.target === e.currentTarget) {
                 option.out(e);
+                return true;
             }
-        });
 
-        $element.on('custom:view:dom:added', (e) => {
+            return false;
+        }),
+        on('custom:view:dom:added', () => (e) => {
             if (e.target === e.currentTarget) {
                 option.in(e);
+                return true;
             }
-        });
 
-        return () => {};
-    };
+            return false;
+        })
+    ];
 }

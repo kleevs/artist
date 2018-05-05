@@ -4,19 +4,14 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+        define(["require", "exports", "on"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const $ = require("node_modules/jquery/dist/jquery");
+    const on_1 = require("on");
     function click(valueAccessor) {
-        return (element) => {
-            $(element).click((e) => {
-                return valueAccessor().call(element, e);
-            });
-            return () => { };
-        };
+        return on_1.on('click', valueAccessor);
     }
     exports.click = click;
 });

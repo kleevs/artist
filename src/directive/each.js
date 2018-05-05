@@ -4,13 +4,13 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/jquery/dist/jquery", "../core/view"], factory);
+        define(["require", "exports", "../core/view", "../lib/dom/index"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const $ = require("node_modules/jquery/dist/jquery");
     const view_1 = require("../core/view");
+    const index_1 = require("../lib/dom/index");
     function foreach(item, callback) {
         let i;
         if (item instanceof Array) {
@@ -26,20 +26,20 @@
     }
     function each(valueAccessor) {
         return (element, serviceProvider) => {
-            var $element = $(element), template = $element.html();
-            $element.html("");
+            var template = element.innerHTML;
+            element.innerHTML = "";
             return () => {
                 var value = valueAccessor();
-                $element.html("");
-                value.forEach((item) => {
-                    var t = $(template);
+                element.innerHTML = "";
+                value.map((item) => {
+                    var t = index_1.createElement(template);
                     foreach(item, (valueAccessor, selector) => {
-                        (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
+                        (selector.trim() === "this" && [t] || t.querySelectorAll(selector)).forEach((el, i) => {
                             new view_1.BindManager(el, serviceProvider).manage(valueAccessor);
                         });
                     });
-                    $element.append(t);
-                });
+                    return t;
+                }).forEach(el => element.appendChild(el));
             };
         };
     }

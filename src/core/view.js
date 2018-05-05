@@ -4,14 +4,15 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../lib/binder/index", "./service", "node_modules/jquery/dist/jquery"], factory);
+        define(["require", "exports", "../lib/binder/index", "../lib/dom/index", "../lib/ajax/index", "./service"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("../lib/binder/index");
+    const index_2 = require("../lib/dom/index");
+    const index_3 = require("../lib/ajax/index");
     const service_1 = require("./service");
-    const $ = require("node_modules/jquery/dist/jquery");
     function foreach(item, callback) {
         let i;
         if (item instanceof Array) {
@@ -25,13 +26,25 @@
             }
         }
     }
+    /** @description Classe permettant de lier une partie du DOM à un binder
+     */
     class BindManager extends index_1.BindManager {
+        constructor(element, data = undefined) {
+            super(element, data);
+        }
+        /** @description Applique le lien entre l'élément du DOM et le binder.
+         * @param {callback} Binder Binder à lier.
+         * @return void
+         */
+        manage(callback) {
+            super.manage(callback);
+        }
     }
     exports.BindManager = BindManager;
     exports.registeredView = [];
     function View(options) {
         return (constructor, metadata) => {
-            options = constructor.prototype.__view__option__ = $.extend(true, constructor.prototype.__view__option__, options);
+            options = constructor.prototype.__view__option__ = Object.assign({}, constructor.prototype.__view__option__, options);
             var viewType;
             exports.registeredView.push(viewType = {
                 construct: constructor,
@@ -39,9 +52,9 @@
                 html: new Promise((resolve, reject) => {
                     options.html && resolve(options.html);
                     options.template && !options.html && (() => {
-                        $("<div>").load(`/${options.template}`, (template, status) => {
-                            status == "error" && (reject() || true) ||
-                                resolve(template);
+                        index_3.ajax({ url: `/${options.template}`, method: 'GET' }).then((response) => {
+                            response.status == "error" && (reject() || true) ||
+                                resolve(response.result);
                         });
                     })();
                 })
@@ -55,17 +68,17 @@
                         var binding = viewType.binding;
                         view && view.initialize && view.initialize();
                         viewType && (view.__elt__ = viewType.html.then(template => {
-                            var t = $(template);
-                            t.attr("artist-view", true);
+                            var t = index_2.createElement(template);
+                            t.setAttribute("artist-view", "true");
                             foreach(binding, (valueAccessor, selector) => {
-                                (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
+                                (selector.trim() === "this" && [t] || t.querySelectorAll(selector)).forEach((el) => {
                                     var binder = valueAccessor(view);
                                     var binders = binder && !(binder instanceof Array) && [binder] || binder;
                                     binders.forEach(b => new BindManager(el, service_1.serviceProvider).manage(b));
                                 });
                             });
-                            t[0].__view__ = view;
-                            return t[0];
+                            t.__view__ = view;
+                            return t;
                         }));
                     }
                 })(constructor, metadata);

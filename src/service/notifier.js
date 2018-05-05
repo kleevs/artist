@@ -16,9 +16,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const service_1 = require("../core/service");
+    /** @description Interface du service gérant la communication entre vue.
+     */
     class INotifier {
     }
     exports.INotifier = INotifier;
+    /** @description Classe définissant les évènements à manipuler pour la communication entre vue.
+     */
     class Event {
         constructor(key) {
             this.key = key;

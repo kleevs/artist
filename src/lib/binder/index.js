@@ -16,8 +16,13 @@
             this.data = data;
         }
         manage(callback) {
-            var fn = callback(this.element, this.data, this);
-            index_1.blind(() => index_1.observer(() => fn()));
+            if (callback instanceof Array) {
+                callback.forEach(c => this.manage(c));
+            }
+            else {
+                var fn = callback(this.element, this.data, this);
+                index_1.blind(() => index_1.observer(() => fn()));
+            }
         }
     }
     exports.BindManager = BindManager;

@@ -3,5 +3,6 @@ export declare class BindManager<T> {
     private element;
     private data;
     constructor(element: Element, data?: T);
-    manage(callback: Binder<T>): void;
+    manage(callback: Binder<T>[]): any;
+    manage(callback: Binder<T>): any;
 }

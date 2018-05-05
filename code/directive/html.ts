@@ -4,7 +4,7 @@ export function text(valueAccessor: () => string) : Binder {
 	return (element) => {
 		return () => {
 			var value = valueAccessor();
-			element.textContent = value || '';
+			element.innerHTML = value || '';
 		};
 	};
 }

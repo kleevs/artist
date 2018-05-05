@@ -1,5 +1,6 @@
 import { Binder } from '../core/view';
-export declare function value(valueAccessor: {
+export declare function value(options: {
     get: () => string;
     set: (value: string) => void;
-}): Binder;
+    on?: string;
+}): Binder[];

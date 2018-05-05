@@ -4,27 +4,29 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+        define(["require", "exports", "on"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const $ = require("node_modules/jquery/dist/jquery");
+    const on_1 = require("on");
     function dom(option) {
-        return (element, serviceProvider) => {
-            var $element = $(element);
-            $element.on('custom:view:dom:remove', (e) => {
+        return [
+            on_1.on('custom:view:dom:remove', () => (e) => {
                 if (e.target === e.currentTarget) {
                     option.out(e);
+                    return true;
                 }
-            });
-            $element.on('custom:view:dom:added', (e) => {
+                return false;
+            }),
+            on_1.on('custom:view:dom:added', () => (e) => {
                 if (e.target === e.currentTarget) {
                     option.in(e);
+                    return true;
                 }
-            });
-            return () => { };
-        };
+                return false;
+            })
+        ];
     }
     exports.dom = dom;
 });

@@ -1,22 +1,20 @@
-import * as $ from 'node_modules/jquery/dist/jquery';
 import { Binder } from '../core/view';
+import { createElement } from '../lib/dom/index';
 
 export function options(valueAccessor: () => { id: string; text: string }[]) : Binder { 
 	return (element) => {
-		var $element = $(element);
-        $element.html("");
+        element.innerHTML = "";
 		
 		return () => {
 			var value = valueAccessor();
 
-			$element.html("");
-			$element.append(value.map((item) => {
-				var $opt = $("<option>");
-				$opt.val(item.id);
-				$opt.text(item.text);
-				return $opt;
-			}));
-			$element.val($element.data("value"));
+			element.innerHTML = "";
+			value.map((item) => {
+				var opt = createElement("<option></option>");
+				(<any>opt).value = item.id;
+				opt.textContent = item.text;
+				return opt;
+			}).forEach(o => element.appendChild(o));
 		};
 	};
 }

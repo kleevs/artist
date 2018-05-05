@@ -1,7 +1,8 @@
 import { Binder as BBinder, BindManager as BBindManager } from '../lib/binder/index';
+import { createElement } from '../lib/dom/index';
+import { ajax } from '../lib/ajax/index';
 import { serviceProvider, Service } from './service';
 import { IServiceProvider } from '../service/serviceProvider';
-import * as $ from 'node_modules/jquery/dist/jquery';
 
 function foreach<T>(item: { [s:string]: T }, callback: (item: T, key: string) => void) {
     let i;
@@ -37,8 +38,20 @@ export class BindManager extends BBindManager<IServiceProvider> {
      * @param {callback} Binder Binder à lier.
      * @return void
      */  
-    public manage(callback: Binder) {
-		super.manage(callback);
+    public manage(callback: Binder[]);
+
+    /** @description Applique le lien entre l'élément du DOM et le binder.  
+     * @param {callback} Binder Binder à lier.
+     * @return void
+     */  
+    public manage(callback: Binder);
+
+    /** @description Applique le lien entre l'élément du DOM et le binder.  
+     * @param {callback} Binder Binder à lier.
+     * @return void
+     */  
+    public manage(callback: Binder | Binder[]) {
+		super.manage(<Binder>callback);
     }
 }
 
@@ -59,17 +72,17 @@ export let registeredView: RegisteredView<any>[] = [];
 
 export function View<T>(options: ViewOption<T>) { 
     return (constructor: Function, metadata?) => {
-        options = constructor.prototype.__view__option__ = $.extend(true, constructor.prototype.__view__option__, options);
+        options = constructor.prototype.__view__option__ = Object.assign({}, constructor.prototype.__view__option__, options);
         var viewType: RegisteredView<any>;
 		registeredView.push(viewType = {
             construct: <any>constructor,
             binding: options.binding,
-            html: new Promise((resolve, reject) => {
+            html: new Promise<string>((resolve, reject) => {
                 options.html && resolve(options.html);
                 options.template && !options.html && (() => {
-                    $("<div>").load(`/${options.template}`, (template, status) => { 
-                        status == "error" && (reject() || true) ||
-                        resolve(template) 
+                    ajax<string>({ url: `/${options.template}`, method: 'GET' }).then((response) => { 
+                        response.status == "error" && (reject() || true) ||
+                        resolve(response.result);
                     });
                 })();
             })
@@ -85,18 +98,18 @@ export function View<T>(options: ViewOption<T>) {
 
 					view && view.initialize && view.initialize();
 					viewType && (view.__elt__ = viewType.html.then(template => {
-						var t = $(template);
-						t.attr("artist-view", true);
+						var t = createElement(template);
+						t.setAttribute("artist-view", "true");
 						foreach(binding, (valueAccessor, selector) => {
-							(selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
+							(<Element[]>(selector.trim() === "this" && [t] || t.querySelectorAll(selector))).forEach((el) => {
 								var binder = valueAccessor(view);
 								var binders = binder && !(binder instanceof Array) && <Binder[]>[binder] || <Binder[]>binder;
 								binders.forEach(b => new BindManager(el, serviceProvider).manage(b));
 							});
 						});
 
-						t[0].__view__ = view;
-						return t[0];
+						(<any>t).__view__ = view;
+						return t;
 					}));
 				}
 			}))(<any>constructor, metadata);

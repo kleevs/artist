@@ -1,18 +1,28 @@
-import * as $ from 'node_modules/jquery/dist/jquery';
 import { Binder } from '../core/view';
 
+function addClass(element: Element, className: string) {
+    var arr = element.className.split(" ");
+    if (arr.indexOf(className) == -1) {
+        element.className += " " + className;
+    }
+}
+
+function removeClass(element: Element, className: string) {
+	var arr = element.className.split(" ");
+	arr = arr.filter(name => name !== className);
+	element.className = arr.join(' ');
+}
+
 export function classes(valueAccessor: () => {[s:string]: boolean}) : Binder { 
-	return (element) => { 
-		var $element = $(element);
-		
+	return (element) => {
 		return () => {
 			var value = valueAccessor();
 
 			for (var key in value) {
 				if (value[key]) {
-					$element.addClass(key);
+					addClass(element, key);
 				} else {
-					$element.removeClass(key);
+					removeClass(element, key);
 				}
 			}
 		};

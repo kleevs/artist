@@ -4,29 +4,29 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/jquery/dist/jquery", "../service/viewProvider"], factory);
+        define(["require", "exports", "../service/viewProvider", "../lib/dom/index"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const $ = require("node_modules/jquery/dist/jquery");
     const viewProvider_1 = require("../service/viewProvider");
+    const index_1 = require("../lib/dom/index");
     function view(valueAccessor, callback) {
         return (element, serviceProvider) => {
-            var $element = $(element);
-            $element.html("");
+            element.innerHTML = "";
             return () => {
                 var value = valueAccessor();
                 var array = !value || value instanceof Array ? (value || []) : [value];
-                var $deleted = $("<div>");
-                var $added = $("<div>");
-                Promise.all(array.map((item) => serviceProvider.getService(viewProvider_1.IViewProvider).getNode(item)))
+                var deleted = index_1.createElement("<div></div>");
+                var added = index_1.createElement("<div></div>");
+                var promises = array.map((item) => serviceProvider.getService(viewProvider_1.IViewProvider).getNode(item));
+                Promise.all(promises)
                     .then((elts) => {
-                    $element.children().each((i, el) => {
-                        $(el).appendTo($deleted);
+                    element.childNodes.forEach((el) => {
+                        deleted.appendChild(el);
                     });
                     elts.forEach((el) => {
-                        $element.append(el);
+                        element.appendChild(el);
                     });
                     callback && callback(value);
                     return elts;

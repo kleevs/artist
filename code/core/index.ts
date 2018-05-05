@@ -1,7 +1,6 @@
 import { serviceProvider } from './service';
 import { IViewProvider } from '../service/viewProvider';
 import { load, config, define } from 'node_modules/amd-loader/src/index';
-import * as $ from 'node_modules/jquery/dist/jquery';
 
 declare let __META__: any;
 
@@ -30,30 +29,37 @@ export * from '../directive/class';
  * @param {view} class Vue qui sera instanciée en tant que vue root de l'application.  
  * @return
  */  
-export function startup(selector, view) {
+export function startup(selector: string, view) {
     var observer = new MutationObserver((records) => {
         records.forEach(record => { 
-            var $removedNodes = $(record.removedNodes);
-            var $addedNodes = $(record.addedNodes);
-            var $removeViews = $(Array.prototype.map.call($removedNodes.filter("[artist-view=true][loaded]"), x => x).concat(
-                Array.prototype.map.call($removedNodes.find("[artist-view=true][loaded]"), x => x)
-            ));
+            var removedNodes: Element[] = Array.prototype.map.call(record.removedNodes, x => x);
+            var addedNodes: Element[] = Array.prototype.map.call(record.addedNodes, x => x);
 
-            var $addedViews = $(Array.prototype.map.call($addedNodes.filter("[artist-view=true]:not([loaded])"), x => x).concat(
-                Array.prototype.map.call($addedNodes.find("[artist-view=true]:not([loaded])"), x => x)
-            ));
+            var removeViews: Element[] = [];
+            removeViews = removeViews.concat(removedNodes.filter(e => e.hasAttribute("artist-view") && e.hasAttribute("loaded")));
+            removedNodes.forEach(e => {
+                var r: Element[] = Array.prototype.map.call(e.querySelectorAll("[artist-view=true][loaded]"), x => x).filter(e => e.hasAttribute("loaded"));
+                removeViews = removeViews.concat(r);
+            });
 
-            $addedViews.attr("loaded", true);
-            $removeViews.removeAttr("loaded");
+            var addedViews: Element[] = [];
+            addedViews = addedViews.concat(addedNodes.filter(e => e.hasAttribute("artist-view") && !e.hasAttribute("loaded")));
+            addedNodes.forEach(e => {
+                var a: Element[] = Array.prototype.map.call(e.querySelectorAll("[artist-view=true]"), x => x).filter(e => !e.hasAttribute("loaded"));
+                addedViews = addedViews.concat(a);
+            });
 
-            $removeViews.trigger("custom:view:dom:remove"); 
-            $addedViews.trigger("custom:view:dom:added");
+            addedViews.forEach(e => e.setAttribute("loaded", 'true'));
+            removeViews.forEach(e => e.removeAttribute("loaded"));
+
+            removeViews.forEach(e => e.dispatchEvent(new Event("custom:view:dom:remove")));
+            addedViews.forEach(e => e.dispatchEvent(new Event("custom:view:dom:added")));
         });
     });
 
-    observer.observe($("body")[0], { childList: true, subtree: true });
+    observer.observe(document.querySelector("body"), { childList: true, subtree: true });
 	var viewProvider = serviceProvider.getService(IViewProvider);
-    viewProvider.getNode(viewProvider.newInstance(view)).then((el) => $(selector).append(el));
+    viewProvider.getNode(viewProvider.newInstance(view)).then((el) => document.querySelector(selector).appendChild(el));
 }
 
 if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {

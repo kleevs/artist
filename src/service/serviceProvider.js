@@ -16,6 +16,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const service_1 = require("../core/service");
+    /** @description Interface du service fournisseur de service.
+     */
     class IServiceProvider {
     }
     exports.IServiceProvider = IServiceProvider;

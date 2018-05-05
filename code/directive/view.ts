@@ -1,28 +1,28 @@
-import * as $ from 'node_modules/jquery/dist/jquery';
 import { IViewProvider } from '../service/viewProvider';
 import { Binder } from '../core/view';
+import { createElement } from '../lib/dom/index';
 
 export function view(valueAccessor: () => any) : Binder
 export function view(valueAccessor: () => any, callback: (view: any) => void) : Binder
 export function view(valueAccessor: () => any, callback?: (view: any) => void) : Binder {
-	return (element, serviceProvider: any) => {
-		var $element = $(element);
-        $element.html("");
+	return (element, serviceProvider) => {
+        element.innerHTML = "";
         
 		return () => {
             var value = valueAccessor();
-			var array = !value || value instanceof Array ? (value || []) : [value];
-			var $deleted = $("<div>");
-			var $added = $("<div>");
-            Promise.all(array.map((item) => serviceProvider.getService(IViewProvider).getNode(item)))
+			var array: any[] = !value || value instanceof Array ? (value || []) : [value];
+			var deleted = createElement("<div></div>");
+			var added = createElement("<div></div>");
+			var promises = array.map((item) => serviceProvider.getService(IViewProvider).getNode(item));
+            Promise.all(promises)
 				.then((elts) => {
 
-                    $element.children().each((i, el) => {
-						$(el).appendTo($deleted); 
+                    (<any>element.childNodes).forEach((el) => {
+						deleted.appendChild(el); 
                     });
                     
 					elts.forEach((el: any) => { 
-						$element.append(el);
+						element.appendChild(el);
 					});
 					
 					callback && callback(value);

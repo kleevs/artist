@@ -9,20 +9,14 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    function attr(valueAccessor) {
+    function on(event, valueAccessor) {
         return (element) => {
-            return () => {
-                var value = valueAccessor();
-                for (var key in value) {
-                    if (value[key] === undefined) {
-                        element.removeAttribute(key);
-                    }
-                    else {
-                        element.setAttribute(key, value[key]);
-                    }
-                }
-            };
+            element.addEventListener(event, (e) => {
+                var stopPropagation = valueAccessor().call(element, e);
+                stopPropagation && e.stopPropagation();
+            });
+            return () => { };
         };
     }
-    exports.attr = attr;
+    exports.on = on;
 });

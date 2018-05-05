@@ -4,23 +4,32 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+        define(["require", "exports"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const $ = require("node_modules/jquery/dist/jquery");
+    function addClass(element, className) {
+        var arr = element.className.split(" ");
+        if (arr.indexOf(className) == -1) {
+            element.className += " " + className;
+        }
+    }
+    function removeClass(element, className) {
+        var arr = element.className.split(" ");
+        arr = arr.filter(name => name !== className);
+        element.className = arr.join(' ');
+    }
     function classes(valueAccessor) {
         return (element) => {
-            var $element = $(element);
             return () => {
                 var value = valueAccessor();
                 for (var key in value) {
                     if (value[key]) {
-                        $element.addClass(key);
+                        addClass(element, key);
                     }
                     else {
-                        $element.removeClass(key);
+                        removeClass(element, key);
                     }
                 }
             };

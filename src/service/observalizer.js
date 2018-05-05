@@ -30,6 +30,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             }
         }
     }
+    /** @description Interface du service gérant la création d'objet observable.
+     */
     class IObservablizer {
     }
     exports.IObservablizer = IObservablizer;

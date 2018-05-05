@@ -11,8 +11,8 @@ __MODE__ = undefined;
 	} else if (__META__.MODE === "AMD" || typeof define === "function" && define.amd) {
 		__META__.MODE = "AMD";
 		var moduleRequired = __REQUIRE__ = {};
-		var required = ['jQuery'];
-		define(['/jquery'], function () { 
+		var required = [];
+		define([], function () { 
 			Array.prototype.forEach.call(arguments, function(res, i) {
 				moduleRequired[required[i]] = res;
 			}); 
@@ -27,7 +27,7 @@ __MODE__ = undefined;
 
 })(function (context) {
 	var throw_exception = function (msg) { throw msg; };
-	var jQuery = typeof(context['jQuery']) !== "undedined" && context['jQuery'] || __REQUIRE__['jQuery'] || throw_exception("jQuery is required.");
+	
 	__REQUIRE__ = undefined;
 	throw_exception = undefined;
 	context = undefined;
@@ -255,6 +255,8 @@ __MODE__ = undefined;
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    const service_1 = require("../core/service");
+	    /** @description Interface du service fournisseur de service.
+	     */
 	    class IServiceProvider {
 	    }
 	    exports.IServiceProvider = IServiceProvider;
@@ -451,28 +453,122 @@ __MODE__ = undefined;
 	            this.data = data;
 	        }
 	        manage(callback) {
-	            var fn = callback(this.element, this.data, this);
-	            index_1.blind(() => index_1.observer(() => fn()));
+	            if (callback instanceof Array) {
+	                callback.forEach(c => this.manage(c));
+	            }
+	            else {
+	                var fn = callback(this.element, this.data, this);
+	                index_1.blind(() => index_1.observer(() => fn()));
+	            }
 	        }
 	    }
 	    exports.BindManager = BindManager;
 	});
 	
-	define('node_modules/jquery/dist/jquery.js', [], function() { return jQuery; });
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
 	        var v = factory(require, exports);
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/core/view.js', ["require", "exports", "../lib/binder/index", "./service", "node_modules/jquery/dist/jquery"], factory);
+	        define('src/lib/dom/index.js', ["require", "exports"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    function createElement(html) {
+	        html = html.trim();
+	        var isTr = html.match(/^<tr/);
+	        var isTd = html.match(/^<td/);
+	        var parser = document.createElement("div");
+	        if (isTr || isTd) {
+	            var table = document.createElement("table");
+	            parser = document.createElement("tbody");
+	            table.appendChild(parser);
+	            if (isTd) {
+	                var parent = parser;
+	                parser.appendChild(parser = document.createElement("tr"));
+	            }
+	        }
+	        parser.innerHTML = html;
+	        return parser.firstChild;
+	    }
+	    exports.createElement = createElement;
+	    ;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/lib/ajax/index.js', ["require", "exports"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    function getXMLHttpRequest() {
+	        var xhr = null;
+	        var context = window;
+	        if (context.XMLHttpRequest || context.ActiveXObject) {
+	            if (context.ActiveXObject) {
+	                try {
+	                    xhr = new ActiveXObject('Msxml2.XMLHTTP');
+	                }
+	                catch (e) {
+	                    xhr = new ActiveXObject('Microsoft.XMLHTTP');
+	                }
+	            }
+	            else {
+	                xhr = new XMLHttpRequest();
+	            }
+	        }
+	        else {
+	            alert("Votre navigateur ne supporte pas l'objet XMLHTTPRequest...");
+	            return null;
+	        }
+	        return xhr;
+	    }
+	    function ajax(options) {
+	        return new Promise((resolve, reject) => {
+	            var xhr = getXMLHttpRequest();
+	            xhr.open(options.method, options.url, true);
+	            options.headers && Object.keys(options.headers).forEach(key => {
+	                var header = options.headers[key];
+	                xhr.setRequestHeader(key, header);
+	            });
+	            xhr.send(options.data);
+	            xhr.onreadystatechange = () => {
+	                if (xhr.readyState == 4) {
+	                    if ((xhr.status == 200 || xhr.status == 0)) {
+	                        resolve({ result: xhr.responseText, status: xhr.status });
+	                    }
+	                    else {
+	                        reject({ status: xhr.status, result: xhr.responseText });
+	                    }
+	                }
+	            };
+	        });
+	    }
+	    exports.ajax = ajax;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/core/view.js', ["require", "exports", "../lib/binder/index", "../lib/dom/index", "../lib/ajax/index", "./service"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    const index_1 = require("../lib/binder/index");
+	    const index_2 = require("../lib/dom/index");
+	    const index_3 = require("../lib/ajax/index");
 	    const service_1 = require("./service");
-	    const $ = require("node_modules/jquery/dist/jquery");
 	    function foreach(item, callback) {
 	        let i;
 	        if (item instanceof Array) {
@@ -486,13 +582,25 @@ __MODE__ = undefined;
 	            }
 	        }
 	    }
+	    /** @description Classe permettant de lier une partie du DOM à un binder
+	     */
 	    class BindManager extends index_1.BindManager {
+	        constructor(element, data = undefined) {
+	            super(element, data);
+	        }
+	        /** @description Applique le lien entre l'élément du DOM et le binder.
+	         * @param {callback} Binder Binder à lier.
+	         * @return void
+	         */
+	        manage(callback) {
+	            super.manage(callback);
+	        }
 	    }
 	    exports.BindManager = BindManager;
 	    exports.registeredView = [];
 	    function View(options) {
 	        return (constructor, metadata) => {
-	            options = constructor.prototype.__view__option__ = $.extend(true, constructor.prototype.__view__option__, options);
+	            options = constructor.prototype.__view__option__ = Object.assign({}, constructor.prototype.__view__option__, options);
 	            var viewType;
 	            exports.registeredView.push(viewType = {
 	                construct: constructor,
@@ -500,9 +608,9 @@ __MODE__ = undefined;
 	                html: new Promise((resolve, reject) => {
 	                    options.html && resolve(options.html);
 	                    options.template && !options.html && (() => {
-	                        $("<div>").load(`/${options.template}`, (template, status) => {
-	                            status == "error" && (reject() || true) ||
-	                                resolve(template);
+	                        index_3.ajax({ url: `/${options.template}`, method: 'GET' }).then((response) => {
+	                            response.status == "error" && (reject() || true) ||
+	                                resolve(response.result);
 	                        });
 	                    })();
 	                })
@@ -516,17 +624,17 @@ __MODE__ = undefined;
 	                        var binding = viewType.binding;
 	                        view && view.initialize && view.initialize();
 	                        viewType && (view.__elt__ = viewType.html.then(template => {
-	                            var t = $(template);
-	                            t.attr("artist-view", true);
+	                            var t = index_2.createElement(template);
+	                            t.setAttribute("artist-view", "true");
 	                            foreach(binding, (valueAccessor, selector) => {
-	                                (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
+	                                (selector.trim() === "this" && [t] || t.querySelectorAll(selector)).forEach((el) => {
 	                                    var binder = valueAccessor(view);
 	                                    var binders = binder && !(binder instanceof Array) && [binder] || binder;
 	                                    binders.forEach(b => new BindManager(el, service_1.serviceProvider).manage(b));
 	                                });
 	                            });
-	                            t[0].__view__ = view;
-	                            return t[0];
+	                            t.__view__ = view;
+	                            return t;
 	                        }));
 	                    }
 	                })(constructor, metadata);
@@ -560,6 +668,8 @@ __MODE__ = undefined;
 	    const service_1 = require("../core/service");
 	    const serviceProvider_1 = require("../service/serviceProvider");
 	    const view_1 = require("../core/view");
+	    /** @description Interface du service fournisseur de vue.
+	     */
 	    class IViewProvider {
 	    }
 	    exports.IViewProvider = IViewProvider;
@@ -727,9 +837,13 @@ __MODE__ = undefined;
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    const service_1 = require("../core/service");
+	    /** @description Interface du service gérant la communication entre vue.
+	     */
 	    class INotifier {
 	    }
 	    exports.INotifier = INotifier;
+	    /** @description Classe définissant les évènements à manipuler pour la communication entre vue.
+	     */
 	    class Event {
 	        constructor(key) {
 	            this.key = key;
@@ -803,6 +917,8 @@ __MODE__ = undefined;
 	            }
 	        }
 	    }
+	    /** @description Interface du service gérant la création d'objet observable.
+	     */
 	    class IObservablizer {
 	    }
 	    exports.IObservablizer = IObservablizer;
@@ -852,29 +968,29 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/directive/view.js', ["require", "exports", "node_modules/jquery/dist/jquery", "../service/viewProvider"], factory);
+	        define('src/directive/view.js', ["require", "exports", "../service/viewProvider", "../lib/dom/index"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
 	    const viewProvider_1 = require("../service/viewProvider");
+	    const index_1 = require("../lib/dom/index");
 	    function view(valueAccessor, callback) {
 	        return (element, serviceProvider) => {
-	            var $element = $(element);
-	            $element.html("");
+	            element.innerHTML = "";
 	            return () => {
 	                var value = valueAccessor();
 	                var array = !value || value instanceof Array ? (value || []) : [value];
-	                var $deleted = $("<div>");
-	                var $added = $("<div>");
-	                Promise.all(array.map((item) => serviceProvider.getService(viewProvider_1.IViewProvider).getNode(item)))
+	                var deleted = index_1.createElement("<div></div>");
+	                var added = index_1.createElement("<div></div>");
+	                var promises = array.map((item) => serviceProvider.getService(viewProvider_1.IViewProvider).getNode(item));
+	                Promise.all(promises)
 	                    .then((elts) => {
-	                    $element.children().each((i, el) => {
-	                        $(el).appendTo($deleted);
+	                    element.childNodes.forEach((el) => {
+	                        deleted.appendChild(el);
 	                    });
 	                    elts.forEach((el) => {
-	                        $element.append(el);
+	                        element.appendChild(el);
 	                    });
 	                    callback && callback(value);
 	                    return elts;
@@ -891,27 +1007,52 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/directive/dom.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	        define('src/directive/on.js', ["require", "exports"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
-	    function dom(option) {
-	        return (element, serviceProvider) => {
-	            var $element = $(element);
-	            $element.on('custom:view:dom:remove', (e) => {
-	                if (e.target === e.currentTarget) {
-	                    option.out(e);
-	                }
-	            });
-	            $element.on('custom:view:dom:added', (e) => {
-	                if (e.target === e.currentTarget) {
-	                    option.in(e);
-	                }
+	    function on(event, valueAccessor) {
+	        return (element) => {
+	            element.addEventListener(event, (e) => {
+	                var stopPropagation = valueAccessor().call(element, e);
+	                stopPropagation && e.stopPropagation();
 	            });
 	            return () => { };
 	        };
+	    }
+	    exports.on = on;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/directive/dom.js', ["require", "exports", "on"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const on_1 = require("on");
+	    function dom(option) {
+	        return [
+	            on_1.on('custom:view:dom:remove', () => (e) => {
+	                if (e.target === e.currentTarget) {
+	                    option.out(e);
+	                    return true;
+	                }
+	                return false;
+	            }),
+	            on_1.on('custom:view:dom:added', () => (e) => {
+	                if (e.target === e.currentTarget) {
+	                    option.in(e);
+	                    return true;
+	                }
+	                return false;
+	            })
+	        ];
 	    }
 	    exports.dom = dom;
 	});
@@ -922,23 +1063,21 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/directive/attr.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	        define('src/directive/attr.js', ["require", "exports"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
 	    function attr(valueAccessor) {
 	        return (element) => {
-	            var $element = $(element);
 	            return () => {
 	                var value = valueAccessor();
 	                for (var key in value) {
 	                    if (value[key] === undefined) {
-	                        $element.removeAttr(key);
+	                        element.removeAttribute(key);
 	                    }
 	                    else {
-	                        $element.attr(key, value[key]);
+	                        element.setAttribute(key, value[key]);
 	                    }
 	                }
 	            };
@@ -953,19 +1092,14 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/directive/change.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	        define('src/directive/change.js', ["require", "exports", "on"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
+	    const on_1 = require("on");
 	    function change(valueAccessor) {
-	        return (element) => {
-	            $(element).change((e) => {
-	                return valueAccessor().call(element, e);
-	            });
-	            return () => { };
-	        };
+	        return on_1.on('change', valueAccessor);
 	    }
 	    exports.change = change;
 	});
@@ -976,19 +1110,14 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/directive/click.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	        define('src/directive/click.js', ["require", "exports", "on"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
+	    const on_1 = require("on");
 	    function click(valueAccessor) {
-	        return (element) => {
-	            $(element).click((e) => {
-	                return valueAccessor().call(element, e);
-	            });
-	            return () => { };
-	        };
+	        return on_1.on('click', valueAccessor);
 	    }
 	    exports.click = click;
 	});
@@ -999,18 +1128,16 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/directive/text.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	        define('src/directive/text.js', ["require", "exports"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
 	    function text(valueAccessor) {
 	        return (element) => {
-	            var $element = $(element);
 	            return () => {
 	                var value = valueAccessor();
-	                $element.text(value);
+	                element.textContent = value || '';
 	            };
 	        };
 	    }
@@ -1023,23 +1150,17 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/directive/value.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	        define('src/directive/value.js', ["require", "exports", "on"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
-	    function value(valueAccessor) {
-	        return (element) => {
-	            var $element = $(element);
-	            $element.on("input", () => {
-	                valueAccessor.set($element.val());
-	            });
-	            return () => {
-	                var value = valueAccessor.get();
-	                $element.val(value);
-	            };
-	        };
+	    const on_1 = require("on");
+	    function value(options) {
+	        return [
+	            on_1.on(options.on || 'input', () => (e) => options.set(e.currentTarget.value) || true),
+	            (element) => () => element.value = options.get() || ''
+	        ];
 	    }
 	    exports.value = value;
 	});
@@ -1050,26 +1171,24 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/directive/options.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	        define('src/directive/options.js', ["require", "exports", "../lib/dom/index"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
+	    const index_1 = require("../lib/dom/index");
 	    function options(valueAccessor) {
 	        return (element) => {
-	            var $element = $(element);
-	            $element.html("");
+	            element.innerHTML = "";
 	            return () => {
 	                var value = valueAccessor();
-	                $element.html("");
-	                $element.append(value.map((item) => {
-	                    var $opt = $("<option>");
-	                    $opt.val(item.id);
-	                    $opt.text(item.text);
-	                    return $opt;
-	                }));
-	                $element.val($element.data("value"));
+	                element.innerHTML = "";
+	                value.map((item) => {
+	                    var opt = index_1.createElement("<option></option>");
+	                    opt.value = item.id;
+	                    opt.textContent = item.text;
+	                    return opt;
+	                }).forEach(o => element.appendChild(o));
 	            };
 	        };
 	    }
@@ -1082,13 +1201,13 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/directive/each.js', ["require", "exports", "node_modules/jquery/dist/jquery", "../core/view"], factory);
+	        define('src/directive/each.js', ["require", "exports", "../core/view", "../lib/dom/index"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
 	    const view_1 = require("../core/view");
+	    const index_1 = require("../lib/dom/index");
 	    function foreach(item, callback) {
 	        let i;
 	        if (item instanceof Array) {
@@ -1104,20 +1223,20 @@ __MODE__ = undefined;
 	    }
 	    function each(valueAccessor) {
 	        return (element, serviceProvider) => {
-	            var $element = $(element), template = $element.html();
-	            $element.html("");
+	            var template = element.innerHTML;
+	            element.innerHTML = "";
 	            return () => {
 	                var value = valueAccessor();
-	                $element.html("");
-	                value.forEach((item) => {
-	                    var t = $(template);
+	                element.innerHTML = "";
+	                value.map((item) => {
+	                    var t = index_1.createElement(template);
 	                    foreach(item, (valueAccessor, selector) => {
-	                        (selector.trim() === "this" && t || t.find(selector)).each((i, el) => {
+	                        (selector.trim() === "this" && [t] || t.querySelectorAll(selector)).forEach((el, i) => {
 	                            new view_1.BindManager(el, serviceProvider).manage(valueAccessor);
 	                        });
 	                    });
-	                    $element.append(t);
-	                });
+	                    return t;
+	                }).forEach(el => element.appendChild(el));
 	            };
 	        };
 	    }
@@ -1130,23 +1249,32 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/directive/class.js', ["require", "exports", "node_modules/jquery/dist/jquery"], factory);
+	        define('src/directive/class.js', ["require", "exports"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const $ = require("node_modules/jquery/dist/jquery");
+	    function addClass(element, className) {
+	        var arr = element.className.split(" ");
+	        if (arr.indexOf(className) == -1) {
+	            element.className += " " + className;
+	        }
+	    }
+	    function removeClass(element, className) {
+	        var arr = element.className.split(" ");
+	        arr = arr.filter(name => name !== className);
+	        element.className = arr.join(' ');
+	    }
 	    function classes(valueAccessor) {
 	        return (element) => {
-	            var $element = $(element);
 	            return () => {
 	                var value = valueAccessor();
 	                for (var key in value) {
 	                    if (value[key]) {
-	                        $element.addClass(key);
+	                        addClass(element, key);
 	                    }
 	                    else {
-	                        $element.removeClass(key);
+	                        removeClass(element, key);
 	                    }
 	                }
 	            };
@@ -1161,7 +1289,7 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/core/index.js', ["require", "exports", "./service", "../service/viewProvider", "node_modules/amd-loader/src/index", "node_modules/jquery/dist/jquery", "node_modules/amd-loader/src/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class"], factory);
+	        define('src/core/index.js', ["require", "exports", "./service", "../service/viewProvider", "node_modules/amd-loader/src/index", "node_modules/amd-loader/src/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
@@ -1172,7 +1300,6 @@ __MODE__ = undefined;
 	    const service_1 = require("./service");
 	    const viewProvider_1 = require("../service/viewProvider");
 	    const index_1 = require("node_modules/amd-loader/src/index");
-	    const $ = require("node_modules/jquery/dist/jquery");
 	    var index_2 = require("node_modules/amd-loader/src/index");
 	    exports.load = index_2.load;
 	    var view_1 = require("./view");
@@ -1203,26 +1330,36 @@ __MODE__ = undefined;
 	    __export(require("../directive/each"));
 	    __export(require("../directive/class"));
 	    /** @description Startup du framework pour lancer l'application.
-	     * @param {selector} string sélecteur css pour cibler l'élément du DOM root de l'application.
-	     * @param {view} class vue qui sera instanciée en tant que vue root de l'application.
+	     * @param {selector} string Sélecteur css pour cibler l'élément du DOM root de l'application.
+	     * @param {view} class Vue qui sera instanciée en tant que vue root de l'application.
 	     * @return
 	     */
 	    function startup(selector, view) {
 	        var observer = new MutationObserver((records) => {
 	            records.forEach(record => {
-	                var $removedNodes = $(record.removedNodes);
-	                var $addedNodes = $(record.addedNodes);
-	                var $removeViews = $(Array.prototype.map.call($removedNodes.filter("[artist-view=true][loaded]"), x => x).concat(Array.prototype.map.call($removedNodes.find("[artist-view=true][loaded]"), x => x)));
-	                var $addedViews = $(Array.prototype.map.call($addedNodes.filter("[artist-view=true]:not([loaded])"), x => x).concat(Array.prototype.map.call($addedNodes.find("[artist-view=true]:not([loaded])"), x => x)));
-	                $addedViews.attr("loaded", true);
-	                $removeViews.removeAttr("loaded");
-	                $removeViews.trigger("custom:view:dom:remove");
-	                $addedViews.trigger("custom:view:dom:added");
+	                var removedNodes = Array.prototype.map.call(record.removedNodes, x => x);
+	                var addedNodes = Array.prototype.map.call(record.addedNodes, x => x);
+	                var removeViews = [];
+	                removeViews = removeViews.concat(removedNodes.filter(e => e.hasAttribute("artist-view") && e.hasAttribute("loaded")));
+	                removedNodes.forEach(e => {
+	                    var r = Array.prototype.map.call(e.querySelectorAll("[artist-view=true][loaded]"), x => x).filter(e => e.hasAttribute("loaded"));
+	                    removeViews = removeViews.concat(r);
+	                });
+	                var addedViews = [];
+	                addedViews = addedViews.concat(addedNodes.filter(e => e.hasAttribute("artist-view") && !e.hasAttribute("loaded")));
+	                addedNodes.forEach(e => {
+	                    var a = Array.prototype.map.call(e.querySelectorAll("[artist-view=true]"), x => x).filter(e => !e.hasAttribute("loaded"));
+	                    addedViews = addedViews.concat(a);
+	                });
+	                addedViews.forEach(e => e.setAttribute("loaded", 'true'));
+	                removeViews.forEach(e => e.removeAttribute("loaded"));
+	                removeViews.forEach(e => e.dispatchEvent(new Event("custom:view:dom:remove")));
+	                addedViews.forEach(e => e.dispatchEvent(new Event("custom:view:dom:added")));
 	            });
 	        });
-	        observer.observe($("body")[0], { childList: true, subtree: true });
+	        observer.observe(document.querySelector("body"), { childList: true, subtree: true });
 	        var viewProvider = service_1.serviceProvider.getService(viewProvider_1.IViewProvider);
-	        viewProvider.getNode(viewProvider.newInstance(view)).then((el) => $(selector).append(el));
+	        viewProvider.getNode(viewProvider.newInstance(view)).then((el) => document.querySelector(selector).appendChild(el));
 	    }
 	    exports.startup = startup;
 	    if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {

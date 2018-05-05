@@ -4,7 +4,7 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./service", "../service/viewProvider", "node_modules/amd-loader/src/index", "node_modules/jquery/dist/jquery", "node_modules/amd-loader/src/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class"], factory);
+        define(["require", "exports", "./service", "../service/viewProvider", "node_modules/amd-loader/src/index", "node_modules/amd-loader/src/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class"], factory);
     }
 })(function (require, exports) {
     "use strict";
@@ -15,7 +15,6 @@
     const service_1 = require("./service");
     const viewProvider_1 = require("../service/viewProvider");
     const index_1 = require("node_modules/amd-loader/src/index");
-    const $ = require("node_modules/jquery/dist/jquery");
     var index_2 = require("node_modules/amd-loader/src/index");
     exports.load = index_2.load;
     var view_1 = require("./view");
@@ -46,26 +45,36 @@
     __export(require("../directive/each"));
     __export(require("../directive/class"));
     /** @description Startup du framework pour lancer l'application.
-     * @param {selector} string sélecteur css pour cibler l'élément du DOM root de l'application.
-     * @param {view} class vue qui sera instanciée en tant que vue root de l'application.
+     * @param {selector} string Sélecteur css pour cibler l'élément du DOM root de l'application.
+     * @param {view} class Vue qui sera instanciée en tant que vue root de l'application.
      * @return
      */
     function startup(selector, view) {
         var observer = new MutationObserver((records) => {
             records.forEach(record => {
-                var $removedNodes = $(record.removedNodes);
-                var $addedNodes = $(record.addedNodes);
-                var $removeViews = $(Array.prototype.map.call($removedNodes.filter("[artist-view=true][loaded]"), x => x).concat(Array.prototype.map.call($removedNodes.find("[artist-view=true][loaded]"), x => x)));
-                var $addedViews = $(Array.prototype.map.call($addedNodes.filter("[artist-view=true]:not([loaded])"), x => x).concat(Array.prototype.map.call($addedNodes.find("[artist-view=true]:not([loaded])"), x => x)));
-                $addedViews.attr("loaded", true);
-                $removeViews.removeAttr("loaded");
-                $removeViews.trigger("custom:view:dom:remove");
-                $addedViews.trigger("custom:view:dom:added");
+                var removedNodes = Array.prototype.map.call(record.removedNodes, x => x);
+                var addedNodes = Array.prototype.map.call(record.addedNodes, x => x);
+                var removeViews = [];
+                removeViews = removeViews.concat(removedNodes.filter(e => e.hasAttribute("artist-view") && e.hasAttribute("loaded")));
+                removedNodes.forEach(e => {
+                    var r = Array.prototype.map.call(e.querySelectorAll("[artist-view=true][loaded]"), x => x).filter(e => e.hasAttribute("loaded"));
+                    removeViews = removeViews.concat(r);
+                });
+                var addedViews = [];
+                addedViews = addedViews.concat(addedNodes.filter(e => e.hasAttribute("artist-view") && !e.hasAttribute("loaded")));
+                addedNodes.forEach(e => {
+                    var a = Array.prototype.map.call(e.querySelectorAll("[artist-view=true]"), x => x).filter(e => !e.hasAttribute("loaded"));
+                    addedViews = addedViews.concat(a);
+                });
+                addedViews.forEach(e => e.setAttribute("loaded", 'true'));
+                removeViews.forEach(e => e.removeAttribute("loaded"));
+                removeViews.forEach(e => e.dispatchEvent(new Event("custom:view:dom:remove")));
+                addedViews.forEach(e => e.dispatchEvent(new Event("custom:view:dom:added")));
             });
         });
-        observer.observe($("body")[0], { childList: true, subtree: true });
+        observer.observe(document.querySelector("body"), { childList: true, subtree: true });
         var viewProvider = service_1.serviceProvider.getService(viewProvider_1.IViewProvider);
-        viewProvider.getNode(viewProvider.newInstance(view)).then((el) => $(selector).append(el));
+        viewProvider.getNode(viewProvider.newInstance(view)).then((el) => document.querySelector(selector).appendChild(el));
     }
     exports.startup = startup;
     if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {

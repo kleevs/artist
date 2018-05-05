@@ -11,12 +11,12 @@
     "start": "node node_modules/server/.bin/server.js config.json"    
   },
   "dependencies": {
-    "jquery": "^3.2.1",
     "amd-loader": "git+https://github.com/kleevs/amd-loader.git"
   },
   "devDependencies": {
     "@types/node": "^7.0.14",
     "bootstrap": "^3.3.7",
+    "jquery": "^3.2.1",
     "server": "git+https://github.com/kleevs/server.git"
   },
   "repository": {

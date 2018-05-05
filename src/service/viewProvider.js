@@ -21,6 +21,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     const service_1 = require("../core/service");
     const serviceProvider_1 = require("../service/serviceProvider");
     const view_1 = require("../core/view");
+    /** @description Interface du service fournisseur de vue.
+     */
     class IViewProvider {
     }
     exports.IViewProvider = IViewProvider;
