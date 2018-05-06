@@ -962,6 +962,99 @@ __MODE__ = undefined;
 	    exports.Observablizer = Observablizer;
 	});
 	
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/service/moduleProvider.js', ["require", "exports", "../core/service", "node_modules/amd-loader/src/index"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const service_1 = require("../core/service");
+	    const index_1 = require("node_modules/amd-loader/src/index");
+	    class IModuleProvider {
+	    }
+	    exports.IModuleProvider = IModuleProvider;
+	    let ModuleProvider = class ModuleProvider extends IModuleProvider {
+	        constructor() {
+	            super();
+	        }
+	        get(uri) {
+	            return index_1.load(`/${uri}`);
+	        }
+	    };
+	    ModuleProvider = __decorate([
+	        service_1.Service({
+	            key: IModuleProvider
+	        }),
+	        __metadata("design:paramtypes", [])
+	    ], ModuleProvider);
+	    exports.ModuleProvider = ModuleProvider;
+	});
+	
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/service/router.js', ["require", "exports", "../core/service"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const service_1 = require("../core/service");
+	    class IRouter {
+	    }
+	    exports.IRouter = IRouter;
+	    let Router = class Router extends IRouter {
+	        constructor() {
+	            super();
+	            this._callbacks = [];
+	            window.onpopstate = (state) => this.change(location.pathname);
+	        }
+	        on(callback) {
+	            callback(location.pathname);
+	            this._callbacks.push(callback);
+	        }
+	        trigger(href) {
+	            history.pushState({}, '', href);
+	            this.change(href);
+	        }
+	        change(href) {
+	            this._callbacks.forEach(callback => callback(href));
+	        }
+	    };
+	    Router = __decorate([
+	        service_1.Service({
+	            key: IRouter
+	        }),
+	        __metadata("design:paramtypes", [])
+	    ], Router);
+	    exports.Router = Router;
+	});
+	
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
 	        var v = factory(require, exports);
@@ -1289,7 +1382,37 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/core/index.js', ["require", "exports", "./service", "../service/viewProvider", "node_modules/amd-loader/src/index", "node_modules/amd-loader/src/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class"], factory);
+	        define('src/directive/router.js', ["require", "exports", "../service/router"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const router_1 = require("../service/router");
+	    function router() {
+	        return (element, serviceProvider) => {
+	            document.body.addEventListener("click", (e) => {
+	                var target = e.target;
+	                if (target.tagName.toLowerCase() === 'a') {
+	                    var href = target.pathname;
+	                    serviceProvider.getService(router_1.IRouter).trigger(href);
+	                    e.preventDefault();
+	                    return false;
+	                }
+	            });
+	            return () => {
+	            };
+	        };
+	    }
+	    exports.router = router;
+	});
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/core/index.js', ["require", "exports", "./service", "../service/viewProvider", "node_modules/amd-loader/src/index", "node_modules/amd-loader/src/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
@@ -1319,6 +1442,12 @@ __MODE__ = undefined;
 	    var observalizer_1 = require("../service/observalizer");
 	    exports.IObservablizer = observalizer_1.IObservablizer;
 	    exports.Observablizer = observalizer_1.Observablizer;
+	    var moduleProvider_1 = require("../service/moduleProvider");
+	    exports.IModuleProvider = moduleProvider_1.IModuleProvider;
+	    exports.ModuleProvider = moduleProvider_1.ModuleProvider;
+	    var router_1 = require("../service/router");
+	    exports.IRouter = router_1.IRouter;
+	    exports.Router = router_1.Router;
 	    __export(require("../directive/view"));
 	    __export(require("../directive/dom"));
 	    __export(require("../directive/attr"));
@@ -1329,6 +1458,7 @@ __MODE__ = undefined;
 	    __export(require("../directive/options"));
 	    __export(require("../directive/each"));
 	    __export(require("../directive/class"));
+	    __export(require("../directive/router"));
 	    /** @description Startup du framework pour lancer l'application.
 	     * @param {selector} string Sélecteur css pour cibler l'élément du DOM root de l'application.
 	     * @param {view} class Vue qui sera instanciée en tant que vue root de l'application.

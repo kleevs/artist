@@ -4,7 +4,7 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./service", "../service/viewProvider", "node_modules/amd-loader/src/index", "node_modules/amd-loader/src/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class"], factory);
+        define(["require", "exports", "./service", "../service/viewProvider", "node_modules/amd-loader/src/index", "node_modules/amd-loader/src/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
     }
 })(function (require, exports) {
     "use strict";
@@ -34,6 +34,12 @@
     var observalizer_1 = require("../service/observalizer");
     exports.IObservablizer = observalizer_1.IObservablizer;
     exports.Observablizer = observalizer_1.Observablizer;
+    var moduleProvider_1 = require("../service/moduleProvider");
+    exports.IModuleProvider = moduleProvider_1.IModuleProvider;
+    exports.ModuleProvider = moduleProvider_1.ModuleProvider;
+    var router_1 = require("../service/router");
+    exports.IRouter = router_1.IRouter;
+    exports.Router = router_1.Router;
     __export(require("../directive/view"));
     __export(require("../directive/dom"));
     __export(require("../directive/attr"));
@@ -44,6 +50,7 @@
     __export(require("../directive/options"));
     __export(require("../directive/each"));
     __export(require("../directive/class"));
+    __export(require("../directive/router"));
     /** @description Startup du framework pour lancer l'application.
      * @param {selector} string Sélecteur css pour cibler l'élément du DOM root de l'application.
      * @param {view} class Vue qui sera instanciée en tant que vue root de l'application.
