@@ -1055,6 +1055,86 @@ __MODE__ = undefined;
 	    exports.Router = Router;
 	});
 	
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/service/ajax.js', ["require", "exports", "../core/service"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const service_1 = require("../core/service");
+	    class IAjax {
+	    }
+	    exports.IAjax = IAjax;
+	    let Ajax = class Ajax extends IAjax {
+	        constructor() {
+	            super();
+	        }
+	        ajax(options) {
+	            return new Promise((resolve, reject) => {
+	                var xhr = this.getXMLHttpRequest();
+	                xhr.open(options.method || 'GET', options.url, true);
+	                options.headers && Object.keys(options.headers).forEach(key => {
+	                    xhr.setRequestHeader(key, options.headers[key]);
+	                });
+	                xhr.send(options.data);
+	                xhr.onreadystatechange = () => {
+	                    if (xhr.readyState == 4) {
+	                        if ((xhr.status == 200 || xhr.status == 0)) {
+	                            resolve({ result: xhr.responseText, status: xhr.status });
+	                        }
+	                        else {
+	                            reject({ status: xhr.status, result: xhr.responseText });
+	                        }
+	                    }
+	                };
+	            });
+	        }
+	        getXMLHttpRequest() {
+	            var xhr = null;
+	            var context = window;
+	            if (context.XMLHttpRequest || context.ActiveXObject) {
+	                if (context.ActiveXObject) {
+	                    try {
+	                        xhr = new ActiveXObject('Msxml2.XMLHTTP');
+	                    }
+	                    catch (e) {
+	                        xhr = new ActiveXObject('Microsoft.XMLHTTP');
+	                    }
+	                }
+	                else {
+	                    xhr = new XMLHttpRequest();
+	                }
+	            }
+	            else {
+	                alert("Votre navigateur ne supporte pas l'objet XMLHTTPRequest...");
+	                return null;
+	            }
+	            return xhr;
+	        }
+	    };
+	    Ajax = __decorate([
+	        service_1.Service({
+	            key: IAjax
+	        }),
+	        __metadata("design:paramtypes", [])
+	    ], Ajax);
+	    exports.Ajax = Ajax;
+	});
+	
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
 	        var v = factory(require, exports);
@@ -1412,7 +1492,7 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/core/index.js', ["require", "exports", "./service", "../service/viewProvider", "node_modules/amd-loader/src/index", "node_modules/amd-loader/src/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
+	        define('src/core/index.js', ["require", "exports", "./service", "../service/viewProvider", "node_modules/amd-loader/src/index", "node_modules/amd-loader/src/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
@@ -1448,6 +1528,9 @@ __MODE__ = undefined;
 	    var router_1 = require("../service/router");
 	    exports.IRouter = router_1.IRouter;
 	    exports.Router = router_1.Router;
+	    var ajax_1 = require("../service/ajax");
+	    exports.IAjax = ajax_1.IAjax;
+	    exports.Ajax = ajax_1.Ajax;
 	    __export(require("../directive/view"));
 	    __export(require("../directive/dom"));
 	    __export(require("../directive/attr"));
