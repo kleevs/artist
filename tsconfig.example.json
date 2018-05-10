@@ -22,7 +22,7 @@
     ]   
   },
   "include" : [ 
-    "./example/**/*.ts"
+    "./example/formulaire/**/*.ts"
   ],
   "exclude" : [
     "./node_modules"

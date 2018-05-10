@@ -1,0 +1,20 @@
+{ 
+	"compilerOptions": { 
+		"module": "amd", 
+		"moduleResolution": "classic", 
+		"experimentalDecorators": true, 
+		"emitDecoratorMetadata": true, 
+		"baseUrl": "./src", 
+		"outDir": "./dist", 
+		"lib": [ 
+			"es2016", 
+			"dom" 
+		] 
+	}, 
+	"include" : [ 
+		"./src/**/*.ts" 
+	], 
+	"exclude" : [ 
+		"./node_modules" 
+	] 
+}

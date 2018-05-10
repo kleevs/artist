@@ -14,7 +14,7 @@ function foreach<T>(item, callback) {
     }
 }
 
-export function each(valueAccessor: () => {[s: string]: (element) => Function}[]) : Binder { 
+export function each(valueAccessor: () => {[s: string]: Binder}[]) : Binder { 
 	return (element, serviceProvider) => {
 		var template = element.innerHTML;
 

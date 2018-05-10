@@ -21,20 +21,20 @@ npm install typescript --save-dev
 Remplacer le contenu du fichier **tsconfig.json** qui vient d'être créé par le code suivant.
 
 ```javascript
-{  
-	"compilerOptions":  {  
-		"module":  "amd",  
-		"moduleResolution":  "classic",  
-		"experimentalDecorators":  true,  
-		"emitDecoratorMetadata":  true,  
-		"lib":  [  
-			"es2016",  
-			"dom"  
-		]  
-	},  
-	"exclude"  :  [  
-		"./node_modules"  
-	]  
+{ 
+    "compilerOptions": { 
+        "module": "amd", 
+        "moduleResolution": "classic", 
+        "experimentalDecorators": true, 
+        "emitDecoratorMetadata": true, 
+        "lib": [ 
+            "es2016", 
+            "dom" 
+        ] 
+    }, 
+    "exclude" : [ 
+        "./node_modules" 
+    ] 
 }
 ```
 Installation du framework **Artist**.
@@ -46,49 +46,49 @@ npm install artist --save
 Créer un premier fichier index.html à la racine du projet.
 
 ```html
-<!DOCTYPE html>  
-<html>  
-	<head>  
-		<script  src='node_modules/jquery/dist/jquery.js'></script>
-		<script  
-			src='node_modules/artist/dist/artist.js' 
-			config='config'  
-			startup='startup'  
-			placeholder='app'></script>  
-	</head>  
-	  
-	<body>  
-		<app></app>  
-	</body>  
+<!DOCTYPE html> 
+<html> 
+    <head> 
+        <script src='node_modules/jquery/dist/jquery.js'></script>
+        <script 
+            src='node_modules/artist/dist/artist.js' 
+            config='config' 
+            startup='startup' 
+            placeholder='app'></script> 
+    </head> 
+     
+    <body> 
+        <app></app> 
+    </body> 
 </html>
 ```
 
-Puis,  dans le même répertoire, créer un fichier config.ts.
+Puis, dans le même répertoire, créer un fichier config.ts.
 
 ```typescript
-export  default  {  
-	path:  [  
-		{  test:  /^\/?(node_modules\/*)/,  result:  '$1'  },  
-	]  
+export default { 
+    path: [ 
+        { test: /^\/?(node_modules\/*)/, result: '$1' }, 
+    ] 
 }
 ```
 
 Et startup.ts.
 
 ```typescript
-import  { View, text }  from  'node_modules/artist/dist/artist';  
-  
-@View<Startup>({  
-	html:  `<div>  
-		<h1 id='title'></h1>  
-		<p>My first application with Artist.</p>  
-	</div>`,  
-	binding:  {  
-		'#title':  (startupView)  =>  text(()  => startupView.message)  
-	}  
-})  
-export  class  Startup  {  
-	message =  'Hello world !!';  
+import { View, text } from 'node_modules/artist/dist/artist'; 
+ 
+@View<Startup>({ 
+    html: `<div> 
+        <h1 id='title'></h1> 
+        <p>My first application with Artist.</p> 
+    </div>`, 
+    binding: { 
+        '#title': (startupView) => text(() => startupView.message) 
+    } 
+}) 
+export class Startup { 
+    message = 'Hello world !!'; 
 }
 ```
 
