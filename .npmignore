@@ -10,3 +10,4 @@ code
 example
 example/*
 !src/**/*.d.ts
+doc
