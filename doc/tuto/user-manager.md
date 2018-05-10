@@ -260,3 +260,117 @@ Lorsque l'on clique sur le bouton **Supprimer** la ligne correspondante est supp
 Cependant cliquer sur le bouton **Modifier** ou **Nouvel utilisateur** modifie l'url dans la barre d'adresse mais n'affiche pas de nouvelle page. C'est parceque nous n'avons pas encore fait la page de création et de modification.
 
 ## Page de création et de modification
+
+Ajoutons au répertoire _dist/template_ le fichier _detail.html_.
+
+```html
+<diV class="container">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Nom</span>
+            </div>
+            <input data-id="lastname" type="text" class="form-control" placeholder="Lastname" aria-label="Lastname" aria-describedby="basic-addon1">
+        </div>
+    
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Prénom</span>
+            </div>
+            <input data-id="firstname" type="text" class="form-control" placeholder="Firstname" aria-label="Firstname" aria-describedby="basic-addon1">
+        </div>
+    
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Date de naissance</span>
+            </div>
+            <input data-id="birthdate" type="text" class="form-control" placeholder="Birthdate" aria-label="Birthdate" aria-describedby="basic-addon1">
+        </div>
+    
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Login</span>
+            </div>
+            <input data-id="login" type="text" class="form-control" placeholder="Login" aria-label="Login" aria-describedby="basic-addon1">
+        </div>
+    
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Mot de passe</span>
+            </div>
+            <input data-id="password" type="text" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">
+        </div>
+    
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <input data-id="actif" type="checkbox" aria-label="Checkbox for following text input">
+                </div>
+            </div>
+            <span  class="form-control">Actif</span>
+        </div>
+
+        <button data-id="save" class="btn btn-light">Enregistrer</button>
+    </div>
+```
+
+Et le fichier _detail.ts_ dans le répertoire _src/view_.
+
+```typescript
+import { View, IObservablizer, IRouter, each, value, click, attr } from 'node_modules/artist/dist/artist'; 
+import { User as UserModel } from '../model/user'; 
+import { IUserService } from '../service/userService';
+ 
+export abstract class IDetail {} 
+ 
+@View<Detail>({ 
+    template: "dist/template/detail.html", 
+    binding: { 
+        "[data-id=firstname]": (detailView) => value({ get: () => detailView.user.firstName, set: (v) => detailView.user.firstName = v }), 
+        "[data-id=lastname]": (detailView) => value({ get: () => detailView.user.lastName, set: (v) => detailView.user.lastName = v }), 
+        "[data-id=birthdate]": (detailView) => value({ get: () => detailView.toStringDate(detailView.user.birthdate), set: (v) => detailView.user.birthdate = detailView.parseDate(v) }), 
+        "[data-id=login]": (detailView) => value({ get: () => detailView.user.login, set: (v) => detailView.user.login = v }), 
+        "[data-id=password]": (detailView) => value({ get: () => detailView.user.password, set: (v) => detailView.user.password = v }), 
+        "[data-id=actif]": (detailView) => value({ get: () => detailView.user.actif, set: (v) => detailView.user.actif = v }),
+        "[data-id=save]": (detailView) => click(() => () => detailView.save())
+    } 
+}) 
+class Detail extends IDetail { 
+    private user: UserModel;
+     
+    constructor(
+        observablizer: IObservablizer, 
+        private userService: IUserService,
+        private router: IRouter
+    ) { 
+        super(); 
+        this.user = observablizer.convert({
+            id: undefined,
+            firstName: '',
+            lastName: '',
+            birthdate: undefined,
+            login: '',
+            password: '',
+            actif: false
+        });
+    } 
+
+    save() {
+        if (this.user.id) {
+            this.userService.create(this.user);
+        } else {
+            this.userService.update(this.user);
+        }
+
+        this.router.trigger("/#/");
+        return true;
+    }
+
+    toStringDate(date: Date) {
+        return date && `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}` || '';
+    }
+
+    parseDate(str: string) {
+        return new Date();
+    }
+}
+```
