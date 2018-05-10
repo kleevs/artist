@@ -128,7 +128,7 @@ _user.html_
 ```html
 <div> 
     <h1>Liste des utilisateurs</h1> 
-    <table> 
+    <table class="table table-striped"> 
         <thead> 
             <tr> 
                 <td>Nom</td> 
@@ -147,16 +147,21 @@ _user.html_
                 <td data-id="login"></td> 
                 <td data-id="password"></td> 
                 <td data-id="actif"></td> 
+                <td data-id="action">
+                    <a class="button">Modifier</a>
+                    <button class="button" >Supprimer</button>
+                </td>
             </tr> 
         </tbody> 
     </table> 
+    <a href="/#/create">Nouvel utilisateur</a>
 </div>
 ```
 Créons un fichier _user.ts_ dans un répertoire _src/view_.
 
 _user.ts_
 ```typescript
-import { View, IObservablizer, each, text } from 'node_modules/artist/dist/artist'; 
+import { View, IObservablizer, each, text, click, attr } from 'node_modules/artist/dist/artist'; 
 import { User as UserModel } from '../model/user'; 
 import { IUserService } from '../service/userService';
  
@@ -173,7 +178,9 @@ export abstract class IUser {}
                     "[data-id=birthdate]": text(() => user.birthdate.toString()), 
                     "[data-id=login]": text(() => user.login), 
                     "[data-id=password]": text(() => user.password), 
-                    "[data-id=actif]": text(() => user.actif ? 'Actif' : 'Inactif') 
+                    "[data-id=actif]": text(() => user.actif ? 'Actif' : 'Inactif'),
+                    "[data-id=action] a": attr(() => { return { href: `/#/update/${user.id}` }; }),
+                    "[data-id=action] button": click(() => () => userView.remove(user))
                 }; 
             }); 
         }) 
@@ -182,11 +189,21 @@ export abstract class IUser {}
 class User extends IUser { 
     private observable: { list: UserModel[] }; 
      
-    constructor(observablizer: IObservablizer, userService: IUserService) { 
+    constructor(observablizer: IObservablizer, private userService: IUserService) { 
         super(); 
         this.observable = observablizer.convert({ list: [] }); 
-        this.observable.list = userService.listAll();
+        this.refresh();
     } 
+
+    remove(user: UserModel) {
+        this.userService.remove(user);
+        this.refresh();
+        return true;
+    }
+
+    refresh() {
+        this.observable.list = this.userService.listAll();
+    }
 }
 ```
 
@@ -220,3 +237,26 @@ export class Startup {
 Compilons le projet et rendons nous à la page [http://localhost](http://localhost/).  Nous devons voir apparaitre la page suivante.
 
 ![Exemple](../img/user-management-example.png)
+
+Installons la librairie [bootstrap](https://getbootstrap.com/) pour avoir un meilleur rendu.
+
+```
+npm install bootstrap --save
+```
+
+Et modifions le fichier _index.html_ en ajoutant la balise suivante.
+
+```html
+...
+<link rel="stylesheet" type="text/css" href="/node_modules/bootstrap/dist/css/bootstrap.css">
+...
+```
+
+Nous obtenons un rendu plus lisible.
+
+![Exemple](../img/user-management-example-bootstrap.png)
+
+Lorsque l'on clique sur le bouton **Supprimer** la ligne correspondante est supprimé comme voulue.
+Cependant cliquer sur le bouton **Modifier** ou **Nouvel utilisateur** modifie l'url dans la barre d'adresse mais n'affiche pas de nouvelle page. C'est parceque nous n'avons pas encore fait la page de création et de modification.
+
+## Page de création et de modification
