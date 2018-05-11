@@ -1,4 +1,4 @@
-import { View, IObservablizer, each, text, click, attr } from 'node_modules/artist/dist/artist'; 
+import { View, IObservablizer, each, text, click, attr } from 'node_modules/artistejs/dist/artiste'; 
 import { User as UserModel } from '../model/user';
  
 export abstract class IList {

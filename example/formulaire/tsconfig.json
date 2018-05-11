@@ -7,7 +7,7 @@
 		"baseUrl": "./src", 
 		"outDir": "./dist", 
 		"paths": {
-			"artist": ["../node_modules/artist/dist/artist"],
+			"artiste": ["../node_modules/artistejs/dist/artiste"],
 			"jquery": ["../node_modules/jquery/dist/jquery"]
 		},
 		"lib": [ 

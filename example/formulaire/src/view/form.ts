@@ -1,4 +1,4 @@
-import { View, Event, IObservablizer, INotifier, text, value, click } from 'artist';
+import { View, Event, IObservablizer, INotifier, text, value, click } from 'artiste';
 import { User } from '../model/user';
 
 export abstract class IForm {

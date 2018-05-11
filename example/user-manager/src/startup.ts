@@ -1,4 +1,4 @@
-import { View, IObservablizer, INotifier, IRouter, view } from 'node_modules/artist/dist/artist'; 
+import { View, IObservablizer, INotifier, IRouter, view } from 'node_modules/artistejs/dist/artiste'; 
 import { IList as ListView } from 'view/list';
 import { IDetail as DetailView, IDetail } from 'view/detail';
 import { User } from 'model/user';

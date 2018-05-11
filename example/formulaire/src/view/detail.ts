@@ -1,4 +1,4 @@
-import { View, IObservablizer, text, value, click } from 'artist';
+import { View, IObservablizer, text, value, click } from 'artiste';
 import { User } from '../model/user';
 
 export abstract class IDetail {

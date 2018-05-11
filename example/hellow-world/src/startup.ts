@@ -1,4 +1,4 @@
-import { View } from 'node_modules/artist/dist/artist'; 
+import { View } from 'node_modules/artistejs/dist/artiste'; 
  
 @View<Startup>({ 
 	template: "dist/template/layout.html", 

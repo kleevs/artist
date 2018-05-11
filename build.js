@@ -1,8 +1,8 @@
 module.exports = {
     "main": "src/index.js",
-    "out": "dist/artist.js",
+    "out": "dist/artiste.js",
     "config": { 
-        "name": "Artist",
+        "name": "Artiste",
         "path": [
 		    { test: /^\/?(node_modules\/*)/, result: "/$1" }
         ]

@@ -1,4 +1,4 @@
-import { View, IObservablizer, text, value, click, each } from 'artist';
+import { View, IObservablizer, text, value, click, each } from 'artiste';
 import * as $ from 'node_modules/jquery/dist/jquery';
 import { User } from '../model/user';
 
