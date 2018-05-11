@@ -320,12 +320,19 @@ class Detail extends IDetail {
         return true;
     }
 
-    toStringDate(date: Date) {
-        return date && `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}` || '';
+    toStringDate(date: Date): string {
+        return <any>(date && date instanceof Date && `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}` || date || '');
     }
 
-    parseDate(str: string) {
-        return new Date();
+    parseDate(str: string): Date {
+        try {
+            var arr = str && str.split("/");
+            var date = new Date(parseInt(arr[2]), parseInt(arr[1])-1, parseInt(arr[0]));
+            if (arr.length === 3 && arr[0].length <= 2 && arr[1].length <= 2 && arr[2].length == 4 && !isNaN(date.getTime())) {
+                return date;
+            } 
+        } catch(e) {}
+        return <any>str;
     }
 }
 ```
