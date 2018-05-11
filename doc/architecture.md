@@ -1,13 +1,13 @@
 
 # Introduction
 
-Artist est un framework qui fournit aux développeurs des outils et une architecture qui permet la création de la partie front end d'une application web.
+Artiste est un framework qui fournit aux développeurs des outils et une architecture qui permet la création de la partie front end d'une application web.
 
 Il se décompose en 3 parties :
 
 ## Les Vues
 
-Les vues est une partie incontournable du framework. Ce sera le point de départ de toute application développée à l'aide d'Artist. L'ensemble des vues constitue l'application.
+Les vues est une partie incontournable du framework. Ce sera le point de départ de toute application développée à l'aide d'Artiste. L'ensemble des vues constitue l'application.
 
 Une vue est une partie visible de l'interface. Elle comprend toute la logique fonctionnelle correspondant à la gestion de l'interface utilisateur, la récupération des données à afficher et à la communication entre vues. Les aspects techniques de l'application se trouveront dans les services et directives.
 
@@ -39,12 +39,12 @@ binding: {
 ...
 ```
 
-Il y a 3 façons de créer une vue avec Artist.
+Il y a 3 façons de créer une vue avec Artiste.
 
 - Lors du lancement de l'application la vue root est créée. Elle est défini via l'attribut startup du script ou via la fonction startup.
 ```html
 ...
-<script src='/node_modules/artist/dist/artist.js' startup='/startup/startup' placeholder='[app]'></script>
+<script src='/node_modules/artistejs/dist/artiste.js' startup='/startup/startup' placeholder='[app]'></script>
 ...
 ```
 
@@ -80,7 +80,7 @@ startup.html (le template de la vue)
 ```html
 <div>
     <h1 id='title'></h1>
-    <p>My first application with Artist.</p>
+    <p>My first application with Artiste.</p>
     <div>
         <input id='name_input' name='name'>
     </div>
@@ -93,7 +93,7 @@ startup.html (le template de la vue)
 startup.ts
 
 ```typescript
-import { View, IObservablizer, IViewProvider, text, value } from 'node_modules/artist/dist/artist';
+import { View, IObservablizer, IViewProvider, text, value } from 'node_modules/artistejs/dist/artiste';
 
 @View<Startup>({
     template: 'startup.html', 
@@ -122,9 +122,9 @@ class Startup {
 
 ## Le Data-binding
 
-Le data-binding est le moyen de lier une partie du DOM à la logique contenue dans les vues d'Artist. Toutes les manipulations du DOM devront se faire par l'intermediaire d'un binder.
+Le data-binding est le moyen de lier une partie du DOM à la logique contenue dans les vues d'Artiste. Toutes les manipulations du DOM devront se faire par l'intermediaire d'un binder.
 
-Dans Artist, un binder est une fonction appelée par le framework lors de l'instanciation d'une vue. Le type Binder est défini comme tel :
+Dans Artiste, un binder est une fonction appelée par le framework lors de l'instanciation d'une vue. Le type Binder est défini comme tel :
 ```typescript
 declare type Binder = (element: Element, serviceProvider: IServiceProvider) => () => void;
 ```
@@ -180,7 +180,7 @@ Voici un exemple de service permettant de faire des appels ajax.
 
 ajax.ts
 ```typescript
-import { Service } from 'node_modules/artist/dist/artist';
+import { Service } from 'node_modules/artistejs/dist/artiste';
 
 declare let ActiveXObject: any;
 
@@ -247,7 +247,7 @@ Et son utilisation dans une vue.
 
 home.ts
 ```typescript
-import { View, IObservablizer, text } from 'node_modules/artist/dist/artist';
+import { View, IObservablizer, text } from 'node_modules/artistejs/dist/artiste';
 import { IAjaxService } from 'service/ajax';
 
 @View<Home>({

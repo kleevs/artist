@@ -10,7 +10,7 @@ D'abord, créons le projet à l'aide de l'outil npm via les commandes suivantes.
 ```
 npm init -y 
 npm install typescript --save-dev 
-npm install artist --save 
+npm install artistejs --save 
 ./node_modules/.bin/tsc --init 
 ```
 
@@ -48,7 +48,7 @@ Créons un fichier index.html à la racine du projet.
         <meta charset="utf-8" /> 
         <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
-        <script src="node_modules/artist/dist/artist.js" config="dist/config" startup="dist/startup" placeholder="[app]"></script> 
+        <script src="node_modules/artistejs/dist/artiste.js" config="dist/config" startup="dist/startup" placeholder="[app]"></script> 
     </head> 
      
     <body> 
@@ -73,7 +73,7 @@ Dans le répertoire dist, créons un dossier template pour y mettre tous les fic
 Enfin, dans le répertoire _src_, créons un fichier startup.ts.
 
 ```typescript
-import { View } from 'node_modules/artist/dist/artist'; 
+import { View } from 'node_modules/artistejs/dist/artiste'; 
  
 @View<Startup>({ 
     template: "dist/template/layout.html", 
@@ -94,7 +94,7 @@ export class Startup {
 export default { 
     path: [ 
         { test: /^\/?(node_modules\/*)/, result: "$1" }, 
-        { test: /^\/?artist/, result: "node_modules/artist/dist/artist" } 
+        { test: /^\/?artiste/, result: "node_modules/artistejs/dist/artiste" } 
     ] 
 };
 ```

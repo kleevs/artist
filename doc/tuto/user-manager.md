@@ -1,7 +1,7 @@
 
 # Gestion des utilisateurs
 
-Dans ce tutoriel, il est présenté la création d'une application de gestion des utilisateurs à l'aide d'Artist.
+Dans ce tutoriel, il est présenté la création d'une application de gestion des utilisateurs à l'aide d'Artiste.
 
 L'application devra permettre de créer, modifier, supprimer un utilisateur et d'afficher la liste de tous les utilisateurs.
 
@@ -76,7 +76,7 @@ Créons un fichier _list.ts_ dans un répertoire _src/view_.
 
 _list.ts_
 ```typescript
-import { View, IObservablizer, each, text, click, attr } from 'node_modules/artist/dist/artist'; 
+import { View, IObservablizer, each, text, click, attr } from 'node_modules/artistejs/dist/artiste'; 
 import { User as UserModel } from '../model/user'; 
  
 export abstract class IList {
@@ -124,7 +124,7 @@ class List extends IList {
 Modifions le fichier _startup.ts_ comme suit.
 
 ```typescript
-import { View, IObservablizer, view } from 'node_modules/artist/dist/artist'; 
+import { View, IObservablizer, view } from 'node_modules/artistejs/dist/artiste'; 
 import { IList as ListView } from 'view/list';
 
 @View<Startup>({ 
@@ -252,7 +252,7 @@ Ajoutons au répertoire _dist/template_ le fichier _detail.html_.
 Et le fichier _detail.ts_ dans le répertoire _src/view_.
 
 ```typescript
-import { View, IObservablizer, IRouter, INotifier, Event, each, value, click, attr } from 'node_modules/artist/dist/artist'; 
+import { View, IObservablizer, IRouter, INotifier, Event, each, value, click, attr } from 'node_modules/artistejs/dist/artiste'; 
 import { User as UserModel } from '../model/user'; 
  
 export abstract class IDetail {
@@ -339,7 +339,7 @@ class Detail extends IDetail {
 Modifions à nouveau le fichier _startup.ts_ comme suit.
 
 ```typescript
-import { View, IObservablizer, INotifier, view } from 'node_modules/artist/dist/artist'; 
+import { View, IObservablizer, INotifier, view } from 'node_modules/artistejs/dist/artiste'; 
 import { IList as ListView } from 'view/list';
 import { IDetail as DetailView, IDetail } from 'view/detail';
 import { User } from 'model/user';
@@ -404,7 +404,7 @@ Notre page de création et modification d'un utilisateur est maintenant faite. C
 Modifions une dernière fois le fichier _startup.ts_ et _list_.ts
 
 ```typescript
-import { View, IObservablizer, each, text, click, attr } from 'node_modules/artist/dist/artist'; 
+import { View, IObservablizer, each, text, click, attr } from 'node_modules/artistejs/dist/artiste'; 
 import { User as UserModel } from '../model/user';
  
 export abstract class IList {
@@ -456,7 +456,7 @@ class List extends IList {
 ```
 
 ```typescript
-import { View, IObservablizer, INotifier, IRouter, view } from 'node_modules/artist/dist/artist'; 
+import { View, IObservablizer, INotifier, IRouter, view } from 'node_modules/artistejs/dist/artiste'; 
 import { IList as ListView } from 'view/list';
 import { IDetail as DetailView, IDetail } from 'view/detail';
 import { User } from 'model/user';

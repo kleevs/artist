@@ -1,10 +1,10 @@
-# Artist
+# Artiste
 
-**Artist** est un framework qui fournit aux développeurs des outils et une architecture qui permet la création de la partie front end d'une application web. Pour se familiariser avec le framework lisez [cette présentation du framework](doc/architecture.md) et les tutoriels disponibles.
+**Artiste** est un framework qui fournit aux développeurs des outils et une architecture qui permet la création de la partie front end d'une application web. Pour se familiariser avec le framework lisez [cette présentation du framework](doc/architecture.md) et les tutoriels disponibles.
 
 # Get started
 
-Pour commencer à utiliser le framework **Artist** vous pouvez le télécharger sur le site officiel ou l'installer via npm.
+Pour commencer à utiliser le framework **Artiste** vous pouvez le télécharger sur le site officiel ou l'installer via npm.
 
 Création du projet avec npm.
 
@@ -37,10 +37,10 @@ Remplacer le contenu du fichier **tsconfig.json** qui vient d'être créé par l
     ] 
 }
 ```
-Installation du framework **Artist**.
+Installation du framework **Artiste**.
 
 ```
-npm install artist --save
+npm install artistejs --save
 ```
 
 Créer un premier fichier index.html à la racine du projet.
@@ -51,7 +51,7 @@ Créer un premier fichier index.html à la racine du projet.
     <head> 
         <script src='node_modules/jquery/dist/jquery.js'></script>
         <script 
-            src='node_modules/artist/dist/artist.js' 
+            src='node_modules/artistejs/dist/artiste.js' 
             config='config' 
             startup='startup' 
             placeholder='app'></script> 
@@ -76,12 +76,12 @@ export default {
 Et startup.ts.
 
 ```typescript
-import { View, text } from 'node_modules/artist/dist/artist'; 
+import { View, text } from 'node_modules/artistejs/dist/artiste'; 
  
 @View<Startup>({ 
     html: `<div> 
         <h1 id='title'></h1> 
-        <p>My first application with Artist.</p> 
+        <p>My first application with Artiste.</p> 
     </div>`, 
     binding: { 
         '#title': (startupView) => text(() => startupView.message) 
