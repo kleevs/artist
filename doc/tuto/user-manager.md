@@ -7,10 +7,9 @@ L'application devra permettre de créer, modifier, supprimer un utilisateur et d
 
 Un utilisateur est défini comme une personne possédant un nom, un prénom, une date de naissance et ayant un compte d'identification (login, mot de passe) actif ou inactif.
 
-L'application comportera 3 écrans :
+L'application comportera 2 écrans :
 
--  Un écran de création d'un utilisateur.
--  Un écran de modification d'un utilisateur.
+-  Un écran de création et de modification d'un utilisateur.
 -  Un écran d'affichage de la la liste des utilisateurs.
 
 ## Création du projet
@@ -532,3 +531,5 @@ export class Startup {
     } 
 } 
 ```
+
+Compilons et enfin testons.

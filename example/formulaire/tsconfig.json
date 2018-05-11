@@ -1,0 +1,24 @@
+{ 
+	"compilerOptions": { 
+		"module": "amd", 
+		"moduleResolution": "classic", 
+		"experimentalDecorators": true, 
+		"emitDecoratorMetadata": true, 
+		"baseUrl": "./src", 
+		"outDir": "./dist", 
+		"paths": {
+			"artist": ["../node_modules/artist/dist/artist"],
+			"jquery": ["../node_modules/jquery/dist/jquery"]
+		},
+		"lib": [ 
+			"es2016", 
+			"dom" 
+		] 
+	}, 
+	"include" : [ 
+		"./src/**/*.ts" 
+	], 
+	"exclude" : [ 
+		"./node_modules" 
+	] 
+}
