@@ -34,97 +34,13 @@ export class User {
 }
 ```
 
-## CRUD
-
-Ensuite créons le service qui permettra de manipuler les objets précédemment créés. Ce service fournira les opérations de création, lecture, mise à jour et suppression. Créons un fichier _userService.ts_ dans le répertoire _src/service_.
-
-_userService.ts_
-```typescript
-import { Service } from 'node_modules/artist/dist/artist'; 
-import { User } from '../model/user'; 
- 
-export abstract class IUserService { 
-    abstract create(user: User); 
-    abstract update(user: User); 
-    abstract listAll(): User[]; 
-    abstract remove(user: User); 
-}
-
-@Service({
-    key: IUserService
-})
-class UserService extends IUserService {
-    private users: User[];
-    private id: number;
-    constructor() {
-        super();
-        this.users = [];
-        this.id = 1;
-
-        // création de quelques tests
-        this.create({
-            id: undefined,
-            firstName: 'Ryan',
-            lastName: 'Bob',
-            birthdate: new Date(1989, 5, 10),
-            login: 'ryan.bob',
-            password: '1234',
-            actif: true
-        });
-
-        this.create({
-            id: undefined,
-            firstName: 'Michel',
-            lastName: 'Morgan',
-            birthdate: new Date(1982, 9, 17),
-            login: 'mich',
-            password: '4321',
-            actif: true
-        });
-    }
-
-    create(user: User) {
-        var usr = new User();
-        usr.id = this.id++; 
-        usr.firstName = user.firstName; 
-        usr.lastName = user.lastName; 
-        usr.birthdate = user.birthdate; 
-        usr.login = user.login; 
-        usr.password = user.password; 
-        usr.actif = user.actif;
-        this.users.push(usr);
-    }
-
-    update(user: User) {
-        var usr = this.users.filter(u => u.id !== user.id)[0];
-        if (usr) {
-            usr.id = user.id; 
-            usr.firstName = user.firstName; 
-            usr.lastName = user.lastName; 
-            usr.birthdate = user.birthdate; 
-            usr.login = user.login; 
-            usr.password = user.password; 
-            usr.actif = user.actif;
-        }
-    }
-
-    listAll(): User[] {
-        return this.users;
-    }
-
-    remove(user: User) {
-        this.users = this.users.filter(u => u.id !== user.id);
-    } 
-}
-```
-
 ## Première page - liste des utilisateurs
 
 Cet écran liste tous les utilisateurs. Il permet de supprimer un utilisateur et d'acceder aux écrans d'ajout et de modification d'un utilisateur.
 
-Créons un fichier _user.html_ dans un répertoire _dist/template_.
+Créons un fichier _list.html_ dans un répertoire _dist/template_.
 
-_user.html_
+_list.html_
 ```html
 <div> 
     <h1>Liste des utilisateurs</h1> 
@@ -157,25 +73,26 @@ _user.html_
     <a href="/#/create">Nouvel utilisateur</a>
 </div>
 ```
-Créons un fichier _user.ts_ dans un répertoire _src/view_.
+Créons un fichier _list.ts_ dans un répertoire _src/view_.
 
-_user.ts_
+_list.ts_
 ```typescript
 import { View, IObservablizer, each, text, click, attr } from 'node_modules/artist/dist/artist'; 
 import { User as UserModel } from '../model/user'; 
-import { IUserService } from '../service/userService';
  
-export abstract class IUser {} 
+export abstract class IList {
+    abstract add(user: UserModel): void;
+} 
  
-@View<User>({ 
-    template: "dist/template/user.html", 
+@View<List>({ 
+    template: "dist/template/list.html", 
     binding: { 
         "tbody": (userView) => each(() => { 
             return userView.observable.list.map(user => { 
                 return { 
                     "[data-id=first-name]": text(() => user.firstName), 
                     "[data-id=last-name]": text(() => user.lastName), 
-                    "[data-id=birthdate]": text(() => user.birthdate.toString()), 
+                    "[data-id=birthdate]": text(() => user.birthdate.toDateString()), 
                     "[data-id=login]": text(() => user.login), 
                     "[data-id=password]": text(() => user.password), 
                     "[data-id=actif]": text(() => user.actif ? 'Actif' : 'Inactif'),
@@ -186,23 +103,21 @@ export abstract class IUser {}
         }) 
     } 
 }) 
-class User extends IUser { 
+class List extends IList { 
     private observable: { list: UserModel[] }; 
      
-    constructor(observablizer: IObservablizer, private userService: IUserService) { 
+    constructor(observablizer: IObservablizer) { 
         super(); 
         this.observable = observablizer.convert({ list: [] }); 
-        this.refresh();
     } 
 
     remove(user: UserModel) {
-        this.userService.remove(user);
-        this.refresh();
+        this.observable.list = this.observable.list.filter(u => u.id !== user.id);
         return true;
     }
 
-    refresh() {
-        this.observable.list = this.userService.listAll();
+    add(user: UserModel) {
+        this.observable.list.push(user);
     }
 }
 ```
@@ -211,8 +126,8 @@ Modifions le fichier _startup.ts_ comme suit.
 
 ```typescript
 import { View, IObservablizer, view } from 'node_modules/artist/dist/artist'; 
-import { User as UserView } from 'view/user';
- 
+import { IList as ListView } from 'view/list';
+
 @View<Startup>({ 
     template: "dist/template/layout.html", 
     binding: { 
@@ -221,15 +136,37 @@ import { User as UserView } from 'view/user';
 }) 
 export class Startup { 
     private observable: { view: any }; 
+    private id: number = 1;
      
     constructor(
         // services
         observablizer: IObservablizer,
         
         // sous vues
-        private listView: UserView
+		private listView: ListView
     ) {
         this.observable = observablizer.convert({ view: listView }); 
+
+        // création de quelques tests
+        this.listView.add({
+            id: this.id++,
+            firstName: 'Ryan',
+            lastName: 'Bob',
+            birthdate: new Date(1989, 5, 10),
+            login: 'ryan.bob',
+            password: '1234',
+            actif: true
+        });
+
+        this.listView.add({
+            id: this.id++,
+            firstName: 'Michel',
+            lastName: 'Morgan',
+            birthdate: new Date(1982, 9, 17),
+            login: 'mich',
+            password: '4321',
+            actif: true
+        });
     } 
 } 
 ```
@@ -316,11 +253,14 @@ Ajoutons au répertoire _dist/template_ le fichier _detail.html_.
 Et le fichier _detail.ts_ dans le répertoire _src/view_.
 
 ```typescript
-import { View, IObservablizer, IRouter, each, value, click, attr } from 'node_modules/artist/dist/artist'; 
+import { View, IObservablizer, IRouter, INotifier, Event, each, value, click, attr } from 'node_modules/artist/dist/artist'; 
 import { User as UserModel } from '../model/user'; 
-import { IUserService } from '../service/userService';
  
-export abstract class IDetail {} 
+export abstract class IDetail {
+    static Event = {
+        Save: new Event<IDetail, UserModel>("Detail.Save")
+    }
+} 
  
 @View<Detail>({ 
     template: "dist/template/detail.html", 
@@ -330,7 +270,7 @@ export abstract class IDetail {}
         "[data-id=birthdate]": (detailView) => value({ get: () => detailView.toStringDate(detailView.user.birthdate), set: (v) => detailView.user.birthdate = detailView.parseDate(v) }), 
         "[data-id=login]": (detailView) => value({ get: () => detailView.user.login, set: (v) => detailView.user.login = v }), 
         "[data-id=password]": (detailView) => value({ get: () => detailView.user.password, set: (v) => detailView.user.password = v }), 
-        "[data-id=actif]": (detailView) => value({ get: () => detailView.user.actif, set: (v) => detailView.user.actif = v }),
+        // "[data-id=actif]": (detailView) => value({ get: () => detailView.user.actif, set: (v) => detailView.user.actif = v }),
         "[data-id=save]": (detailView) => click(() => () => detailView.save())
     } 
 }) 
@@ -339,8 +279,8 @@ class Detail extends IDetail {
      
     constructor(
         observablizer: IObservablizer, 
-        private userService: IUserService,
-        private router: IRouter
+        private router: IRouter,
+        private notifier: INotifier
     ) { 
         super(); 
         this.user = observablizer.convert({
@@ -355,12 +295,15 @@ class Detail extends IDetail {
     } 
 
     save() {
-        if (this.user.id) {
-            this.userService.create(this.user);
-        } else {
-            this.userService.update(this.user);
-        }
-
+        this.notifier.forEvent(IDetail.Event.Save).notify(this, {
+            id: this.user.id,
+            firstName: this.user.firstName,
+            lastName: this.user.lastName,
+            birthdate: this.user.birthdate,
+            login: this.user.login,
+            password: this.user.password,
+            actif: this.user.actif
+        });
         this.router.trigger("/#/");
         return true;
     }
@@ -373,4 +316,72 @@ class Detail extends IDetail {
         return new Date();
     }
 }
+```
+
+Modifions à nouveau le fichier _startup.ts_ comme suit.
+
+```typescript
+import { View, IObservablizer, INotifier, view } from 'node_modules/artist/dist/artist'; 
+import { IList as ListView } from 'view/list';
+import { IDetail as DetailView, IDetail } from 'view/detail';
+
+@View<Startup>({ 
+    template: "dist/template/layout.html", 
+    binding: { 
+        "this": (starter) => view(() => starter.observable.view)
+    } 
+}) 
+export class Startup { 
+    private observable: { view: any }; 
+    private id: number = 1;
+     
+    constructor(
+        // services
+        observablizer: IObservablizer,
+        private notifier: INotifier,
+        
+        // sous vues
+		private listView: ListView,
+		private detailView: DetailView
+    ) {
+        this.observable = observablizer.convert({ view: listView }); 
+        this.notifier.forEvent(IDetail.Event.Save).listen(detailView, (data) => {
+            if (data.id) {
+                // modification
+                this.listView.remove(data);
+                this.listView.add(data);
+            } else {
+                // ajout
+                this.listView.add(data);
+            }
+        });
+
+        // création de quelques tests
+        this.listView.add({
+            id: this.id++,
+            firstName: 'Ryan',
+            lastName: 'Bob',
+            birthdate: new Date(1989, 5, 10),
+            login: 'ryan.bob',
+            password: '1234',
+            actif: true
+        });
+
+        this.listView.add({
+            id: this.id++,
+            firstName: 'Michel',
+            lastName: 'Morgan',
+            birthdate: new Date(1982, 9, 17),
+            login: 'mich',
+            password: '4321',
+            actif: true
+        });
+    } 
+} 
+```
+
+Notre page de création et modification d'un utilisateur est maintenant faite. Cependant on ne peut toujours pas y acceder. Il faut indiquer à l'application que la page doit s'afficher en fonction de l'url affichée dans la barre d'adresse.
+Modifions une dernière fois le fichier _startup.ts_
+
+```typescript
 ```

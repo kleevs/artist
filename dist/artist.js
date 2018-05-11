@@ -1032,18 +1032,25 @@ __MODE__ = undefined;
 	        constructor() {
 	            super();
 	            this._callbacks = [];
-	            window.onpopstate = (state) => this.change(location.pathname);
+	            window.onpopstate = (state) => this.change(location.href);
 	        }
 	        on(callback) {
-	            callback(location.pathname);
+	            var parsed = this.parse(location.href);
+	            callback(parsed.href, parsed.pathname, parsed.hash);
 	            this._callbacks.push(callback);
 	        }
 	        trigger(href) {
 	            history.pushState({}, '', href);
 	            this.change(href);
 	        }
-	        change(href) {
-	            this._callbacks.forEach(callback => callback(href));
+	        change(str) {
+	            var parsed = this.parse(str);
+	            this._callbacks.forEach(callback => callback(parsed.href, parsed.pathname, parsed.hash));
+	        }
+	        parse(href) {
+	            var a = document.createElement('a');
+	            a.href = href;
+	            return a;
 	        }
 	    };
 	    Router = __decorate([
