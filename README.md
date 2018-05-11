@@ -49,7 +49,6 @@ Créer un premier fichier index.html à la racine du projet.
 <!DOCTYPE html> 
 <html> 
     <head> 
-        <script src='node_modules/jquery/dist/jquery.js'></script>
         <script 
             src='node_modules/artistejs/dist/artiste.js' 
             config='config' 
