@@ -1,4 +1,4 @@
-export { load } from 'node_modules/amd-loader/src/index';
+export { load } from '../lib/amd-loader/index';
 export { View, Binder, ViewOption } from './view';
 export { Service } from './service';
 export { IServiceProvider, ServiceProvider } from '../service/serviceProvider';

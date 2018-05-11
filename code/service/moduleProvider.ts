@@ -1,5 +1,5 @@
 import { Service } from '../core/service';
-import { load } from 'node_modules/amd-loader/src/index';
+import { load } from '../lib/amd-loader/index';
 
 export abstract class IModuleProvider {
     abstract get(uri: string): Promise<any>;

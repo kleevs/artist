@@ -4,7 +4,7 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./service", "../service/viewProvider", "node_modules/amd-loader/src/index", "node_modules/amd-loader/src/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
+        define(["require", "exports", "./service", "../service/viewProvider", "../lib/amd-loader/index", "../lib/amd-loader/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
     }
 })(function (require, exports) {
     "use strict";
@@ -14,8 +14,8 @@
     Object.defineProperty(exports, "__esModule", { value: true });
     const service_1 = require("./service");
     const viewProvider_1 = require("../service/viewProvider");
-    const index_1 = require("node_modules/amd-loader/src/index");
-    var index_2 = require("node_modules/amd-loader/src/index");
+    const index_1 = require("../lib/amd-loader/index");
+    var index_2 = require("../lib/amd-loader/index");
     exports.load = index_2.load;
     var view_1 = require("./view");
     exports.View = view_1.View;

@@ -1,10 +1,10 @@
 import { serviceProvider } from './service';
 import { IViewProvider } from '../service/viewProvider';
-import { load, config, define } from 'node_modules/amd-loader/src/index';
+import { load, config, define } from '../lib/amd-loader/index';
 
 declare let __META__: any;
 
-export { load } from 'node_modules/amd-loader/src/index';
+export { load } from '../lib/amd-loader/index';
 export { View, Binder, ViewOption } from './view';
 export { Service } from './service';
 

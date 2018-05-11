@@ -11,3 +11,4 @@ example
 example/*
 !src/**/*.d.ts
 doc
+bin

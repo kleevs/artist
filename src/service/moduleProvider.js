@@ -13,13 +13,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../core/service", "node_modules/amd-loader/src/index"], factory);
+        define(["require", "exports", "../core/service", "../lib/amd-loader/index"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const service_1 = require("../core/service");
-    const index_1 = require("node_modules/amd-loader/src/index");
+    const index_1 = require("../lib/amd-loader/index");
     class IModuleProvider {
     }
     exports.IModuleProvider = IModuleProvider;
