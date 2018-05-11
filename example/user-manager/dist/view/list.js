@@ -17,7 +17,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define(["require", "exports", "node_modules/artist/dist/artist"], function (require, exports, artist_1) {
+define(["require", "exports", "node_modules/artistejs/dist/artiste"], function (require, exports, artiste_1) {
     "use strict";
     exports.__esModule = true;
     var IList = /** @class */ (function () {
@@ -44,27 +44,28 @@ define(["require", "exports", "node_modules/artist/dist/artist"], function (requ
             return this.observable.list.filter(function (u) { return u.id === userid; })[0];
         };
         List = __decorate([
-            artist_1.View({
+            artiste_1.View({
                 template: "dist/template/list.html",
                 binding: {
-                    "tbody": function (userView) { return artist_1.each(function () {
+                    "tbody": function (userView) { return artiste_1.each(function () {
                         return userView.observable.list.map(function (user) {
                             return {
-                                "[data-id=first-name]": artist_1.text(function () { return user.firstName; }),
-                                "[data-id=last-name]": artist_1.text(function () { return user.lastName; }),
-                                "[data-id=birthdate]": artist_1.text(function () { return user.birthdate && user.birthdate.toDateString(); }),
-                                "[data-id=login]": artist_1.text(function () { return user.login; }),
-                                "[data-id=password]": artist_1.text(function () { return user.password; }),
-                                "[data-id=actif]": artist_1.text(function () { return user.actif ? 'Actif' : 'Inactif'; }),
-                                "[data-id=action] a": artist_1.attr(function () { return { href: "/#/update/" + user.id }; }),
-                                "[data-id=action] button": artist_1.click(function () { return function () { return userView.remove(user); }; })
+                                "[data-id=first-name]": artiste_1.text(function () { return user.firstName; }),
+                                "[data-id=last-name]": artiste_1.text(function () { return user.lastName; }),
+                                "[data-id=birthdate]": artiste_1.text(function () { return user.birthdate && user.birthdate.toDateString(); }),
+                                "[data-id=login]": artiste_1.text(function () { return user.login; }),
+                                "[data-id=password]": artiste_1.text(function () { return user.password; }),
+                                "[data-id=actif]": artiste_1.text(function () { return user.actif ? 'Actif' : 'Inactif'; }),
+                                "[data-id=action] a": artiste_1.attr(function () { return { href: "/#/update/" + user.id }; }),
+                                "[data-id=action] button": artiste_1.click(function () { return function () { return userView.remove(user); }; })
                             };
                         });
                     }); }
                 }
             }),
-            __metadata("design:paramtypes", [artist_1.IObservablizer])
+            __metadata("design:paramtypes", [typeof (_a = typeof artiste_1.IObservablizer !== "undefined" && artiste_1.IObservablizer) === "function" && _a || Object])
         ], List);
         return List;
+        var _a;
     }(IList));
 });

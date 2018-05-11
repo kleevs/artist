@@ -17,13 +17,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define(["require", "exports", "artist", "../model/user"], function (require, exports, artist_1, user_1) {
+define(["require", "exports", "artiste", "../model/user"], function (require, exports, artiste_1, user_1) {
     "use strict";
     exports.__esModule = true;
     var IForm = /** @class */ (function () {
         function IForm() {
         }
-        IForm.AddUserEvent = new artist_1.Event("AddUserEvent");
+        IForm.AddUserEvent = new artiste_1.Event("AddUserEvent");
         return IForm;
     }());
     exports.IForm = IForm;
@@ -52,19 +52,20 @@ define(["require", "exports", "artist", "../model/user"], function (require, exp
             this.observable.age = undefined;
         };
         Form = __decorate([
-            artist_1.View({
+            artiste_1.View({
                 template: "dist/tmpl/form.html",
                 binding: {
-                    "[panel-title]": function (view) { return artist_1.text(function () { return "Formulaire"; }); },
-                    "#last": function (view) { return artist_1.value({ get: function () { return view.observable.last; }, set: function (v) { return view.observable.last = v; } }); },
-                    "#first": function (view) { return artist_1.value({ get: function () { return view.observable.first; }, set: function (v) { return view.observable.first = v; } }); },
-                    "#age": function (view) { return artist_1.value({ get: function () { return (view.observable.age || '').toString(); }, set: function (v) { return view.observable.age = parseInt(v) || undefined; } }); },
-                    "[data-action=add]": function (view) { return artist_1.click(function () { return function () { return view.add() || false; }; }); },
-                    "[data-action=clear]": function (view) { return artist_1.click(function () { return function () { return view.clear() || false; }; }); }
+                    "[panel-title]": function (view) { return artiste_1.text(function () { return "Formulaire"; }); },
+                    "#last": function (view) { return artiste_1.value({ get: function () { return view.observable.last; }, set: function (v) { return view.observable.last = v; } }); },
+                    "#first": function (view) { return artiste_1.value({ get: function () { return view.observable.first; }, set: function (v) { return view.observable.first = v; } }); },
+                    "#age": function (view) { return artiste_1.value({ get: function () { return (view.observable.age || '').toString(); }, set: function (v) { return view.observable.age = parseInt(v) || undefined; } }); },
+                    "[data-action=add]": function (view) { return artiste_1.click(function () { return function () { return view.add() || false; }; }); },
+                    "[data-action=clear]": function (view) { return artiste_1.click(function () { return function () { return view.clear() || false; }; }); }
                 }
             }),
-            __metadata("design:paramtypes", [artist_1.IObservablizer, artist_1.INotifier])
+            __metadata("design:paramtypes", [typeof (_a = typeof artiste_1.IObservablizer !== "undefined" && artiste_1.IObservablizer) === "function" && _a || Object, typeof (_b = typeof artiste_1.INotifier !== "undefined" && artiste_1.INotifier) === "function" && _b || Object])
         ], Form);
         return Form;
+        var _a, _b;
     }(IForm));
 });

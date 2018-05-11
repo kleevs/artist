@@ -17,7 +17,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define(["require", "exports", "artist", "../model/user"], function (require, exports, artist_1, user_1) {
+define(["require", "exports", "artiste", "../model/user"], function (require, exports, artiste_1, user_1) {
     "use strict";
     exports.__esModule = true;
     var IDetail = /** @class */ (function () {
@@ -37,17 +37,18 @@ define(["require", "exports", "artist", "../model/user"], function (require, exp
             this.observable.user = user;
         };
         Detail = __decorate([
-            artist_1.View({
+            artiste_1.View({
                 template: "dist/tmpl/detail.html",
                 binding: {
-                    "[panel-title]": function (view) { return artist_1.text(function () { return "Detail"; }); },
-                    "#last": function (view) { return artist_1.value({ get: function () { return view.observable.user.last; }, set: function (v) { return view.observable.user.last = v; } }); },
-                    "#first": function (view) { return artist_1.value({ get: function () { return view.observable.user.first; }, set: function (v) { return view.observable.user.first = v; } }); },
-                    "#age": function (view) { return artist_1.value({ get: function () { return (view.observable.user.age || '').toString(); }, set: function (v) { return view.observable.user.age = parseInt(v) || undefined; } }); }
+                    "[panel-title]": function (view) { return artiste_1.text(function () { return "Detail"; }); },
+                    "#last": function (view) { return artiste_1.value({ get: function () { return view.observable.user.last; }, set: function (v) { return view.observable.user.last = v; } }); },
+                    "#first": function (view) { return artiste_1.value({ get: function () { return view.observable.user.first; }, set: function (v) { return view.observable.user.first = v; } }); },
+                    "#age": function (view) { return artiste_1.value({ get: function () { return (view.observable.user.age || '').toString(); }, set: function (v) { return view.observable.user.age = parseInt(v) || undefined; } }); }
                 }
             }),
-            __metadata("design:paramtypes", [artist_1.IObservablizer])
+            __metadata("design:paramtypes", [typeof (_a = typeof artiste_1.IObservablizer !== "undefined" && artiste_1.IObservablizer) === "function" && _a || Object])
         ], Detail);
         return Detail;
+        var _a;
     }(IDetail));
 });

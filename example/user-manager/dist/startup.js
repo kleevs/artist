@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define(["require", "exports", "node_modules/artist/dist/artist", "view/list", "view/detail", "model/user"], function (require, exports, artist_1, list_1, detail_1, user_1) {
+define(["require", "exports", "node_modules/artistejs/dist/artiste", "view/list", "view/detail", "model/user"], function (require, exports, artiste_1, list_1, detail_1, user_1) {
     "use strict";
     exports.__esModule = true;
     var Startup = /** @class */ (function () {
@@ -70,19 +70,17 @@ define(["require", "exports", "node_modules/artist/dist/artist", "view/list", "v
             });
         }
         Startup = __decorate([
-            artist_1.View({
+            artiste_1.View({
                 template: "dist/template/layout.html",
                 binding: {
-                    "this": function (starter) { return artist_1.view(function () { return starter.observable.view; }); }
+                    "this": function (starter) { return artiste_1.view(function () { return starter.observable.view; }); }
                 }
             }),
-            __metadata("design:paramtypes", [artist_1.IObservablizer,
-                artist_1.INotifier,
-                artist_1.IRouter,
-                list_1.IList,
+            __metadata("design:paramtypes", [typeof (_a = typeof artiste_1.IObservablizer !== "undefined" && artiste_1.IObservablizer) === "function" && _a || Object, typeof (_b = typeof artiste_1.INotifier !== "undefined" && artiste_1.INotifier) === "function" && _b || Object, typeof (_c = typeof artiste_1.IRouter !== "undefined" && artiste_1.IRouter) === "function" && _c || Object, list_1.IList,
                 detail_1.IDetail])
         ], Startup);
         return Startup;
+        var _a, _b, _c;
     }());
     exports.Startup = Startup;
 });

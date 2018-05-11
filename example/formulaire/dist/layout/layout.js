@@ -17,7 +17,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define(["require", "exports", "artist", "../view/form", "../view/detail", "../view/list", "../view/saved"], function (require, exports, artist_1, form_1, detail_1, list_1, saved_1) {
+define(["require", "exports", "artiste", "../view/form", "../view/detail", "../view/list", "../view/saved"], function (require, exports, artiste_1, form_1, detail_1, list_1, saved_1) {
     "use strict";
     exports.__esModule = true;
     var ILayout = /** @class */ (function () {
@@ -42,17 +42,18 @@ define(["require", "exports", "artist", "../view/form", "../view/detail", "../vi
             return _this;
         }
         LayoutView = __decorate([
-            artist_1.View({
+            artiste_1.View({
                 template: "dist/tmpl/layout.html",
                 binding: {
-                    "[form]": function (layout) { return artist_1.view(function () { return layout.observable.form; }); },
-                    "[detail]": function (layout) { return artist_1.view(function () { return layout.observable.detail; }); },
-                    "[list]": function (layout) { return artist_1.view(function () { return layout.observable.list; }); },
-                    "[saved]": function (layout) { return artist_1.view(function () { return layout.observable.saved; }); }
+                    "[form]": function (layout) { return artiste_1.view(function () { return layout.observable.form; }); },
+                    "[detail]": function (layout) { return artiste_1.view(function () { return layout.observable.detail; }); },
+                    "[list]": function (layout) { return artiste_1.view(function () { return layout.observable.list; }); },
+                    "[saved]": function (layout) { return artiste_1.view(function () { return layout.observable.saved; }); }
                 }
             }),
-            __metadata("design:paramtypes", [artist_1.IViewProvider, artist_1.IObservablizer, artist_1.INotifier])
+            __metadata("design:paramtypes", [typeof (_a = typeof artiste_1.IViewProvider !== "undefined" && artiste_1.IViewProvider) === "function" && _a || Object, typeof (_b = typeof artiste_1.IObservablizer !== "undefined" && artiste_1.IObservablizer) === "function" && _b || Object, typeof (_c = typeof artiste_1.INotifier !== "undefined" && artiste_1.INotifier) === "function" && _c || Object])
         ], LayoutView);
         return LayoutView;
+        var _a, _b, _c;
     }(ILayout));
 });

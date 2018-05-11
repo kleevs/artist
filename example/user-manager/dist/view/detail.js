@@ -17,14 +17,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define(["require", "exports", "node_modules/artist/dist/artist"], function (require, exports, artist_1) {
+define(["require", "exports", "node_modules/artistejs/dist/artiste"], function (require, exports, artiste_1) {
     "use strict";
     exports.__esModule = true;
     var IDetail = /** @class */ (function () {
         function IDetail() {
         }
         IDetail.Event = {
-            Save: new artist_1.Event("Detail.Save")
+            Save: new artiste_1.Event("Detail.Save")
         };
         return IDetail;
     }());
@@ -83,22 +83,21 @@ define(["require", "exports", "node_modules/artist/dist/artist"], function (requ
             return str;
         };
         Detail = __decorate([
-            artist_1.View({
+            artiste_1.View({
                 template: "dist/template/detail.html",
                 binding: {
-                    "[data-id=firstname]": function (detailView) { return artist_1.value({ get: function () { return detailView.user.firstName; }, set: function (v) { return detailView.user.firstName = v; } }); },
-                    "[data-id=lastname]": function (detailView) { return artist_1.value({ get: function () { return detailView.user.lastName; }, set: function (v) { return detailView.user.lastName = v; } }); },
-                    "[data-id=birthdate]": function (detailView) { return artist_1.value({ get: function () { return detailView.toStringDate(detailView.user.birthdate); }, set: function (v) { return detailView.user.birthdate = detailView.parseDate(v); } }); },
-                    "[data-id=login]": function (detailView) { return artist_1.value({ get: function () { return detailView.user.login; }, set: function (v) { return detailView.user.login = v; } }); },
-                    "[data-id=password]": function (detailView) { return artist_1.value({ get: function () { return detailView.user.password; }, set: function (v) { return detailView.user.password = v; } }); },
-                    "[data-id=actif]": function (detailView) { return artist_1.value({ get: function () { return detailView.user.actif; }, set: function (v) { return detailView.user.actif = v; } }); },
-                    "[data-id=save]": function (detailView) { return artist_1.click(function () { return function () { return detailView.save(); }; }); }
+                    "[data-id=firstname]": function (detailView) { return artiste_1.value({ get: function () { return detailView.user.firstName; }, set: function (v) { return detailView.user.firstName = v; } }); },
+                    "[data-id=lastname]": function (detailView) { return artiste_1.value({ get: function () { return detailView.user.lastName; }, set: function (v) { return detailView.user.lastName = v; } }); },
+                    "[data-id=birthdate]": function (detailView) { return artiste_1.value({ get: function () { return detailView.toStringDate(detailView.user.birthdate); }, set: function (v) { return detailView.user.birthdate = detailView.parseDate(v); } }); },
+                    "[data-id=login]": function (detailView) { return artiste_1.value({ get: function () { return detailView.user.login; }, set: function (v) { return detailView.user.login = v; } }); },
+                    "[data-id=password]": function (detailView) { return artiste_1.value({ get: function () { return detailView.user.password; }, set: function (v) { return detailView.user.password = v; } }); },
+                    "[data-id=actif]": function (detailView) { return artiste_1.value({ get: function () { return detailView.user.actif; }, set: function (v) { return detailView.user.actif = v; } }); },
+                    "[data-id=save]": function (detailView) { return artiste_1.click(function () { return function () { return detailView.save(); }; }); }
                 }
             }),
-            __metadata("design:paramtypes", [artist_1.IObservablizer,
-                artist_1.IRouter,
-                artist_1.INotifier])
+            __metadata("design:paramtypes", [typeof (_a = typeof artiste_1.IObservablizer !== "undefined" && artiste_1.IObservablizer) === "function" && _a || Object, typeof (_b = typeof artiste_1.IRouter !== "undefined" && artiste_1.IRouter) === "function" && _b || Object, typeof (_c = typeof artiste_1.INotifier !== "undefined" && artiste_1.INotifier) === "function" && _c || Object])
         ], Detail);
         return Detail;
+        var _a, _b, _c;
     }(IDetail));
 });
