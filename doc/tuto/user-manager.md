@@ -92,7 +92,7 @@ export abstract class IList {
                 return { 
                     "[data-id=first-name]": text(() => user.firstName), 
                     "[data-id=last-name]": text(() => user.lastName), 
-                    "[data-id=birthdate]": text(() => user.birthdate.toDateString()), 
+                    "[data-id=birthdate]": text(() => user.birthdate && user.birthdate.toDateString()), 
                     "[data-id=login]": text(() => user.login), 
                     "[data-id=password]": text(() => user.password), 
                     "[data-id=actif]": text(() => user.actif ? 'Actif' : 'Inactif'),
@@ -260,6 +260,8 @@ export abstract class IDetail {
     static Event = {
         Save: new Event<IDetail, UserModel>("Detail.Save")
     }
+
+    abstract setUser(user: UserModel): void;
 } 
  
 @View<Detail>({ 
@@ -270,7 +272,7 @@ export abstract class IDetail {
         "[data-id=birthdate]": (detailView) => value({ get: () => detailView.toStringDate(detailView.user.birthdate), set: (v) => detailView.user.birthdate = detailView.parseDate(v) }), 
         "[data-id=login]": (detailView) => value({ get: () => detailView.user.login, set: (v) => detailView.user.login = v }), 
         "[data-id=password]": (detailView) => value({ get: () => detailView.user.password, set: (v) => detailView.user.password = v }), 
-        // "[data-id=actif]": (detailView) => value({ get: () => detailView.user.actif, set: (v) => detailView.user.actif = v }),
+        "[data-id=actif]": (detailView) => value({ get: () => detailView.user.actif, set: (v) => detailView.user.actif = v }),
         "[data-id=save]": (detailView) => click(() => () => detailView.save())
     } 
 }) 
@@ -293,6 +295,16 @@ class Detail extends IDetail {
             actif: false
         });
     } 
+
+    setUser(user: UserModel) {
+        this.user.id = user.id;
+        this.user.firstName = user.firstName;
+        this.user.lastName = user.lastName;
+        this.user.birthdate = user.birthdate;
+        this.user.login = user.login;
+        this.user.password = user.password;
+        this.user.actif = user.actif;
+    }
 
     save() {
         this.notifier.forEvent(IDetail.Event.Save).notify(this, {
@@ -324,6 +336,7 @@ Modifions à nouveau le fichier _startup.ts_ comme suit.
 import { View, IObservablizer, INotifier, view } from 'node_modules/artist/dist/artist'; 
 import { IList as ListView } from 'view/list';
 import { IDetail as DetailView, IDetail } from 'view/detail';
+import { User } from 'model/user';
 
 @View<Startup>({ 
     template: "dist/template/layout.html", 
@@ -352,6 +365,7 @@ export class Startup {
                 this.listView.add(data);
             } else {
                 // ajout
+                data.id = this.id++;
                 this.listView.add(data);
             }
         });
@@ -381,7 +395,133 @@ export class Startup {
 ```
 
 Notre page de création et modification d'un utilisateur est maintenant faite. Cependant on ne peut toujours pas y acceder. Il faut indiquer à l'application que la page doit s'afficher en fonction de l'url affichée dans la barre d'adresse.
-Modifions une dernière fois le fichier _startup.ts_
+Modifions une dernière fois le fichier _startup.ts_ et _list_.ts
 
 ```typescript
+import { View, IObservablizer, each, text, click, attr } from 'node_modules/artist/dist/artist'; 
+import { User as UserModel } from '../model/user';
+ 
+export abstract class IList {
+    abstract getById(userId: number): UserModel;
+    abstract add(user: UserModel): void;
+    abstract remove(user: UserModel): void;
+} 
+ 
+@View<List>({ 
+    template: "dist/template/list.html", 
+    binding: { 
+        "tbody": (userView) => each(() => { 
+            return userView.observable.list.map(user => { 
+                return { 
+                    "[data-id=first-name]": text(() => user.firstName), 
+                    "[data-id=last-name]": text(() => user.lastName), 
+                    "[data-id=birthdate]": text(() => user.birthdate && user.birthdate.toDateString()), 
+                    "[data-id=login]": text(() => user.login), 
+                    "[data-id=password]": text(() => user.password), 
+                    "[data-id=actif]": text(() => user.actif ? 'Actif' : 'Inactif'),
+                    "[data-id=action] a": attr(() => { return { href: `/#/update/${user.id}` }; }),
+                    "[data-id=action] button": click(() => () => userView.remove(user))
+                }; 
+            }); 
+        }) 
+    } 
+}) 
+class List extends IList { 
+    private observable: { list: UserModel[] }; 
+     
+    constructor(observablizer: IObservablizer) { 
+        super(); 
+        this.observable = observablizer.convert({ list: [] }); 
+    } 
+
+    remove(user: UserModel) {
+        this.observable.list = this.observable.list.filter(u => u.id !== user.id);
+        return true;
+    }
+
+    add(user: UserModel) {
+        this.observable.list.push(user);
+    }
+
+    getById(userid: number) {
+        return this.observable.list.filter(u => u.id === userid)[0];
+    }
+}
+```
+
+```typescript
+import { View, IObservablizer, INotifier, IRouter, view } from 'node_modules/artist/dist/artist'; 
+import { IList as ListView } from 'view/list';
+import { IDetail as DetailView, IDetail } from 'view/detail';
+import { User } from 'model/user';
+
+@View<Startup>({ 
+    template: "dist/template/layout.html", 
+    binding: { 
+        "this": (starter) => view(() => starter.observable.view)
+    } 
+}) 
+export class Startup { 
+    private observable: { view: any }; 
+    private id: number = 1;
+     
+    constructor(
+        // services
+        observablizer: IObservablizer,
+        private notifier: INotifier,
+        router: IRouter,
+        
+        // sous vues
+		private listView: ListView,
+		private detailView: DetailView
+    ) {
+        this.observable = observablizer.convert({ view: listView }); 
+        this.notifier.forEvent(IDetail.Event.Save).listen(detailView, (data) => {
+            if (data.id) {
+                // modification
+                this.listView.remove(data);
+                this.listView.add(data);
+            } else {
+                // ajout
+                data.id = this.id++;
+                this.listView.add(data);
+            }
+        });
+
+        router.on((href, pathname, hash) => {
+            if (hash === "#/create") {
+                detailView.setUser(new User());
+                this.observable.view = detailView;
+            } else if (hash.indexOf("#/update/") === 0) {
+                var userid = parseInt(hash.split("/").pop());
+                var user = this.listView.getById(userid);
+                detailView.setUser(user);
+                this.observable.view = detailView;
+            } else {
+                this.observable.view = listView;
+            }
+        });
+
+        // création de quelques tests
+        this.listView.add({
+            id: this.id++,
+            firstName: 'Ryan',
+            lastName: 'Bob',
+            birthdate: new Date(1989, 5, 10),
+            login: 'ryan.bob',
+            password: '1234',
+            actif: true
+        });
+
+        this.listView.add({
+            id: this.id++,
+            firstName: 'Michel',
+            lastName: 'Morgan',
+            birthdate: new Date(1982, 9, 17),
+            login: 'mich',
+            password: '4321',
+            actif: true
+        });
+    } 
+} 
 ```

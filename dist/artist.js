@@ -1338,8 +1338,24 @@ __MODE__ = undefined;
 	    const on_1 = require("on");
 	    function value(options) {
 	        return [
-	            on_1.on(options.on || 'input', () => (e) => options.set(e.currentTarget.value) || true),
-	            (element) => () => element.value = options.get() || ''
+	            on_1.on(options.on || 'input', () => (e) => {
+	                var target = e.currentTarget;
+	                var value = target.value;
+	                if (target.type == "checkbox") {
+	                    value = target.checked;
+	                }
+	                options.set(value);
+	                return true;
+	            }),
+	            (element) => () => {
+	                var value = options.get();
+	                if (element.type == "checkbox") {
+	                    element.checked = value;
+	                }
+	                else {
+	                    element.value = value || '';
+	                }
+	            }
 	        ];
 	    }
 	    exports.value = value;
