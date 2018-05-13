@@ -65,13 +65,13 @@
                 var removedNodes = Array.prototype.map.call(record.removedNodes, x => x);
                 var addedNodes = Array.prototype.map.call(record.addedNodes, x => x);
                 var removeViews = [];
-                removeViews = removeViews.concat(removedNodes.filter(e => e.hasAttribute("artist-view") && e.hasAttribute("loaded")));
+                removeViews = removeViews.concat(removedNodes.filter(e => e.hasAttribute && e.hasAttribute("artist-view") && e.hasAttribute("loaded")));
                 removedNodes.forEach(e => {
                     var r = Array.prototype.map.call(e.querySelectorAll("[artist-view=true][loaded]"), x => x).filter(e => e.hasAttribute("loaded"));
                     removeViews = removeViews.concat(r);
                 });
                 var addedViews = [];
-                addedViews = addedViews.concat(addedNodes.filter(e => e.hasAttribute("artist-view") && !e.hasAttribute("loaded")));
+                addedViews = addedViews.concat(addedNodes.filter(e => e.hasAttribute && e.hasAttribute("artist-view") && !e.hasAttribute("loaded")));
                 addedNodes.forEach(e => {
                     var a = Array.prototype.map.call(e.querySelectorAll("[artist-view=true]"), x => x).filter(e => !e.hasAttribute("loaded"));
                     addedViews = addedViews.concat(a);
