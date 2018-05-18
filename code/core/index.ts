@@ -42,14 +42,14 @@ export function startup(selector: string, view) {
             var removeViews: Element[] = [];
             removeViews = removeViews.concat(removedNodes.filter(e => e.hasAttribute && e.hasAttribute("artist-view") && e.hasAttribute("loaded")));
             removedNodes.forEach(e => {
-                var r: Element[] = Array.prototype.map.call(e.querySelectorAll("[artist-view=true][loaded]"), x => x).filter(e => e.hasAttribute("loaded"));
+                var r: Element[] = Array.prototype.map.call(e.querySelectorAll && e.querySelectorAll("[artist-view=true][loaded]"), x => x).filter(e => e.hasAttribute && e.hasAttribute("loaded"));
                 removeViews = removeViews.concat(r);
             });
 
             var addedViews: Element[] = [];
             addedViews = addedViews.concat(addedNodes.filter(e => e.hasAttribute && e.hasAttribute("artist-view") && !e.hasAttribute("loaded")));
             addedNodes.forEach(e => {
-                var a: Element[] = Array.prototype.map.call(e.querySelectorAll("[artist-view=true]"), x => x).filter(e => !e.hasAttribute("loaded"));
+                var a: Element[] = Array.prototype.map.call(e.querySelectorAll && e.querySelectorAll("[artist-view=true]"), x => x).filter(e => e.hasAttribute && !e.hasAttribute("loaded"));
                 addedViews = addedViews.concat(a);
             });
 
