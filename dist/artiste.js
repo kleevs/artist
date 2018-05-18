@@ -1586,13 +1586,13 @@ __MODE__ = undefined;
 	                var removeViews = [];
 	                removeViews = removeViews.concat(removedNodes.filter(e => e.hasAttribute && e.hasAttribute("artist-view") && e.hasAttribute("loaded")));
 	                removedNodes.forEach(e => {
-	                    var r = Array.prototype.map.call(e.querySelectorAll && e.querySelectorAll("[artist-view=true][loaded]"), x => x).filter(e => e.hasAttribute && e.hasAttribute("loaded"));
+	                    var r = Array.prototype.map.call(e.querySelectorAll && e.querySelectorAll("[artist-view=true][loaded]") || [], x => x).filter(e => e.hasAttribute && e.hasAttribute("loaded"));
 	                    removeViews = removeViews.concat(r);
 	                });
 	                var addedViews = [];
 	                addedViews = addedViews.concat(addedNodes.filter(e => e.hasAttribute && e.hasAttribute("artist-view") && !e.hasAttribute("loaded")));
 	                addedNodes.forEach(e => {
-	                    var a = Array.prototype.map.call(e.querySelectorAll && e.querySelectorAll("[artist-view=true]"), x => x).filter(e => e.hasAttribute && !e.hasAttribute("loaded"));
+	                    var a = Array.prototype.map.call(e.querySelectorAll && e.querySelectorAll("[artist-view=true]") || [], x => x).filter(e => e.hasAttribute && !e.hasAttribute("loaded"));
 	                    addedViews = addedViews.concat(a);
 	                });
 	                addedViews.forEach(e => e.setAttribute("loaded", 'true'));
