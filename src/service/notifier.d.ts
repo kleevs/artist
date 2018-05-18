@@ -1,3 +1,6 @@
+export declare type Listener = {
+    stop: () => void;
+};
 /** @description Interface du service gérant la communication entre vue.
  */
 export declare abstract class INotifier {
@@ -6,7 +9,7 @@ export declare abstract class INotifier {
      * @return Objet permettant d'écouter ou de lancer un évènement.
      */
     abstract forEvent<TContext, TArgument>(event: Event<TContext, TArgument>): {
-        listen: (context: TContext, callback: (data: TArgument) => void) => void;
+        listen: (context: TContext, callback: (data: TArgument) => void) => Listener;
         notify: (context: TContext, data?: TArgument) => void;
     };
 }
@@ -21,7 +24,7 @@ export declare class Notifier extends INotifier {
     private notify(obj, key, data);
     private listen(obj, key, callback);
     forEvent<TContext, TArgument>(event: Event<TContext, TArgument>): {
-        listen: (context: TContext, callback: (data: TArgument) => void) => void;
+        listen: (context: TContext, callback: (data: TArgument) => void) => Listener;
         notify: (context: TContext, data?: TArgument) => void;
     };
     private register(obj, key);

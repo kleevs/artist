@@ -865,6 +865,14 @@ __MODE__ = undefined;
 	        listen(obj, key, callback) {
 	            var callbacks = this.register(obj, key);
 	            callbacks.push(callback);
+	            return {
+	                stop: () => {
+	                    var index = callbacks.indexOf(callback);
+	                    if (index > -1) {
+	                        callbacks.splice(index, 1);
+	                    }
+	                }
+	            };
 	        }
 	        forEvent(event) {
 	            return {
@@ -1578,13 +1586,13 @@ __MODE__ = undefined;
 	                var removeViews = [];
 	                removeViews = removeViews.concat(removedNodes.filter(e => e.hasAttribute && e.hasAttribute("artist-view") && e.hasAttribute("loaded")));
 	                removedNodes.forEach(e => {
-	                    var r = Array.prototype.map.call(e.querySelectorAll("[artist-view=true][loaded]"), x => x).filter(e => e.hasAttribute("loaded"));
+	                    var r = Array.prototype.map.call(e.querySelectorAll && e.querySelectorAll("[artist-view=true][loaded]"), x => x).filter(e => e.hasAttribute && e.hasAttribute("loaded"));
 	                    removeViews = removeViews.concat(r);
 	                });
 	                var addedViews = [];
 	                addedViews = addedViews.concat(addedNodes.filter(e => e.hasAttribute && e.hasAttribute("artist-view") && !e.hasAttribute("loaded")));
 	                addedNodes.forEach(e => {
-	                    var a = Array.prototype.map.call(e.querySelectorAll("[artist-view=true]"), x => x).filter(e => !e.hasAttribute("loaded"));
+	                    var a = Array.prototype.map.call(e.querySelectorAll && e.querySelectorAll("[artist-view=true]"), x => x).filter(e => e.hasAttribute && !e.hasAttribute("loaded"));
 	                    addedViews = addedViews.concat(a);
 	                });
 	                addedViews.forEach(e => e.setAttribute("loaded", 'true'));

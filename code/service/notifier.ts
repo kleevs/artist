@@ -1,5 +1,9 @@
 import { Service } from '../core/service';
 
+export declare type Listener = {
+	stop: () => void;
+}
+
 /** @description Interface du service gérant la communication entre vue.  
  */  
 export abstract class INotifier {
@@ -9,7 +13,7 @@ export abstract class INotifier {
 	 * @return Objet permettant d'écouter ou de lancer un évènement.
 	 */  
     abstract forEvent<TContext, TArgument>(event: Event<TContext, TArgument>): {
-        listen: (context: TContext, callback: (data: TArgument) => void) => void, 
+        listen: (context: TContext, callback: (data: TArgument) => void) => Listener, 
         notify: (context: TContext, data?: TArgument) => void 
     }
 }
@@ -33,13 +37,21 @@ export class Notifier extends INotifier {
 		});
 	}
 	
-	private listen(obj: any, key: string, callback: (data: any) => void): void {
+	private listen(obj: any, key: string, callback: (data: any) => void): Listener {
 		var callbacks = this.register(obj, key);
 		callbacks.push(callback);
+		return {
+			stop: () => {
+				var index = callbacks.indexOf(callback);
+				if (index > -1) {
+					callbacks.splice(index, 1);
+				}
+			}
+		};
 	}
 	
 	forEvent<TContext, TArgument>(event: Event<TContext, TArgument>): {
-        listen: (context: TContext, callback: (data: TArgument) => void) => void, 
+        listen: (context: TContext, callback: (data: TArgument) => void) => Listener, 
         notify: (context: TContext, data?: TArgument) => void 
     } {
 		return {

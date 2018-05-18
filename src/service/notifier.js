@@ -44,6 +44,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         listen(obj, key, callback) {
             var callbacks = this.register(obj, key);
             callbacks.push(callback);
+            return {
+                stop: () => {
+                    var index = callbacks.indexOf(callback);
+                    if (index > -1) {
+                        callbacks.splice(index, 1);
+                    }
+                }
+            };
         }
         forEvent(event) {
             return {
