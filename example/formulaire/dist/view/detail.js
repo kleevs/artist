@@ -46,9 +46,8 @@ define(["require", "exports", "artiste", "../model/user"], function (require, ex
                     "#age": function (view) { return artiste_1.value({ get: function () { return (view.observable.user.age || '').toString(); }, set: function (v) { return view.observable.user.age = parseInt(v) || undefined; } }); }
                 }
             }),
-            __metadata("design:paramtypes", [typeof (_a = typeof artiste_1.IObservablizer !== "undefined" && artiste_1.IObservablizer) === "function" && _a || Object])
+            __metadata("design:paramtypes", [artiste_1.IObservablizer])
         ], Detail);
         return Detail;
-        var _a;
     }(IDetail));
 });

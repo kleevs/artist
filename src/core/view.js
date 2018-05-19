@@ -4,15 +4,15 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../lib/binder/index", "../lib/dom/index", "../lib/ajax/index", "./service"], factory);
+        define(["require", "exports", "../lib/binder/index", "../lib/dom/index", "./service", "../service/ajax"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const index_1 = require("../lib/binder/index");
     const index_2 = require("../lib/dom/index");
-    const index_3 = require("../lib/ajax/index");
     const service_1 = require("./service");
+    const ajax_1 = require("../service/ajax");
     function foreach(item, callback) {
         let i;
         if (item instanceof Array) {
@@ -52,7 +52,7 @@
                 html: new Promise((resolve, reject) => {
                     options.html && resolve(options.html);
                     options.template && !options.html && (() => {
-                        index_3.ajax({ url: `/${options.template}`, method: 'GET' }).then((response) => {
+                        service_1.serviceProvider.getService(ajax_1.IAjax).ajax({ url: `/${options.template}`, method: 'GET' }).then((response) => {
                             response.status == "error" && (reject() || true) ||
                                 resolve(response.result);
                         });

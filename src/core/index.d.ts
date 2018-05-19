@@ -8,6 +8,7 @@ export { IObservablizer, Observablizer } from '../service/observalizer';
 export { IModuleProvider, ModuleProvider } from '../service/moduleProvider';
 export { IRouter, Router } from '../service/router';
 export { IAjax, Ajax } from '../service/ajax';
+export { IConfigManager, ConfigManager } from '../service/configManager';
 export * from '../directive/view';
 export * from '../directive/dom';
 export * from '../directive/attr';

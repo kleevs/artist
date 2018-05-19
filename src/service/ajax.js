@@ -13,23 +13,35 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../core/service"], factory);
+        define(["require", "exports", "../core/service", "../service/configManager"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const service_1 = require("../core/service");
+    const configManager_1 = require("../service/configManager");
     class IAjax {
     }
     exports.IAjax = IAjax;
     let Ajax = class Ajax extends IAjax {
-        constructor() {
+        constructor(configManager) {
             super();
+            this.configManager = configManager;
         }
         ajax(options) {
             return new Promise((resolve, reject) => {
                 var xhr = this.getXMLHttpRequest();
-                xhr.open(options.method || 'GET', options.url, true);
+                var configuration = this.configManager.getConfig();
+                var url = options.url;
+                if (configuration && configuration.path) {
+                    configuration.path.some(path => {
+                        if (url.match(path.test)) {
+                            url = url.replace(path.test, path.result);
+                            return true;
+                        }
+                    });
+                }
+                xhr.open(options.method || 'GET', url, true);
                 options.headers && Object.keys(options.headers).forEach(key => {
                     xhr.setRequestHeader(key, options.headers[key]);
                 });
@@ -73,7 +85,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         service_1.Service({
             key: IAjax
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [configManager_1.IConfigManager])
     ], Ajax);
     exports.Ajax = Ajax;
 });

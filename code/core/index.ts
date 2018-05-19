@@ -1,7 +1,9 @@
 import { serviceProvider } from './service';
 import { IViewProvider } from '../service/viewProvider';
 import { load, config, define } from '../lib/amd-loader/index';
+import { IConfigManager } from '../service/configManager';
 
+declare let exports;
 declare let __META__: any;
 
 export { load } from '../lib/amd-loader/index';
@@ -15,6 +17,7 @@ export { IObservablizer, Observablizer } from '../service/observalizer';
 export { IModuleProvider, ModuleProvider } from '../service/moduleProvider';
 export { IRouter, Router } from '../service/router';
 export { IAjax, Ajax } from '../service/ajax';
+export { IConfigManager, ConfigManager } from '../service/configManager';
 
 export * from '../directive/view';
 export * from '../directive/dom';
@@ -74,7 +77,10 @@ if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {
     var placeHolder = script.getAttribute("placeholder");
     define(script.src, [], () => { return exports; })();
     placeHolder && (
-        (configFileName && load(configFileName).then((conf: any) => config(conf && conf.default || {})) || Promise.resolve())
+        (configFileName && load(configFileName).then((conf: any) => { 
+            serviceProvider.getService(IConfigManager).setConfig(conf.default);
+            config(conf && conf.default || {}); 
+        }) || Promise.resolve())
             .then(() => (mainFileName && load(mainFileName) || Promise.resolve(null)).then(modules => {
                 var clss = modules && modules[Object.keys(modules).filter(_ => _.indexOf("_") !== 0)[0]];
                 clss && startup(placeHolder, clss);

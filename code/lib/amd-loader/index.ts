@@ -1,4 +1,6 @@
 declare let __META__: any;
+declare let exports;
+
 var allmodules = { "...": {} };
 var loadedmodules = {};
 var configuration;

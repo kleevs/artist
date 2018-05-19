@@ -1,8 +1,9 @@
 import { Binder as BBinder, BindManager as BBindManager } from '../lib/binder/index';
 import { createElement } from '../lib/dom/index';
-import { ajax } from '../lib/ajax/index';
 import { serviceProvider, Service } from './service';
 import { IServiceProvider } from '../service/serviceProvider';
+import { IAjax } from '../service/ajax';
+
 
 function foreach<T>(item: { [s:string]: T }, callback: (item: T, key: string) => void) {
     let i;
@@ -80,7 +81,7 @@ export function View<T>(options: ViewOption<T>) {
             html: new Promise<string>((resolve, reject) => {
                 options.html && resolve(options.html);
                 options.template && !options.html && (() => {
-                    ajax<string>({ url: `/${options.template}`, method: 'GET' }).then((response) => { 
+                    serviceProvider.getService(IAjax).ajax<string>({ url: `/${options.template}`, method: 'GET' }).then((response) => { 
                         response.status == "error" && (reject() || true) ||
                         resolve(response.result);
                     });

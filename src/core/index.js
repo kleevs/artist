@@ -4,7 +4,7 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./service", "../service/viewProvider", "../lib/amd-loader/index", "../lib/amd-loader/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
+        define(["require", "exports", "./service", "../service/viewProvider", "../lib/amd-loader/index", "../service/configManager", "../lib/amd-loader/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../service/configManager", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
     }
 })(function (require, exports) {
     "use strict";
@@ -15,6 +15,7 @@
     const service_1 = require("./service");
     const viewProvider_1 = require("../service/viewProvider");
     const index_1 = require("../lib/amd-loader/index");
+    const configManager_1 = require("../service/configManager");
     var index_2 = require("../lib/amd-loader/index");
     exports.load = index_2.load;
     var view_1 = require("./view");
@@ -43,6 +44,9 @@
     var ajax_1 = require("../service/ajax");
     exports.IAjax = ajax_1.IAjax;
     exports.Ajax = ajax_1.Ajax;
+    var configManager_2 = require("../service/configManager");
+    exports.IConfigManager = configManager_2.IConfigManager;
+    exports.ConfigManager = configManager_2.ConfigManager;
     __export(require("../directive/view"));
     __export(require("../directive/dom"));
     __export(require("../directive/attr"));
@@ -94,7 +98,10 @@
         var mainFileName = script.getAttribute("startup");
         var placeHolder = script.getAttribute("placeholder");
         index_1.define(script.src, [], () => { return exports; })();
-        placeHolder && ((configFileName && index_1.load(configFileName).then((conf) => index_1.config(conf && conf.default || {})) || Promise.resolve())
+        placeHolder && ((configFileName && index_1.load(configFileName).then((conf) => {
+            service_1.serviceProvider.getService(configManager_1.IConfigManager).setConfig(conf.default);
+            index_1.config(conf && conf.default || {});
+        }) || Promise.resolve())
             .then(() => (mainFileName && index_1.load(mainFileName) || Promise.resolve(null)).then(modules => {
             var clss = modules && modules[Object.keys(modules).filter(_ => _.indexOf("_") !== 0)[0]];
             clss && startup(placeHolder, clss);

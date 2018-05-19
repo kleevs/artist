@@ -71,9 +71,8 @@ define(["require", "exports", "artiste", "node_modules/jquery/dist/jquery"], fun
                     }); }
                 }
             }),
-            __metadata("design:paramtypes", [typeof (_a = typeof artiste_1.IObservablizer !== "undefined" && artiste_1.IObservablizer) === "function" && _a || Object, typeof (_b = typeof artiste_1.INotifier !== "undefined" && artiste_1.INotifier) === "function" && _b || Object])
+            __metadata("design:paramtypes", [artiste_1.IObservablizer, artiste_1.INotifier])
         ], List);
         return List;
-        var _a, _b;
     }(IList));
 });

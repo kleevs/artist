@@ -497,61 +497,133 @@ __MODE__ = undefined;
 	    ;
 	});
 	
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
 	        var v = factory(require, exports);
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/lib/ajax/index.js', ["require", "exports"], factory);
+	        define('src/service/configManager.js', ["require", "exports", "../core/service"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    function getXMLHttpRequest() {
-	        var xhr = null;
-	        var context = window;
-	        if (context.XMLHttpRequest || context.ActiveXObject) {
-	            if (context.ActiveXObject) {
-	                try {
-	                    xhr = new ActiveXObject('Msxml2.XMLHTTP');
+	    const service_1 = require("../core/service");
+	    class IConfigManager {
+	    }
+	    exports.IConfigManager = IConfigManager;
+	    let ConfigManager = class ConfigManager extends IConfigManager {
+	        setConfig(config) {
+	            this._config = config;
+	        }
+	        getConfig() {
+	            return this._config;
+	        }
+	    };
+	    ConfigManager = __decorate([
+	        service_1.Service({
+	            key: IConfigManager
+	        })
+	    ], ConfigManager);
+	    exports.ConfigManager = ConfigManager;
+	});
+	
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/service/ajax.js', ["require", "exports", "../core/service", "../service/configManager"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    const service_1 = require("../core/service");
+	    const configManager_1 = require("../service/configManager");
+	    class IAjax {
+	    }
+	    exports.IAjax = IAjax;
+	    let Ajax = class Ajax extends IAjax {
+	        constructor(configManager) {
+	            super();
+	            this.configManager = configManager;
+	        }
+	        ajax(options) {
+	            return new Promise((resolve, reject) => {
+	                var xhr = this.getXMLHttpRequest();
+	                var configuration = this.configManager.getConfig();
+	                var url = options.url;
+	                if (configuration && configuration.path) {
+	                    configuration.path.some(path => {
+	                        if (url.match(path.test)) {
+	                            url = url.replace(path.test, path.result);
+	                            return true;
+	                        }
+	                    });
 	                }
-	                catch (e) {
-	                    xhr = new ActiveXObject('Microsoft.XMLHTTP');
+	                xhr.open(options.method || 'GET', url, true);
+	                options.headers && Object.keys(options.headers).forEach(key => {
+	                    xhr.setRequestHeader(key, options.headers[key]);
+	                });
+	                xhr.send(options.data);
+	                xhr.onreadystatechange = () => {
+	                    if (xhr.readyState == 4) {
+	                        if ((xhr.status == 200 || xhr.status == 0)) {
+	                            resolve({ result: xhr.responseText, status: xhr.status });
+	                        }
+	                        else {
+	                            reject({ status: xhr.status, result: xhr.responseText });
+	                        }
+	                    }
+	                };
+	            });
+	        }
+	        getXMLHttpRequest() {
+	            var xhr = null;
+	            var context = window;
+	            if (context.XMLHttpRequest || context.ActiveXObject) {
+	                if (context.ActiveXObject) {
+	                    try {
+	                        xhr = new ActiveXObject('Msxml2.XMLHTTP');
+	                    }
+	                    catch (e) {
+	                        xhr = new ActiveXObject('Microsoft.XMLHTTP');
+	                    }
+	                }
+	                else {
+	                    xhr = new XMLHttpRequest();
 	                }
 	            }
 	            else {
-	                xhr = new XMLHttpRequest();
+	                alert("Votre navigateur ne supporte pas l'objet XMLHTTPRequest...");
+	                return null;
 	            }
+	            return xhr;
 	        }
-	        else {
-	            alert("Votre navigateur ne supporte pas l'objet XMLHTTPRequest...");
-	            return null;
-	        }
-	        return xhr;
-	    }
-	    function ajax(options) {
-	        return new Promise((resolve, reject) => {
-	            var xhr = getXMLHttpRequest();
-	            xhr.open(options.method, options.url, true);
-	            options.headers && Object.keys(options.headers).forEach(key => {
-	                var header = options.headers[key];
-	                xhr.setRequestHeader(key, header);
-	            });
-	            xhr.send(options.data);
-	            xhr.onreadystatechange = () => {
-	                if (xhr.readyState == 4) {
-	                    if ((xhr.status == 200 || xhr.status == 0)) {
-	                        resolve({ result: xhr.responseText, status: xhr.status });
-	                    }
-	                    else {
-	                        reject({ status: xhr.status, result: xhr.responseText });
-	                    }
-	                }
-	            };
-	        });
-	    }
-	    exports.ajax = ajax;
+	    };
+	    Ajax = __decorate([
+	        service_1.Service({
+	            key: IAjax
+	        }),
+	        __metadata("design:paramtypes", [configManager_1.IConfigManager])
+	    ], Ajax);
+	    exports.Ajax = Ajax;
 	});
 	
 	(function (factory) {
@@ -560,15 +632,15 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/core/view.js', ["require", "exports", "../lib/binder/index", "../lib/dom/index", "../lib/ajax/index", "./service"], factory);
+	        define('src/core/view.js', ["require", "exports", "../lib/binder/index", "../lib/dom/index", "./service", "../service/ajax"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    const index_1 = require("../lib/binder/index");
 	    const index_2 = require("../lib/dom/index");
-	    const index_3 = require("../lib/ajax/index");
 	    const service_1 = require("./service");
+	    const ajax_1 = require("../service/ajax");
 	    function foreach(item, callback) {
 	        let i;
 	        if (item instanceof Array) {
@@ -608,7 +680,7 @@ __MODE__ = undefined;
 	                html: new Promise((resolve, reject) => {
 	                    options.html && resolve(options.html);
 	                    options.template && !options.html && (() => {
-	                        index_3.ajax({ url: `/${options.template}`, method: 'GET' }).then((response) => {
+	                        service_1.serviceProvider.getService(ajax_1.IAjax).ajax({ url: `/${options.template}`, method: 'GET' }).then((response) => {
 	                            response.status == "error" && (reject() || true) ||
 	                                resolve(response.result);
 	                        });
@@ -1070,86 +1142,6 @@ __MODE__ = undefined;
 	    exports.Router = Router;
 	});
 	
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('src/service/ajax.js', ["require", "exports", "../core/service"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const service_1 = require("../core/service");
-	    class IAjax {
-	    }
-	    exports.IAjax = IAjax;
-	    let Ajax = class Ajax extends IAjax {
-	        constructor() {
-	            super();
-	        }
-	        ajax(options) {
-	            return new Promise((resolve, reject) => {
-	                var xhr = this.getXMLHttpRequest();
-	                xhr.open(options.method || 'GET', options.url, true);
-	                options.headers && Object.keys(options.headers).forEach(key => {
-	                    xhr.setRequestHeader(key, options.headers[key]);
-	                });
-	                xhr.send(options.data);
-	                xhr.onreadystatechange = () => {
-	                    if (xhr.readyState == 4) {
-	                        if ((xhr.status == 200 || xhr.status == 0)) {
-	                            resolve({ result: xhr.responseText, status: xhr.status });
-	                        }
-	                        else {
-	                            reject({ status: xhr.status, result: xhr.responseText });
-	                        }
-	                    }
-	                };
-	            });
-	        }
-	        getXMLHttpRequest() {
-	            var xhr = null;
-	            var context = window;
-	            if (context.XMLHttpRequest || context.ActiveXObject) {
-	                if (context.ActiveXObject) {
-	                    try {
-	                        xhr = new ActiveXObject('Msxml2.XMLHTTP');
-	                    }
-	                    catch (e) {
-	                        xhr = new ActiveXObject('Microsoft.XMLHTTP');
-	                    }
-	                }
-	                else {
-	                    xhr = new XMLHttpRequest();
-	                }
-	            }
-	            else {
-	                alert("Votre navigateur ne supporte pas l'objet XMLHTTPRequest...");
-	                return null;
-	            }
-	            return xhr;
-	        }
-	    };
-	    Ajax = __decorate([
-	        service_1.Service({
-	            key: IAjax
-	        }),
-	        __metadata("design:paramtypes", [])
-	    ], Ajax);
-	    exports.Ajax = Ajax;
-	});
-	
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
 	        var v = factory(require, exports);
@@ -1523,7 +1515,7 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/core/index.js', ["require", "exports", "./service", "../service/viewProvider", "../lib/amd-loader/index", "../lib/amd-loader/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
+	        define('src/core/index.js', ["require", "exports", "./service", "../service/viewProvider", "../lib/amd-loader/index", "../service/configManager", "../lib/amd-loader/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../service/configManager", "../directive/view", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
@@ -1534,6 +1526,7 @@ __MODE__ = undefined;
 	    const service_1 = require("./service");
 	    const viewProvider_1 = require("../service/viewProvider");
 	    const index_1 = require("../lib/amd-loader/index");
+	    const configManager_1 = require("../service/configManager");
 	    var index_2 = require("../lib/amd-loader/index");
 	    exports.load = index_2.load;
 	    var view_1 = require("./view");
@@ -1562,6 +1555,9 @@ __MODE__ = undefined;
 	    var ajax_1 = require("../service/ajax");
 	    exports.IAjax = ajax_1.IAjax;
 	    exports.Ajax = ajax_1.Ajax;
+	    var configManager_2 = require("../service/configManager");
+	    exports.IConfigManager = configManager_2.IConfigManager;
+	    exports.ConfigManager = configManager_2.ConfigManager;
 	    __export(require("../directive/view"));
 	    __export(require("../directive/dom"));
 	    __export(require("../directive/attr"));
@@ -1613,7 +1609,10 @@ __MODE__ = undefined;
 	        var mainFileName = script.getAttribute("startup");
 	        var placeHolder = script.getAttribute("placeholder");
 	        index_1.define(script.src, [], () => { return exports; })();
-	        placeHolder && ((configFileName && index_1.load(configFileName).then((conf) => index_1.config(conf && conf.default || {})) || Promise.resolve())
+	        placeHolder && ((configFileName && index_1.load(configFileName).then((conf) => {
+	            service_1.serviceProvider.getService(configManager_1.IConfigManager).setConfig(conf.default);
+	            index_1.config(conf && conf.default || {});
+	        }) || Promise.resolve())
 	            .then(() => (mainFileName && index_1.load(mainFileName) || Promise.resolve(null)).then(modules => {
 	            var clss = modules && modules[Object.keys(modules).filter(_ => _.indexOf("_") !== 0)[0]];
 	            clss && startup(placeHolder, clss);

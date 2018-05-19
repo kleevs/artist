@@ -63,9 +63,8 @@ define(["require", "exports", "artiste", "../model/user"], function (require, ex
                     "[data-action=clear]": function (view) { return artiste_1.click(function () { return function () { return view.clear() || false; }; }); }
                 }
             }),
-            __metadata("design:paramtypes", [typeof (_a = typeof artiste_1.IObservablizer !== "undefined" && artiste_1.IObservablizer) === "function" && _a || Object, typeof (_b = typeof artiste_1.INotifier !== "undefined" && artiste_1.INotifier) === "function" && _b || Object])
+            __metadata("design:paramtypes", [artiste_1.IObservablizer, artiste_1.INotifier])
         ], Form);
         return Form;
-        var _a, _b;
     }(IForm));
 });

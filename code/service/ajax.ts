@@ -1,4 +1,5 @@
 import { Service } from '../core/service';
+import { IConfigManager } from '../service/configManager';
 
 declare let ActiveXObject: any;
 
@@ -15,14 +16,26 @@ export abstract class IAjax {
     key: IAjax
 })
 export class Ajax extends IAjax {
-    constructor() {
+    constructor(private configManager: IConfigManager) {
         super();
     }
 
     ajax<T>(options) {
         return new Promise<{ result: T; status: string; }>((resolve, reject) => {
             var xhr = this.getXMLHttpRequest();
-            xhr.open(options.method || 'GET', options.url, true);
+            var configuration = this.configManager.getConfig();
+            var url = options.url;
+
+            if (configuration && configuration.path) { 
+                configuration.path.some(path => {
+                    if (url.match(path.test)) {
+                        url = url.replace(path.test, path.result);
+                        return true;
+                    }
+                });
+            }
+
+            xhr.open(options.method || 'GET', url, true);
             options.headers && Object.keys(options.headers).forEach(key => {
                 xhr.setRequestHeader(key, options.headers[key]);
             });

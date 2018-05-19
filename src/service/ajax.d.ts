@@ -1,3 +1,4 @@
+import { IConfigManager } from '../service/configManager';
 export declare abstract class IAjax {
     abstract ajax<T>(options: {
         url: string;
@@ -12,7 +13,8 @@ export declare abstract class IAjax {
     }>;
 }
 export declare class Ajax extends IAjax {
-    constructor();
+    private configManager;
+    constructor(configManager: IConfigManager);
     ajax<T>(options: any): Promise<{
         result: T;
         status: string;

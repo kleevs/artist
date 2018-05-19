@@ -51,9 +51,8 @@ define(["require", "exports", "artiste", "../view/form", "../view/detail", "../v
                     "[saved]": function (layout) { return artiste_1.view(function () { return layout.observable.saved; }); }
                 }
             }),
-            __metadata("design:paramtypes", [typeof (_a = typeof artiste_1.IViewProvider !== "undefined" && artiste_1.IViewProvider) === "function" && _a || Object, typeof (_b = typeof artiste_1.IObservablizer !== "undefined" && artiste_1.IObservablizer) === "function" && _b || Object, typeof (_c = typeof artiste_1.INotifier !== "undefined" && artiste_1.INotifier) === "function" && _c || Object])
+            __metadata("design:paramtypes", [artiste_1.IViewProvider, artiste_1.IObservablizer, artiste_1.INotifier])
         ], LayoutView);
         return LayoutView;
-        var _a, _b, _c;
     }(ILayout));
 });
