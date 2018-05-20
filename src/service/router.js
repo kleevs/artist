@@ -13,18 +13,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../core/service"], factory);
+        define(["require", "exports", "../core/service", "../service/configManager"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const service_1 = require("../core/service");
+    const configManager_1 = require("../service/configManager");
     class IRouter {
     }
     exports.IRouter = IRouter;
     let Router = class Router extends IRouter {
-        constructor() {
+        constructor(configManager) {
             super();
+            this.configManager = configManager;
             this._callbacks = [];
             window.onpopstate = (state) => this.change(location.href);
         }
@@ -46,12 +48,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             a.href = href;
             return a;
         }
+        getUrl(localUri) {
+            var configuration = this.configManager.getConfig();
+            var url = localUri;
+            if (configuration && configuration.path) {
+                configuration.path.some(path => {
+                    if (url.match(path.test)) {
+                        url = url.replace(path.test, path.result);
+                        return true;
+                    }
+                });
+            }
+            return url;
+        }
     };
     Router = __decorate([
         service_1.Service({
             key: IRouter
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [configManager_1.IConfigManager])
     ], Router);
     exports.Router = Router;
 });

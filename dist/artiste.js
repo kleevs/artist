@@ -1099,18 +1099,20 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/service/router.js', ["require", "exports", "../core/service"], factory);
+	        define('src/service/router.js', ["require", "exports", "../core/service", "../service/configManager"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    const service_1 = require("../core/service");
+	    const configManager_1 = require("../service/configManager");
 	    class IRouter {
 	    }
 	    exports.IRouter = IRouter;
 	    let Router = class Router extends IRouter {
-	        constructor() {
+	        constructor(configManager) {
 	            super();
+	            this.configManager = configManager;
 	            this._callbacks = [];
 	            window.onpopstate = (state) => this.change(location.href);
 	        }
@@ -1132,12 +1134,25 @@ __MODE__ = undefined;
 	            a.href = href;
 	            return a;
 	        }
+	        getUrl(localUri) {
+	            var configuration = this.configManager.getConfig();
+	            var url = localUri;
+	            if (configuration && configuration.path) {
+	                configuration.path.some(path => {
+	                    if (url.match(path.test)) {
+	                        url = url.replace(path.test, path.result);
+	                        return true;
+	                    }
+	                });
+	            }
+	            return url;
+	        }
 	    };
 	    Router = __decorate([
 	        service_1.Service({
 	            key: IRouter
 	        }),
-	        __metadata("design:paramtypes", [])
+	        __metadata("design:paramtypes", [configManager_1.IConfigManager])
 	    ], Router);
 	    exports.Router = Router;
 	});
@@ -1579,22 +1594,8 @@ __MODE__ = undefined;
 	            records.forEach(record => {
 	                var removedNodes = Array.prototype.map.call(record.removedNodes, x => x);
 	                var addedNodes = Array.prototype.map.call(record.addedNodes, x => x);
-	                var removeViews = [];
-	                removeViews = removeViews.concat(removedNodes.filter(e => e.hasAttribute && e.hasAttribute("artist-view") && e.hasAttribute("loaded")));
-	                removedNodes.forEach(e => {
-	                    var r = Array.prototype.map.call(e.querySelectorAll && e.querySelectorAll("[artist-view=true][loaded]") || [], x => x).filter(e => e.hasAttribute && e.hasAttribute("loaded"));
-	                    removeViews = removeViews.concat(r);
-	                });
-	                var addedViews = [];
-	                addedViews = addedViews.concat(addedNodes.filter(e => e.hasAttribute && e.hasAttribute("artist-view") && !e.hasAttribute("loaded")));
-	                addedNodes.forEach(e => {
-	                    var a = Array.prototype.map.call(e.querySelectorAll && e.querySelectorAll("[artist-view=true]") || [], x => x).filter(e => e.hasAttribute && !e.hasAttribute("loaded"));
-	                    addedViews = addedViews.concat(a);
-	                });
-	                addedViews.forEach(e => e.setAttribute("loaded", 'true'));
-	                removeViews.forEach(e => e.removeAttribute("loaded"));
-	                removeViews.forEach(e => e.dispatchEvent(new Event("custom:view:dom:remove")));
-	                addedViews.forEach(e => e.dispatchEvent(new Event("custom:view:dom:added")));
+	                removedNodes.forEach(e => e.dispatchEvent(new Event("custom:view:dom:remove")));
+	                addedNodes.forEach(e => e.dispatchEvent(new Event("custom:view:dom:added")));
 	            });
 	        });
 	        observer.observe(document.querySelector("body"), { childList: true, subtree: true });

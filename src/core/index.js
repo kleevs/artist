@@ -68,22 +68,8 @@
             records.forEach(record => {
                 var removedNodes = Array.prototype.map.call(record.removedNodes, x => x);
                 var addedNodes = Array.prototype.map.call(record.addedNodes, x => x);
-                var removeViews = [];
-                removeViews = removeViews.concat(removedNodes.filter(e => e.hasAttribute && e.hasAttribute("artist-view") && e.hasAttribute("loaded")));
-                removedNodes.forEach(e => {
-                    var r = Array.prototype.map.call(e.querySelectorAll && e.querySelectorAll("[artist-view=true][loaded]") || [], x => x).filter(e => e.hasAttribute && e.hasAttribute("loaded"));
-                    removeViews = removeViews.concat(r);
-                });
-                var addedViews = [];
-                addedViews = addedViews.concat(addedNodes.filter(e => e.hasAttribute && e.hasAttribute("artist-view") && !e.hasAttribute("loaded")));
-                addedNodes.forEach(e => {
-                    var a = Array.prototype.map.call(e.querySelectorAll && e.querySelectorAll("[artist-view=true]") || [], x => x).filter(e => e.hasAttribute && !e.hasAttribute("loaded"));
-                    addedViews = addedViews.concat(a);
-                });
-                addedViews.forEach(e => e.setAttribute("loaded", 'true'));
-                removeViews.forEach(e => e.removeAttribute("loaded"));
-                removeViews.forEach(e => e.dispatchEvent(new Event("custom:view:dom:remove")));
-                addedViews.forEach(e => e.dispatchEvent(new Event("custom:view:dom:added")));
+                removedNodes.forEach(e => e.dispatchEvent(new Event("custom:view:dom:remove")));
+                addedNodes.forEach(e => e.dispatchEvent(new Event("custom:view:dom:added")));
             });
         });
         observer.observe(document.querySelector("body"), { childList: true, subtree: true });

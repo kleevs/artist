@@ -1,8 +1,10 @@
 import { Service } from '../core/service';
+import { IConfigManager } from '../service/configManager';
 
 export abstract class IRouter {
     abstract on(callback: (href: string, pathname: string, hash: string) => void): void;
     abstract trigger(href: string): void;
+    abstract getUrl(localUri: string): string;
 }
 
 @Service({
@@ -11,7 +13,7 @@ export abstract class IRouter {
 export class Router extends IRouter {
     private _callbacks: ((href: string, pathname: string, hash: string) => void)[] = [];
 
-    constructor() {
+    constructor(private configManager: IConfigManager) {
         super();
         window.onpopstate = (state) => this.change(location.href);
     }
@@ -36,5 +38,21 @@ export class Router extends IRouter {
         var a = document.createElement('a');
         a.href = href;
         return a;
+    }
+
+    getUrl(localUri: string): string {
+        var configuration = this.configManager.getConfig();
+        var url = localUri;
+
+        if (configuration && configuration.path) { 
+            configuration.path.some(path => {
+                if (url.match(path.test)) {
+                    url = url.replace(path.test, path.result);
+                    return true;
+                }
+            });
+        }
+
+        return url;
     }
 }

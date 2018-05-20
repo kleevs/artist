@@ -1,6 +1,6 @@
 import { observer, blind } from '../observable/index';
 
-export declare type Binder<T> = (element: Element, data: T, manager: BindManager<T>) => () => void;
+export declare type Binder<T> = (element: Element, data: T, manager: BindManager<T>) => () => void | Binder<T>[];
 
 export class BindManager<T> {
     constructor(private element: Element, private data: T = undefined) {
