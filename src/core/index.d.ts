@@ -10,6 +10,7 @@ export { IRouter, Router } from '../service/router';
 export { IAjax, Ajax } from '../service/ajax';
 export { IConfigManager, ConfigManager } from '../service/configManager';
 export * from '../directive/view';
+export * from '../directive/on';
 export * from '../directive/dom';
 export * from '../directive/attr';
 export * from '../directive/change';
