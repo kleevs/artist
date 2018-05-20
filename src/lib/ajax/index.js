@@ -32,15 +32,15 @@
         return xhr;
     }
     function ajax(options) {
-        return new Promise((resolve, reject) => {
+        return new Promise(function (resolve, reject) {
             var xhr = getXMLHttpRequest();
             xhr.open(options.method, options.url, true);
-            options.headers && Object.keys(options.headers).forEach(key => {
+            options.headers && Object.keys(options.headers).forEach(function (key) {
                 var header = options.headers[key];
                 xhr.setRequestHeader(key, header);
             });
             xhr.send(options.data);
-            xhr.onreadystatechange = () => {
+            xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4) {
                     if ((xhr.status == 200 || xhr.status == 0)) {
                         resolve({ result: xhr.responseText, status: xhr.status });

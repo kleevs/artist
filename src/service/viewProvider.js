@@ -18,38 +18,43 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const service_1 = require("../core/service");
-    const serviceProvider_1 = require("../service/serviceProvider");
-    const view_1 = require("../core/view");
+    var service_1 = require("../core/service");
+    var serviceProvider_1 = require("../service/serviceProvider");
+    var view_1 = require("../core/view");
     /** @description Interface du service fournisseur de vue.
      */
-    class IViewProvider {
-    }
+    var IViewProvider = /** @class */ (function () {
+        function IViewProvider() {
+        }
+        return IViewProvider;
+    }());
     exports.IViewProvider = IViewProvider;
-    let ViewProvider = class ViewProvider {
-        constructor(_serviceProvider) {
+    var ViewProvider = /** @class */ (function () {
+        function ViewProvider(_serviceProvider) {
             this._serviceProvider = _serviceProvider;
         }
-        newInstance(type, arg) {
-            var viewType = type && view_1.registeredView.filter((view) => (view.construct.prototype instanceof type) || (type === view.construct))[0];
+        ViewProvider.prototype.newInstance = function (type, arg) {
+            var viewType = type && view_1.registeredView.filter(function (view) { return (view.construct.prototype instanceof type) || (type === view.construct); })[0];
             var view = viewType && (this._serviceProvider && service_1.config.getService(viewType.construct) && this._serviceProvider.createService(viewType.construct) || new viewType.construct());
             return view;
-        }
-        map(type) {
-            return (arg) => this.newInstance(type, arg);
-        }
-        getNode(view) {
+        };
+        ViewProvider.prototype.map = function (type) {
+            var _this = this;
+            return function (arg) { return _this.newInstance(type, arg); };
+        };
+        ViewProvider.prototype.getNode = function (view) {
             return view && view.__elt__;
-        }
-        getView(element) {
+        };
+        ViewProvider.prototype.getView = function (element) {
             return element && element.__view__;
-        }
-    };
-    ViewProvider = __decorate([
-        service_1.Service({
-            key: IViewProvider
-        }),
-        __metadata("design:paramtypes", [serviceProvider_1.IServiceProvider])
-    ], ViewProvider);
+        };
+        ViewProvider = __decorate([
+            service_1.Service({
+                key: IViewProvider
+            }),
+            __metadata("design:paramtypes", [serviceProvider_1.IServiceProvider])
+        ], ViewProvider);
+        return ViewProvider;
+    }());
     exports.ViewProvider = ViewProvider;
 });

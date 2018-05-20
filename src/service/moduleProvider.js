@@ -1,3 +1,13 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,24 +28,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const service_1 = require("../core/service");
-    const index_1 = require("../lib/amd-loader/index");
-    class IModuleProvider {
-    }
+    var service_1 = require("../core/service");
+    var index_1 = require("../lib/amd-loader/index");
+    var IModuleProvider = /** @class */ (function () {
+        function IModuleProvider() {
+        }
+        return IModuleProvider;
+    }());
     exports.IModuleProvider = IModuleProvider;
-    let ModuleProvider = class ModuleProvider extends IModuleProvider {
-        constructor() {
-            super();
+    var ModuleProvider = /** @class */ (function (_super) {
+        __extends(ModuleProvider, _super);
+        function ModuleProvider() {
+            return _super.call(this) || this;
         }
-        get(uri) {
-            return index_1.load(`/${uri}`);
-        }
-    };
-    ModuleProvider = __decorate([
-        service_1.Service({
-            key: IModuleProvider
-        }),
-        __metadata("design:paramtypes", [])
-    ], ModuleProvider);
+        ModuleProvider.prototype.get = function (uri) {
+            return index_1.load("/" + uri);
+        };
+        ModuleProvider = __decorate([
+            service_1.Service({
+                key: IModuleProvider
+            }),
+            __metadata("design:paramtypes", [])
+        ], ModuleProvider);
+        return ModuleProvider;
+    }(IModuleProvider));
     exports.ModuleProvider = ModuleProvider;
 });

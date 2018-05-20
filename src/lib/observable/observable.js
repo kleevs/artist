@@ -9,10 +9,10 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const core_1 = require("./core");
+    var core_1 = require("./core");
     function create(value) {
         var result = value;
-        var obj = core_1.observable(() => result);
+        var obj = core_1.observable(function () { return result; });
         return function (value) {
             arguments.length > 0 && (result = value);
             obj.apply(this);

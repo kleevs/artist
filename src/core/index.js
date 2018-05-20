@@ -12,10 +12,10 @@
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
     }
     Object.defineProperty(exports, "__esModule", { value: true });
-    const service_1 = require("./service");
-    const viewProvider_1 = require("../service/viewProvider");
-    const index_1 = require("../lib/amd-loader/index");
-    const configManager_1 = require("../service/configManager");
+    var service_1 = require("./service");
+    var viewProvider_1 = require("../service/viewProvider");
+    var index_1 = require("../lib/amd-loader/index");
+    var configManager_1 = require("../service/configManager");
     var index_2 = require("../lib/amd-loader/index");
     exports.load = index_2.load;
     var view_1 = require("./view");
@@ -65,17 +65,17 @@
      * @return
      */
     function startup(selector, view) {
-        var observer = new MutationObserver((records) => {
-            records.forEach(record => {
-                var removedNodes = Array.prototype.map.call(record.removedNodes, x => x);
-                var addedNodes = Array.prototype.map.call(record.addedNodes, x => x);
-                removedNodes.forEach(e => e.dispatchEvent(new Event("custom:view:dom:remove")));
-                addedNodes.forEach(e => e.dispatchEvent(new Event("custom:view:dom:added")));
+        var observer = new MutationObserver(function (records) {
+            records.forEach(function (record) {
+                var removedNodes = Array.prototype.map.call(record.removedNodes, function (x) { return x; });
+                var addedNodes = Array.prototype.map.call(record.addedNodes, function (x) { return x; });
+                removedNodes.forEach(function (e) { return e.dispatchEvent(new Event("custom:view:dom:remove")); });
+                addedNodes.forEach(function (e) { return e.dispatchEvent(new Event("custom:view:dom:added")); });
             });
         });
         observer.observe(document.querySelector("body"), { childList: true, subtree: true });
         var viewProvider = service_1.serviceProvider.getService(viewProvider_1.IViewProvider);
-        viewProvider.getNode(viewProvider.newInstance(view)).then((el) => document.querySelector(selector).appendChild(el));
+        viewProvider.getNode(viewProvider.newInstance(view)).then(function (el) { return document.querySelector(selector).appendChild(el); });
     }
     exports.startup = startup;
     if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {
@@ -84,14 +84,14 @@
         var configFileName = script.getAttribute("config");
         var mainFileName = script.getAttribute("startup");
         var placeHolder = script.getAttribute("placeholder");
-        index_1.define(script.src, [], () => { return exports; })();
-        placeHolder && ((configFileName && index_1.load(configFileName).then((conf) => {
+        index_1.define(script.src, [], function () { return exports; })();
+        placeHolder && ((configFileName && index_1.load(configFileName).then(function (conf) {
             service_1.serviceProvider.getService(configManager_1.IConfigManager).setConfig(conf.default);
             index_1.config(conf && conf.default || {});
         }) || Promise.resolve())
-            .then(() => (mainFileName && index_1.load(mainFileName) || Promise.resolve(null)).then(modules => {
-            var clss = modules && modules[Object.keys(modules).filter(_ => _.indexOf("_") !== 0)[0]];
+            .then(function () { return (mainFileName && index_1.load(mainFileName) || Promise.resolve(null)).then(function (modules) {
+            var clss = modules && modules[Object.keys(modules).filter(function (_) { return _.indexOf("_") !== 0; })[0]];
             clss && startup(placeHolder, clss);
-        })));
+        }); }));
     }
 });

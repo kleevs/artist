@@ -9,10 +9,10 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const router_1 = require("../service/router");
+    var router_1 = require("../service/router");
     function router() {
-        return (element, serviceProvider) => {
-            document.body.addEventListener("click", (e) => {
+        return function (element, serviceProvider) {
+            document.body.addEventListener("click", function (e) {
                 var target = e.target;
                 if (target.tagName.toLowerCase() === 'a') {
                     var href = target.pathname;
@@ -21,7 +21,7 @@
                     return false;
                 }
             });
-            return () => {
+            return function () {
             };
         };
     }

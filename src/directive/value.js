@@ -9,10 +9,10 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const on_1 = require("on");
+    var on_1 = require("on");
     function value(options) {
         return [
-            on_1.on(options.on || 'input', () => (e) => {
+            on_1.on(options.on || 'input', function () { return function (e) {
                 var target = e.currentTarget;
                 var value = target.value;
                 if (target.type == "checkbox") {
@@ -20,8 +20,8 @@
                 }
                 options.set(value);
                 return true;
-            }),
-            (element) => () => {
+            }; }),
+            function (element) { return function () {
                 var value = options.get();
                 if (element.type == "checkbox") {
                     element.checked = value;
@@ -29,7 +29,7 @@
                 else {
                     element.value = value || '';
                 }
-            }
+            }; }
         ];
     }
     exports.value = value;

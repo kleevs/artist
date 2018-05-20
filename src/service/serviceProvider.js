@@ -1,3 +1,13 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -15,24 +25,32 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const service_1 = require("../core/service");
+    var service_1 = require("../core/service");
     /** @description Interface du service fournisseur de service.
      */
-    class IServiceProvider {
-    }
+    var IServiceProvider = /** @class */ (function () {
+        function IServiceProvider() {
+        }
+        return IServiceProvider;
+    }());
     exports.IServiceProvider = IServiceProvider;
-    let ServiceProvider = class ServiceProvider extends IServiceProvider {
-        getService(type) {
+    var ServiceProvider = /** @class */ (function (_super) {
+        __extends(ServiceProvider, _super);
+        function ServiceProvider() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        ServiceProvider.prototype.getService = function (type) {
             return service_1.serviceProvider.getService(type);
-        }
-        createService(key, parameters) {
+        };
+        ServiceProvider.prototype.createService = function (key, parameters) {
             return service_1.serviceProvider.createService(key, parameters);
-        }
-    };
-    ServiceProvider = __decorate([
-        service_1.Service({
-            key: IServiceProvider
-        })
-    ], ServiceProvider);
+        };
+        ServiceProvider = __decorate([
+            service_1.Service({
+                key: IServiceProvider
+            })
+        ], ServiceProvider);
+        return ServiceProvider;
+    }(IServiceProvider));
     exports.ServiceProvider = ServiceProvider;
 });

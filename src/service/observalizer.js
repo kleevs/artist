@@ -1,3 +1,13 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -15,10 +25,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const service_1 = require("../core/service");
-    const index_1 = require("../lib/observable/index");
+    var service_1 = require("../core/service");
+    var index_1 = require("../lib/observable/index");
     function foreach(item, callback) {
-        let i;
+        var i;
         if (item instanceof Array) {
             for (i = 0; i < item.length; i++) {
                 callback(item[i], i);
@@ -32,20 +42,27 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     }
     /** @description Interface du service gérant la création d'objet observable.
      */
-    class IObservablizer {
-    }
+    var IObservablizer = /** @class */ (function () {
+        function IObservablizer() {
+        }
+        return IObservablizer;
+    }());
     exports.IObservablizer = IObservablizer;
-    let Observablizer = class Observablizer extends IObservablizer {
-        convert(value) {
+    var Observablizer = /** @class */ (function (_super) {
+        __extends(Observablizer, _super);
+        function Observablizer() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        Observablizer.prototype.convert = function (value) {
             var res = value && Object.create(value) || undefined;
-            value && foreach(value, (item, key) => {
+            value && foreach(value, function (item, key) {
                 var descriptor = Object.getOwnPropertyDescriptor(value, key);
                 var observable;
                 !descriptor.get && !descriptor.set &&
-                    (() => {
+                    (function () {
                         observable = index_1.observable({});
-                        descriptor.get = () => observable().value;
-                        descriptor.set = (v) => {
+                        descriptor.get = function () { return observable().value; };
+                        descriptor.set = function (v) {
                             v instanceof Array && (v.push = function () {
                                 var res = Array.prototype.push.apply(this, arguments);
                                 observable({ value: this });
@@ -65,12 +82,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                     })();
             });
             return res;
-        }
-    };
-    Observablizer = __decorate([
-        service_1.Service({
-            key: IObservablizer
-        })
-    ], Observablizer);
+        };
+        Observablizer = __decorate([
+            service_1.Service({
+                key: IObservablizer
+            })
+        ], Observablizer);
+        return Observablizer;
+    }(IObservablizer));
     exports.Observablizer = Observablizer;
 });

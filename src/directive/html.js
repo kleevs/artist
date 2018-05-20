@@ -10,8 +10,8 @@
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function text(valueAccessor) {
-        return (element) => {
-            return () => {
+        return function (element) {
+            return function () {
                 var value = valueAccessor();
                 element.innerHTML = value || '';
             };

@@ -53,7 +53,7 @@ __MODE__ = undefined;
 			return tmp.filter(function(_) { return _ !== "."; }).join("/");
 		}
 		var getUri = function(uri, context) {
-			paths.some(path => {
+			paths.some(function(path) {
 				if (uri.match(path.test)) {
 					uri = uri.replace(path.test, path.result);
 					return true;
@@ -98,12 +98,12 @@ __MODE__ = undefined;
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    var context = window;
 	    context.Reflect = context.Reflect || {};
-	    context.Reflect.metadata = (k, v) => {
-	        return (target, metadata) => {
+	    context.Reflect.metadata = function (k, v) {
+	        return function (target, metadata) {
 	            metadata[k] = v;
 	        };
 	    };
-	    context.Reflect.decorate = (decorators, target, key, desc) => {
+	    context.Reflect.decorate = function (decorators, target, key, desc) {
 	        var r = key === undefined ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, metadata = {}, d;
 	        for (var i = decorators.length - 1; i >= 0; i--) {
 	            if (d = decorators[i]) {
@@ -115,6 +115,16 @@ __MODE__ = undefined;
 	    exports.default = true;
 	});
 	
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
 	        var v = factory(require, exports);
@@ -127,51 +137,63 @@ __MODE__ = undefined;
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    require("../reflection/index");
-	    class IProvider {
-	    }
-	    exports.IProvider = IProvider;
-	    class IConfig {
-	    }
-	    exports.IConfig = IConfig;
-	    class Provider extends IProvider {
-	        constructor(_config) {
-	            super();
-	            this._config = _config;
-	            this._register = [];
+	    var IProvider = /** @class */ (function () {
+	        function IProvider() {
 	        }
-	        create(data) {
+	        return IProvider;
+	    }());
+	    exports.IProvider = IProvider;
+	    var IConfig = /** @class */ (function () {
+	        function IConfig() {
+	        }
+	        return IConfig;
+	    }());
+	    exports.IConfig = IConfig;
+	    var Provider = /** @class */ (function (_super) {
+	        __extends(Provider, _super);
+	        function Provider(_config) {
+	            var _this = _super.call(this) || this;
+	            _this._config = _config;
+	            _this._register = [];
+	            return _this;
+	        }
+	        Provider.prototype.create = function (data) {
+	            var _this = this;
 	            var param = [];
-	            data && data.parameters && data.parameters.forEach((key) => {
-	                param.push(this.getService(key));
+	            data && data.parameters && data.parameters.forEach(function (key) {
+	                param.push(_this.getService(key));
 	            });
 	            return data.value ?
 	                (param.length <= 0 ?
 	                    new data.value() :
 	                    new (data.value.bind.apply(data.value, [null].concat(param)))()) : undefined;
-	        }
-	        createService(key, parameters) {
-	            let instance;
-	            let service = this._config.getService(key);
+	        };
+	        Provider.prototype.createService = function (key, parameters) {
+	            var instance;
+	            var service = this._config.getService(key);
 	            service = service || { value: key, parameters: [] };
 	            parameters && (service.parameters = parameters);
 	            instance = this.create(service);
 	            service && service.initialize && service.initialize(instance);
 	            return instance;
-	        }
-	        getService(key) {
-	            var result = this._register.filter((item) => item.key === key).map((item) => item.value)[0];
+	        };
+	        Provider.prototype.getService = function (key) {
+	            var result = this._register.filter(function (item) { return item.key === key; }).map(function (item) { return item.value; })[0];
 	            var registerable = !result && this._config.getService(key).registerable;
 	            result = result || this.createService(key);
 	            registerable && this._register.push({ key: key, value: result });
 	            return result;
+	        };
+	        return Provider;
+	    }(IProvider));
+	    var Config = /** @class */ (function (_super) {
+	        __extends(Config, _super);
+	        function Config() {
+	            var _this = _super.call(this) || this;
+	            _this._register = [];
+	            return _this;
 	        }
-	    }
-	    class Config extends IConfig {
-	        constructor() {
-	            super();
-	            this._register = [];
-	        }
-	        addService(key, value, options) {
+	        Config.prototype.addService = function (key, value, options) {
 	            this._register.unshift({
 	                key: key,
 	                value: value,
@@ -180,12 +202,12 @@ __MODE__ = undefined;
 	                initialize: options.initialize,
 	                test: options.test
 	            });
-	        }
-	        getService(key) {
+	        };
+	        Config.prototype.getService = function (key) {
 	            return this._register
-	                .filter((item) => item.key === key)
-	                .filter(item => !item.test || item.test(item.value))
-	                .map((item) => {
+	                .filter(function (item) { return item.key === key; })
+	                .filter(function (item) { return !item.test || item.test(item.value); })
+	                .map(function (item) {
 	                return {
 	                    value: item.value,
 	                    parameters: item.parameters,
@@ -193,19 +215,21 @@ __MODE__ = undefined;
 	                    initialize: item.initialize
 	                };
 	            })[0];
-	        }
-	    }
-	    class DependencyInjector {
-	        constructor() {
+	        };
+	        return Config;
+	    }(IConfig));
+	    var DependencyInjector = /** @class */ (function () {
+	        function DependencyInjector() {
 	            this._config = new Config();
 	            this._provider = new Provider(this._config);
 	        }
-	        getConfig() { return this._config; }
-	        getProvider() { return this._provider; }
-	        getDecorator() {
-	            return (options) => {
-	                var res = (target, metadata) => {
-	                    this._config.addService(options.key, target, {
+	        DependencyInjector.prototype.getConfig = function () { return this._config; };
+	        DependencyInjector.prototype.getProvider = function () { return this._provider; };
+	        DependencyInjector.prototype.getDecorator = function () {
+	            var _this = this;
+	            return function (options) {
+	                var res = function (target, metadata) {
+	                    _this._config.addService(options.key, target, {
 	                        parameters: metadata && metadata["design:paramtypes"] || [],
 	                        registerable: options.registerable || options.registerable === undefined,
 	                        initialize: options.initialize,
@@ -214,8 +238,9 @@ __MODE__ = undefined;
 	                };
 	                return res;
 	            };
-	        }
-	    }
+	        };
+	        return DependencyInjector;
+	    }());
 	    exports.DependencyInjector = DependencyInjector;
 	});
 	
@@ -230,13 +255,23 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const index_1 = require("../lib/dependency-injection/index");
+	    var index_1 = require("../lib/dependency-injection/index");
 	    var injector = new index_1.DependencyInjector();
 	    exports.config = injector.getConfig();
 	    exports.serviceProvider = injector.getProvider();
 	    exports.Service = injector.getDecorator();
 	});
 	
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
 	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -254,25 +289,33 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const service_1 = require("../core/service");
+	    var service_1 = require("../core/service");
 	    /** @description Interface du service fournisseur de service.
 	     */
-	    class IServiceProvider {
-	    }
+	    var IServiceProvider = /** @class */ (function () {
+	        function IServiceProvider() {
+	        }
+	        return IServiceProvider;
+	    }());
 	    exports.IServiceProvider = IServiceProvider;
-	    let ServiceProvider = class ServiceProvider extends IServiceProvider {
-	        getService(type) {
+	    var ServiceProvider = /** @class */ (function (_super) {
+	        __extends(ServiceProvider, _super);
+	        function ServiceProvider() {
+	            return _super !== null && _super.apply(this, arguments) || this;
+	        }
+	        ServiceProvider.prototype.getService = function (type) {
 	            return service_1.serviceProvider.getService(type);
-	        }
-	        createService(key, parameters) {
+	        };
+	        ServiceProvider.prototype.createService = function (key, parameters) {
 	            return service_1.serviceProvider.createService(key, parameters);
-	        }
-	    };
-	    ServiceProvider = __decorate([
-	        service_1.Service({
-	            key: IServiceProvider
-	        })
-	    ], ServiceProvider);
+	        };
+	        ServiceProvider = __decorate([
+	            service_1.Service({
+	                key: IServiceProvider
+	            })
+	        ], ServiceProvider);
+	        return ServiceProvider;
+	    }(IServiceProvider));
 	    exports.ServiceProvider = ServiceProvider;
 	});
 	
@@ -288,7 +331,7 @@ __MODE__ = undefined;
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    function foreach(item, callback) {
-	        let i;
+	        var i;
 	        if (item instanceof Array) {
 	            for (i = 0; i < item.length; i++) {
 	                callback(item[i], i);
@@ -301,11 +344,11 @@ __MODE__ = undefined;
 	        }
 	    }
 	    function contains(array, item) {
-	        let res = false;
-	        foreach(array, (x) => { res = res || item === x; });
+	        var res = false;
+	        foreach(array, function (x) { res = res || item === x; });
 	        return res;
 	    }
-	    let stack = [];
+	    var stack = [];
 	    function push(func) {
 	        stack.push({ func: func });
 	    }
@@ -316,8 +359,8 @@ __MODE__ = undefined;
 	        return stack[stack.length - 1];
 	    }
 	    function observable(fn) {
-	        var listeners = [], defaultValue = {}, value = defaultValue;
-	        return () => {
+	        var me = this, listeners = [], defaultValue = {}, value = defaultValue;
+	        return function () {
 	            var observer = peek() && peek().func, firstCall = defaultValue === value;
 	            if (observer && !contains(listeners, observer)) {
 	                listeners.push(observer);
@@ -325,10 +368,10 @@ __MODE__ = undefined;
 	            if (observer && !firstCall) {
 	                return value;
 	            }
-	            if (value !== (value = fn.apply(this, arguments)) && !firstCall) {
+	            if (value !== (value = fn.apply(me, arguments)) && !firstCall) {
 	                var tmp = listeners;
 	                listeners = [];
-	                tmp.forEach((observer) => observer());
+	                tmp.forEach(function (observer) { return observer(); });
 	            }
 	            return value;
 	        };
@@ -336,7 +379,7 @@ __MODE__ = undefined;
 	    exports.observable = observable;
 	    function observer(fn) {
 	        var me;
-	        (me = () => {
+	        (me = function () {
 	            push(me);
 	            var res = fn();
 	            pop();
@@ -346,7 +389,7 @@ __MODE__ = undefined;
 	    exports.observer = observer;
 	    function blind(fn) {
 	        var me;
-	        (me = () => {
+	        (me = function () {
 	            push(null);
 	            var res = fn();
 	            pop();
@@ -367,10 +410,10 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const core_1 = require("./core");
+	    var core_1 = require("./core");
 	    function create(value) {
 	        var result = value;
-	        var obj = core_1.observable(() => result);
+	        var obj = core_1.observable(function () { return result; });
 	        return function (value) {
 	            arguments.length > 0 && (result = value);
 	            obj.apply(this);
@@ -391,7 +434,7 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const core_1 = require("./core");
+	    var core_1 = require("./core");
 	    function create(fn) {
 	        return core_1.observer(fn);
 	    }
@@ -409,7 +452,7 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const core_1 = require("./core");
+	    var core_1 = require("./core");
 	    function create(fn) {
 	        return core_1.blind(fn);
 	    }
@@ -446,22 +489,25 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const index_1 = require("../observable/index");
-	    class BindManager {
-	        constructor(element, data = undefined) {
+	    var index_1 = require("../observable/index");
+	    var BindManager = /** @class */ (function () {
+	        function BindManager(element, data) {
+	            if (data === void 0) { data = undefined; }
 	            this.element = element;
 	            this.data = data;
 	        }
-	        manage(callback) {
+	        BindManager.prototype.manage = function (callback) {
+	            var _this = this;
 	            if (callback instanceof Array) {
-	                callback.forEach(c => this.manage(c));
+	                callback.forEach(function (c) { return _this.manage(c); });
 	            }
 	            else {
 	                var fn = callback(this.element, this.data);
-	                index_1.blind(() => index_1.observer(() => fn()));
+	                index_1.blind(function () { return index_1.observer(function () { return fn(); }); });
 	            }
-	        }
-	    }
+	        };
+	        return BindManager;
+	    }());
 	    exports.BindManager = BindManager;
 	});
 	
@@ -497,6 +543,16 @@ __MODE__ = undefined;
 	    ;
 	});
 	
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
 	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -514,26 +570,44 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const service_1 = require("../core/service");
-	    class IConfigManager {
-	    }
+	    var service_1 = require("../core/service");
+	    var IConfigManager = /** @class */ (function () {
+	        function IConfigManager() {
+	        }
+	        return IConfigManager;
+	    }());
 	    exports.IConfigManager = IConfigManager;
-	    let ConfigManager = class ConfigManager extends IConfigManager {
-	        setConfig(config) {
+	    var ConfigManager = /** @class */ (function (_super) {
+	        __extends(ConfigManager, _super);
+	        function ConfigManager() {
+	            return _super !== null && _super.apply(this, arguments) || this;
+	        }
+	        ConfigManager.prototype.setConfig = function (config) {
 	            this._config = config;
-	        }
-	        getConfig() {
+	        };
+	        ConfigManager.prototype.getConfig = function () {
 	            return this._config;
-	        }
-	    };
-	    ConfigManager = __decorate([
-	        service_1.Service({
-	            key: IConfigManager
-	        })
-	    ], ConfigManager);
+	        };
+	        ConfigManager = __decorate([
+	            service_1.Service({
+	                key: IConfigManager
+	            })
+	        ], ConfigManager);
+	        return ConfigManager;
+	    }(IConfigManager));
 	    exports.ConfigManager = ConfigManager;
 	});
 	
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
 	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -554,23 +628,29 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const service_1 = require("../core/service");
-	    const configManager_1 = require("../service/configManager");
-	    class IAjax {
-	    }
-	    exports.IAjax = IAjax;
-	    let Ajax = class Ajax extends IAjax {
-	        constructor(configManager) {
-	            super();
-	            this.configManager = configManager;
+	    var service_1 = require("../core/service");
+	    var configManager_1 = require("../service/configManager");
+	    var IAjax = /** @class */ (function () {
+	        function IAjax() {
 	        }
-	        ajax(options) {
-	            return new Promise((resolve, reject) => {
-	                var xhr = this.getXMLHttpRequest();
-	                var configuration = this.configManager.getConfig();
+	        return IAjax;
+	    }());
+	    exports.IAjax = IAjax;
+	    var Ajax = /** @class */ (function (_super) {
+	        __extends(Ajax, _super);
+	        function Ajax(configManager) {
+	            var _this = _super.call(this) || this;
+	            _this.configManager = configManager;
+	            return _this;
+	        }
+	        Ajax.prototype.ajax = function (options) {
+	            var _this = this;
+	            return new Promise(function (resolve, reject) {
+	                var xhr = _this.getXMLHttpRequest();
+	                var configuration = _this.configManager.getConfig();
 	                var url = options.url;
 	                if (configuration && configuration.path) {
-	                    configuration.path.some(path => {
+	                    configuration.path.some(function (path) {
 	                        if (url.match(path.test)) {
 	                            url = url.replace(path.test, path.result);
 	                            return true;
@@ -578,11 +658,11 @@ __MODE__ = undefined;
 	                    });
 	                }
 	                xhr.open(options.method || 'GET', url, true);
-	                options.headers && Object.keys(options.headers).forEach(key => {
+	                options.headers && Object.keys(options.headers).forEach(function (key) {
 	                    xhr.setRequestHeader(key, options.headers[key]);
 	                });
 	                xhr.send(options.data);
-	                xhr.onreadystatechange = () => {
+	                xhr.onreadystatechange = function () {
 	                    if (xhr.readyState == 4) {
 	                        if ((xhr.status == 200 || xhr.status == 0)) {
 	                            resolve({ result: xhr.responseText, status: xhr.status });
@@ -593,8 +673,8 @@ __MODE__ = undefined;
 	                    }
 	                };
 	            });
-	        }
-	        getXMLHttpRequest() {
+	        };
+	        Ajax.prototype.getXMLHttpRequest = function () {
 	            var xhr = null;
 	            var context = window;
 	            if (context.XMLHttpRequest || context.ActiveXObject) {
@@ -615,17 +695,28 @@ __MODE__ = undefined;
 	                return null;
 	            }
 	            return xhr;
-	        }
-	    };
-	    Ajax = __decorate([
-	        service_1.Service({
-	            key: IAjax
-	        }),
-	        __metadata("design:paramtypes", [configManager_1.IConfigManager])
-	    ], Ajax);
+	        };
+	        Ajax = __decorate([
+	            service_1.Service({
+	                key: IAjax
+	            }),
+	            __metadata("design:paramtypes", [configManager_1.IConfigManager])
+	        ], Ajax);
+	        return Ajax;
+	    }(IAjax));
 	    exports.Ajax = Ajax;
 	});
 	
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
 	        var v = factory(require, exports);
@@ -637,12 +728,12 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const index_1 = require("../lib/binder/index");
-	    const index_2 = require("../lib/dom/index");
-	    const service_1 = require("./service");
-	    const ajax_1 = require("../service/ajax");
+	    var index_1 = require("../lib/binder/index");
+	    var index_2 = require("../lib/dom/index");
+	    var service_1 = require("./service");
+	    var ajax_1 = require("../service/ajax");
 	    function foreach(item, callback) {
-	        let i;
+	        var i;
 	        if (item instanceof Array) {
 	            for (i = 0; i < item.length; i++) {
 	                callback(item[i], i);
@@ -656,31 +747,34 @@ __MODE__ = undefined;
 	    }
 	    /** @description Classe permettant de lier une partie du DOM à un binder
 	     */
-	    class BindManager extends index_1.BindManager {
-	        constructor(element, data = undefined) {
-	            super(element, data);
+	    var BindManager = /** @class */ (function (_super) {
+	        __extends(BindManager, _super);
+	        function BindManager(element, data) {
+	            if (data === void 0) { data = undefined; }
+	            return _super.call(this, element, data) || this;
 	        }
 	        /** @description Applique le lien entre l'élément du DOM et le binder.
 	         * @param {callback} Binder Binder à lier.
 	         * @return void
 	         */
-	        manage(callback) {
-	            super.manage(callback);
-	        }
-	    }
+	        BindManager.prototype.manage = function (callback) {
+	            _super.prototype.manage.call(this, callback);
+	        };
+	        return BindManager;
+	    }(index_1.BindManager));
 	    exports.BindManager = BindManager;
 	    exports.registeredView = [];
 	    function View(options) {
-	        return (constructor, metadata) => {
+	        return function (constructor, metadata) {
 	            options = constructor.prototype.__view__option__ = Object.assign({}, constructor.prototype.__view__option__, options);
 	            var viewType;
 	            exports.registeredView.push(viewType = {
 	                construct: constructor,
 	                binding: options.binding,
-	                html: new Promise((resolve, reject) => {
+	                html: new Promise(function (resolve, reject) {
 	                    options.html && resolve(options.html);
-	                    options.template && !options.html && (() => {
-	                        service_1.serviceProvider.getService(ajax_1.IAjax).ajax({ url: `/${options.template}`, method: 'GET' }).then((response) => {
+	                    options.template && !options.html && (function () {
+	                        service_1.serviceProvider.getService(ajax_1.IAjax).ajax({ url: "/" + options.template, method: 'GET' }).then(function (response) {
 	                            response.status == "error" && (reject() || true) ||
 	                                resolve(response.result);
 	                        });
@@ -692,17 +786,17 @@ __MODE__ = undefined;
 	                service_1.Service({
 	                    key: key,
 	                    registerable: false,
-	                    initialize: (view) => {
+	                    initialize: function (view) {
 	                        var binding = viewType.binding;
 	                        view && view.initialize && view.initialize();
-	                        viewType && (view.__elt__ = viewType.html.then(template => {
+	                        viewType && (view.__elt__ = viewType.html.then(function (template) {
 	                            var t = index_2.createElement(template);
 	                            t.setAttribute("artist-view", "true");
-	                            foreach(binding, (valueAccessor, selector) => {
-	                                (selector.trim() === "this" && [t] || t.querySelectorAll(selector)).forEach((el) => {
+	                            foreach(binding, function (valueAccessor, selector) {
+	                                (selector.trim() === "this" && [t] || t.querySelectorAll(selector)).forEach(function (el) {
 	                                    var binder = valueAccessor(view);
 	                                    var binders = binder && !(binder instanceof Array) && [binder] || binder;
-	                                    binders.forEach(b => new BindManager(el, service_1.serviceProvider).manage(b));
+	                                    binders.forEach(function (b) { return new BindManager(el, service_1.serviceProvider).manage(b); });
 	                                });
 	                            });
 	                            t.__view__ = view;
@@ -737,39 +831,44 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const service_1 = require("../core/service");
-	    const serviceProvider_1 = require("../service/serviceProvider");
-	    const view_1 = require("../core/view");
+	    var service_1 = require("../core/service");
+	    var serviceProvider_1 = require("../service/serviceProvider");
+	    var view_1 = require("../core/view");
 	    /** @description Interface du service fournisseur de vue.
 	     */
-	    class IViewProvider {
-	    }
+	    var IViewProvider = /** @class */ (function () {
+	        function IViewProvider() {
+	        }
+	        return IViewProvider;
+	    }());
 	    exports.IViewProvider = IViewProvider;
-	    let ViewProvider = class ViewProvider {
-	        constructor(_serviceProvider) {
+	    var ViewProvider = /** @class */ (function () {
+	        function ViewProvider(_serviceProvider) {
 	            this._serviceProvider = _serviceProvider;
 	        }
-	        newInstance(type, arg) {
-	            var viewType = type && view_1.registeredView.filter((view) => (view.construct.prototype instanceof type) || (type === view.construct))[0];
+	        ViewProvider.prototype.newInstance = function (type, arg) {
+	            var viewType = type && view_1.registeredView.filter(function (view) { return (view.construct.prototype instanceof type) || (type === view.construct); })[0];
 	            var view = viewType && (this._serviceProvider && service_1.config.getService(viewType.construct) && this._serviceProvider.createService(viewType.construct) || new viewType.construct());
 	            return view;
-	        }
-	        map(type) {
-	            return (arg) => this.newInstance(type, arg);
-	        }
-	        getNode(view) {
+	        };
+	        ViewProvider.prototype.map = function (type) {
+	            var _this = this;
+	            return function (arg) { return _this.newInstance(type, arg); };
+	        };
+	        ViewProvider.prototype.getNode = function (view) {
 	            return view && view.__elt__;
-	        }
-	        getView(element) {
+	        };
+	        ViewProvider.prototype.getView = function (element) {
 	            return element && element.__view__;
-	        }
-	    };
-	    ViewProvider = __decorate([
-	        service_1.Service({
-	            key: IViewProvider
-	        }),
-	        __metadata("design:paramtypes", [serviceProvider_1.IServiceProvider])
-	    ], ViewProvider);
+	        };
+	        ViewProvider = __decorate([
+	            service_1.Service({
+	                key: IViewProvider
+	            }),
+	            __metadata("design:paramtypes", [serviceProvider_1.IServiceProvider])
+	        ], ViewProvider);
+	        return ViewProvider;
+	    }());
 	    exports.ViewProvider = ViewProvider;
 	});
 	
@@ -803,12 +902,12 @@ __MODE__ = undefined;
 	            last++;
 	            i++;
 	        }
-	        return tmp.filter(_ => _ !== ".").join("/");
+	        return tmp.filter(function (_) { return _ !== "."; }).join("/");
 	    };
-	    var getAbsoluteUri = (uri, context) => {
+	    var getAbsoluteUri = function (uri, context) {
 	        var match = false;
 	        if (configuration && configuration.path) {
-	            configuration.path.some(path => {
+	            configuration.path.some(function (path) {
 	                if (uri.match(path.test)) {
 	                    uri = uri.replace(path.test, path.result);
 	                    return match = true;
@@ -824,8 +923,8 @@ __MODE__ = undefined;
 	        return href;
 	    };
 	    function load(uri) {
-	        return new Promise(resolve => {
-	            var mod = define([uri], (module) => { resolve(module); });
+	        return new Promise(function (resolve) {
+	            var mod = define([uri], function (module) { resolve(module); });
 	            allmodules["..."] = {};
 	            mod();
 	        });
@@ -847,22 +946,22 @@ __MODE__ = undefined;
 	            dependencies = [];
 	            modulefactory = arguments[0];
 	        }
-	        return allmodules["..."]["..."] = allmodules["..."][id] = (context) => {
+	        return allmodules["..."]["..."] = allmodules["..."][id] = function (context) {
 	            return Promise.all(dependencies.map(function (dependency) {
 	                if (dependency === "require")
-	                    return (uri) => loadedmodules[getAbsoluteUri(uri, context)];
+	                    return function (uri) { return loadedmodules[getAbsoluteUri(uri, context)]; };
 	                if (dependency === "exports")
 	                    return exp = {};
 	                var src = getAbsoluteUri(dependency, context);
-	                return allmodules[src] = allmodules[src] || new Promise(resolve => {
+	                return allmodules[src] = allmodules[src] || new Promise(function (resolve) {
 	                    var script = document.createElement('script');
 	                    script.src = src;
 	                    script.async = true;
 	                    document.head.appendChild(script);
-	                    script.onload = script.onreadystatechange = () => {
+	                    script.onload = script.onreadystatechange = function () {
 	                        allmodules[src] = allmodules["..."]["..."];
 	                        allmodules["..."] = {};
-	                        allmodules[src] = allmodules[src] && allmodules[src](src).then(module => { resolve(loadedmodules[src] = module); return module; }) || resolve();
+	                        allmodules[src] = allmodules[src] && allmodules[src](src).then(function (module) { resolve(loadedmodules[src] = module); return module; }) || resolve();
 	                    };
 	                });
 	            })).then(function (result) {
@@ -891,6 +990,16 @@ __MODE__ = undefined;
 	    }
 	});
 	
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
 	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -908,63 +1017,81 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const service_1 = require("../core/service");
+	    var service_1 = require("../core/service");
 	    /** @description Interface du service gérant la communication entre vue.
 	     */
-	    class INotifier {
-	    }
+	    var INotifier = /** @class */ (function () {
+	        function INotifier() {
+	        }
+	        return INotifier;
+	    }());
 	    exports.INotifier = INotifier;
 	    /** @description Classe définissant les évènements à manipuler pour la communication entre vue.
 	     */
-	    class Event {
-	        constructor(key) {
+	    var Event = /** @class */ (function () {
+	        function Event(key) {
 	            this.key = key;
 	        }
-	    }
+	        return Event;
+	    }());
 	    exports.Event = Event;
 	    ;
-	    let Notifier = class Notifier extends INotifier {
-	        constructor() {
-	            super(...arguments);
-	            this._callbacks = {};
+	    var Notifier = /** @class */ (function (_super) {
+	        __extends(Notifier, _super);
+	        function Notifier() {
+	            var _this = _super !== null && _super.apply(this, arguments) || this;
+	            _this._callbacks = {};
+	            return _this;
 	        }
-	        notify(obj, key, data) {
+	        Notifier.prototype.notify = function (obj, key, data) {
 	            var callbacks = this.register(obj, key);
-	            callbacks && callbacks.forEach((callback) => {
+	            callbacks && callbacks.forEach(function (callback) {
 	                callback(data);
 	            });
-	        }
-	        listen(obj, key, callback) {
+	        };
+	        Notifier.prototype.listen = function (obj, key, callback) {
 	            var callbacks = this.register(obj, key);
 	            callbacks.push(callback);
 	            return {
-	                stop: () => {
+	                stop: function () {
 	                    var index = callbacks.indexOf(callback);
 	                    if (index > -1) {
 	                        callbacks.splice(index, 1);
 	                    }
 	                }
 	            };
-	        }
-	        forEvent(event) {
+	        };
+	        Notifier.prototype.forEvent = function (event) {
+	            var _this = this;
 	            return {
-	                listen: (obj, callback) => this.listen(obj, event.key, callback),
-	                notify: (obj, data) => this.notify(obj, event.key, data)
+	                listen: function (obj, callback) { return _this.listen(obj, event.key, callback); },
+	                notify: function (obj, data) { return _this.notify(obj, event.key, data); }
 	            };
-	        }
-	        register(obj, key) {
+	        };
+	        Notifier.prototype.register = function (obj, key) {
 	            obj.__notifier__id__ = obj.__notifier__id__ || [new Date().getTime(), Math.random() * 100].join("");
 	            return this._callbacks[obj.__notifier__id__ + "_" + key] = this._callbacks[obj.__notifier__id__ + "_" + key] || [];
-	        }
-	    };
-	    Notifier = __decorate([
-	        service_1.Service({
-	            key: INotifier
-	        })
-	    ], Notifier);
+	        };
+	        Notifier = __decorate([
+	            service_1.Service({
+	                key: INotifier
+	            })
+	        ], Notifier);
+	        return Notifier;
+	    }(INotifier));
 	    exports.Notifier = Notifier;
 	});
 	
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
 	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -982,10 +1109,10 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const service_1 = require("../core/service");
-	    const index_1 = require("../lib/observable/index");
+	    var service_1 = require("../core/service");
+	    var index_1 = require("../lib/observable/index");
 	    function foreach(item, callback) {
-	        let i;
+	        var i;
 	        if (item instanceof Array) {
 	            for (i = 0; i < item.length; i++) {
 	                callback(item[i], i);
@@ -999,20 +1126,27 @@ __MODE__ = undefined;
 	    }
 	    /** @description Interface du service gérant la création d'objet observable.
 	     */
-	    class IObservablizer {
-	    }
+	    var IObservablizer = /** @class */ (function () {
+	        function IObservablizer() {
+	        }
+	        return IObservablizer;
+	    }());
 	    exports.IObservablizer = IObservablizer;
-	    let Observablizer = class Observablizer extends IObservablizer {
-	        convert(value) {
+	    var Observablizer = /** @class */ (function (_super) {
+	        __extends(Observablizer, _super);
+	        function Observablizer() {
+	            return _super !== null && _super.apply(this, arguments) || this;
+	        }
+	        Observablizer.prototype.convert = function (value) {
 	            var res = value && Object.create(value) || undefined;
-	            value && foreach(value, (item, key) => {
+	            value && foreach(value, function (item, key) {
 	                var descriptor = Object.getOwnPropertyDescriptor(value, key);
 	                var observable;
 	                !descriptor.get && !descriptor.set &&
-	                    (() => {
+	                    (function () {
 	                        observable = index_1.observable({});
-	                        descriptor.get = () => observable().value;
-	                        descriptor.set = (v) => {
+	                        descriptor.get = function () { return observable().value; };
+	                        descriptor.set = function (v) {
 	                            v instanceof Array && (v.push = function () {
 	                                var res = Array.prototype.push.apply(this, arguments);
 	                                observable({ value: this });
@@ -1032,16 +1166,27 @@ __MODE__ = undefined;
 	                    })();
 	            });
 	            return res;
-	        }
-	    };
-	    Observablizer = __decorate([
-	        service_1.Service({
-	            key: IObservablizer
-	        })
-	    ], Observablizer);
+	        };
+	        Observablizer = __decorate([
+	            service_1.Service({
+	                key: IObservablizer
+	            })
+	        ], Observablizer);
+	        return Observablizer;
+	    }(IObservablizer));
 	    exports.Observablizer = Observablizer;
 	});
 	
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
 	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1062,28 +1207,43 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const service_1 = require("../core/service");
-	    const index_1 = require("../lib/amd-loader/index");
-	    class IModuleProvider {
-	    }
+	    var service_1 = require("../core/service");
+	    var index_1 = require("../lib/amd-loader/index");
+	    var IModuleProvider = /** @class */ (function () {
+	        function IModuleProvider() {
+	        }
+	        return IModuleProvider;
+	    }());
 	    exports.IModuleProvider = IModuleProvider;
-	    let ModuleProvider = class ModuleProvider extends IModuleProvider {
-	        constructor() {
-	            super();
+	    var ModuleProvider = /** @class */ (function (_super) {
+	        __extends(ModuleProvider, _super);
+	        function ModuleProvider() {
+	            return _super.call(this) || this;
 	        }
-	        get(uri) {
-	            return index_1.load(`/${uri}`);
-	        }
-	    };
-	    ModuleProvider = __decorate([
-	        service_1.Service({
-	            key: IModuleProvider
-	        }),
-	        __metadata("design:paramtypes", [])
-	    ], ModuleProvider);
+	        ModuleProvider.prototype.get = function (uri) {
+	            return index_1.load("/" + uri);
+	        };
+	        ModuleProvider = __decorate([
+	            service_1.Service({
+	                key: IModuleProvider
+	            }),
+	            __metadata("design:paramtypes", [])
+	        ], ModuleProvider);
+	        return ModuleProvider;
+	    }(IModuleProvider));
 	    exports.ModuleProvider = ModuleProvider;
 	});
 	
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
 	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1104,41 +1264,46 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const service_1 = require("../core/service");
-	    const configManager_1 = require("../service/configManager");
-	    class IRouter {
-	    }
-	    exports.IRouter = IRouter;
-	    let Router = class Router extends IRouter {
-	        constructor(configManager) {
-	            super();
-	            this.configManager = configManager;
-	            this._callbacks = [];
-	            window.onpopstate = (state) => this.change(location.href);
+	    var service_1 = require("../core/service");
+	    var configManager_1 = require("../service/configManager");
+	    var IRouter = /** @class */ (function () {
+	        function IRouter() {
 	        }
-	        on(callback) {
+	        return IRouter;
+	    }());
+	    exports.IRouter = IRouter;
+	    var Router = /** @class */ (function (_super) {
+	        __extends(Router, _super);
+	        function Router(configManager) {
+	            var _this = _super.call(this) || this;
+	            _this.configManager = configManager;
+	            _this._callbacks = [];
+	            window.onpopstate = function (state) { return _this.change(location.href); };
+	            return _this;
+	        }
+	        Router.prototype.on = function (callback) {
 	            var parsed = this.parse(location.href);
 	            callback(parsed.href, parsed.pathname, parsed.hash);
 	            this._callbacks.push(callback);
-	        }
-	        trigger(href) {
+	        };
+	        Router.prototype.trigger = function (href) {
 	            history.pushState({}, '', href);
 	            this.change(href);
-	        }
-	        change(str) {
+	        };
+	        Router.prototype.change = function (str) {
 	            var parsed = this.parse(str);
-	            this._callbacks.forEach(callback => callback(parsed.href, parsed.pathname, parsed.hash));
-	        }
-	        parse(href) {
+	            this._callbacks.forEach(function (callback) { return callback(parsed.href, parsed.pathname, parsed.hash); });
+	        };
+	        Router.prototype.parse = function (href) {
 	            var a = document.createElement('a');
 	            a.href = href;
 	            return a;
-	        }
-	        getUrl(localUri) {
+	        };
+	        Router.prototype.getUrl = function (localUri) {
 	            var configuration = this.configManager.getConfig();
 	            var url = localUri;
 	            if (configuration && configuration.path) {
-	                configuration.path.some(path => {
+	                configuration.path.some(function (path) {
 	                    if (url.match(path.test)) {
 	                        url = url.replace(path.test, path.result);
 	                        return true;
@@ -1146,14 +1311,15 @@ __MODE__ = undefined;
 	                });
 	            }
 	            return url;
-	        }
-	    };
-	    Router = __decorate([
-	        service_1.Service({
-	            key: IRouter
-	        }),
-	        __metadata("design:paramtypes", [configManager_1.IConfigManager])
-	    ], Router);
+	        };
+	        Router = __decorate([
+	            service_1.Service({
+	                key: IRouter
+	            }),
+	            __metadata("design:paramtypes", [configManager_1.IConfigManager])
+	        ], Router);
+	        return Router;
+	    }(IRouter));
 	    exports.Router = Router;
 	});
 	
@@ -1168,23 +1334,23 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const viewProvider_1 = require("../service/viewProvider");
-	    const index_1 = require("../lib/dom/index");
+	    var viewProvider_1 = require("../service/viewProvider");
+	    var index_1 = require("../lib/dom/index");
 	    function view(valueAccessor, callback) {
-	        return (element, serviceProvider) => {
+	        return function (element, serviceProvider) {
 	            element.innerHTML = "";
-	            return () => {
+	            return function () {
 	                var value = valueAccessor();
 	                var array = !value || value instanceof Array ? (value || []) : [value];
 	                var deleted = index_1.createElement("<div></div>");
 	                var added = index_1.createElement("<div></div>");
-	                var promises = array.map((item) => serviceProvider.getService(viewProvider_1.IViewProvider).getNode(item));
+	                var promises = array.map(function (item) { return serviceProvider.getService(viewProvider_1.IViewProvider).getNode(item); });
 	                Promise.all(promises)
-	                    .then((elts) => {
-	                    element.childNodes.forEach((el) => {
+	                    .then(function (elts) {
+	                    element.childNodes.forEach(function (el) {
 	                        deleted.appendChild(el);
 	                    });
-	                    elts.forEach((el) => {
+	                    elts.forEach(function (el) {
 	                        element.appendChild(el);
 	                    });
 	                    callback && callback(value);
@@ -1208,12 +1374,12 @@ __MODE__ = undefined;
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    function on(event, valueAccessor) {
-	        return (element) => {
-	            element.addEventListener(event, (e) => {
+	        return function (element) {
+	            element.addEventListener(event, function (e) {
 	                var stopPropagation = valueAccessor().call(element, e);
 	                stopPropagation && e.stopPropagation();
 	            });
-	            return () => { };
+	            return function () { };
 	        };
 	    }
 	    exports.on = on;
@@ -1230,23 +1396,23 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const on_1 = require("on");
+	    var on_1 = require("on");
 	    function dom(option) {
 	        return [
-	            on_1.on('custom:view:dom:remove', () => (e) => {
+	            on_1.on('custom:view:dom:remove', function () { return function (e) {
 	                if (e.target === e.currentTarget) {
 	                    option.out(e);
 	                    return true;
 	                }
 	                return false;
-	            }),
-	            on_1.on('custom:view:dom:added', () => (e) => {
+	            }; }),
+	            on_1.on('custom:view:dom:added', function () { return function (e) {
 	                if (e.target === e.currentTarget) {
 	                    option.in(e);
 	                    return true;
 	                }
 	                return false;
-	            })
+	            }; })
 	        ];
 	    }
 	    exports.dom = dom;
@@ -1264,8 +1430,8 @@ __MODE__ = undefined;
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    function attr(valueAccessor) {
-	        return (element) => {
-	            return () => {
+	        return function (element) {
+	            return function () {
 	                var value = valueAccessor();
 	                for (var key in value) {
 	                    if (value[key] === undefined) {
@@ -1292,7 +1458,7 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const on_1 = require("on");
+	    var on_1 = require("on");
 	    function change(valueAccessor) {
 	        return on_1.on('change', valueAccessor);
 	    }
@@ -1310,7 +1476,7 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const on_1 = require("on");
+	    var on_1 = require("on");
 	    function click(valueAccessor) {
 	        return on_1.on('click', valueAccessor);
 	    }
@@ -1329,8 +1495,8 @@ __MODE__ = undefined;
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    function text(valueAccessor) {
-	        return (element) => {
-	            return () => {
+	        return function (element) {
+	            return function () {
 	                var value = valueAccessor();
 	                element.textContent = value || '';
 	            };
@@ -1350,10 +1516,10 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const on_1 = require("on");
+	    var on_1 = require("on");
 	    function value(options) {
 	        return [
-	            on_1.on(options.on || 'input', () => (e) => {
+	            on_1.on(options.on || 'input', function () { return function (e) {
 	                var target = e.currentTarget;
 	                var value = target.value;
 	                if (target.type == "checkbox") {
@@ -1361,8 +1527,8 @@ __MODE__ = undefined;
 	                }
 	                options.set(value);
 	                return true;
-	            }),
-	            (element) => () => {
+	            }; }),
+	            function (element) { return function () {
 	                var value = options.get();
 	                if (element.type == "checkbox") {
 	                    element.checked = value;
@@ -1370,7 +1536,7 @@ __MODE__ = undefined;
 	                else {
 	                    element.value = value || '';
 	                }
-	            }
+	            }; }
 	        ];
 	    }
 	    exports.value = value;
@@ -1387,19 +1553,19 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const index_1 = require("../lib/dom/index");
+	    var index_1 = require("../lib/dom/index");
 	    function options(valueAccessor) {
-	        return (element) => {
+	        return function (element) {
 	            element.innerHTML = "";
-	            return () => {
+	            return function () {
 	                var value = valueAccessor();
 	                element.innerHTML = "";
-	                value.map((item) => {
+	                value.map(function (item) {
 	                    var opt = index_1.createElement("<option></option>");
 	                    opt.value = item.id;
 	                    opt.textContent = item.text;
 	                    return opt;
-	                }).forEach(o => element.appendChild(o));
+	                }).forEach(function (o) { return element.appendChild(o); });
 	            };
 	        };
 	    }
@@ -1417,10 +1583,10 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const view_1 = require("../core/view");
-	    const index_1 = require("../lib/dom/index");
+	    var view_1 = require("../core/view");
+	    var index_1 = require("../lib/dom/index");
 	    function foreach(item, callback) {
-	        let i;
+	        var i;
 	        if (item instanceof Array) {
 	            for (i = 0; i < item.length; i++) {
 	                callback(item[i], i);
@@ -1433,21 +1599,21 @@ __MODE__ = undefined;
 	        }
 	    }
 	    function each(valueAccessor) {
-	        return (element, serviceProvider) => {
+	        return function (element, serviceProvider) {
 	            var template = element.innerHTML;
 	            element.innerHTML = "";
-	            return () => {
+	            return function () {
 	                var value = valueAccessor();
 	                element.innerHTML = "";
-	                value.map((item) => {
+	                value.map(function (item) {
 	                    var t = index_1.createElement(template);
-	                    foreach(item, (valueAccessor, selector) => {
-	                        (selector.trim() === "this" && [t] || t.querySelectorAll(selector)).forEach((el, i) => {
+	                    foreach(item, function (valueAccessor, selector) {
+	                        (selector.trim() === "this" && [t] || t.querySelectorAll(selector)).forEach(function (el, i) {
 	                            new view_1.BindManager(el, serviceProvider).manage(valueAccessor);
 	                        });
 	                    });
 	                    return t;
-	                }).forEach(el => element.appendChild(el));
+	                }).forEach(function (el) { return element.appendChild(el); });
 	            };
 	        };
 	    }
@@ -1473,12 +1639,12 @@ __MODE__ = undefined;
 	    }
 	    function removeClass(element, className) {
 	        var arr = element.className.split(" ");
-	        arr = arr.filter(name => name !== className);
+	        arr = arr.filter(function (name) { return name !== className; });
 	        element.className = arr.join(' ');
 	    }
 	    function classes(valueAccessor) {
-	        return (element) => {
-	            return () => {
+	        return function (element) {
+	            return function () {
 	                var value = valueAccessor();
 	                for (var key in value) {
 	                    if (value[key]) {
@@ -1505,10 +1671,10 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const router_1 = require("../service/router");
+	    var router_1 = require("../service/router");
 	    function router() {
-	        return (element, serviceProvider) => {
-	            document.body.addEventListener("click", (e) => {
+	        return function (element, serviceProvider) {
+	            document.body.addEventListener("click", function (e) {
 	                var target = e.target;
 	                if (target.tagName.toLowerCase() === 'a') {
 	                    var href = target.pathname;
@@ -1517,7 +1683,7 @@ __MODE__ = undefined;
 	                    return false;
 	                }
 	            });
-	            return () => {
+	            return function () {
 	            };
 	        };
 	    }
@@ -1538,10 +1704,10 @@ __MODE__ = undefined;
 	        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	    }
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    const service_1 = require("./service");
-	    const viewProvider_1 = require("../service/viewProvider");
-	    const index_1 = require("../lib/amd-loader/index");
-	    const configManager_1 = require("../service/configManager");
+	    var service_1 = require("./service");
+	    var viewProvider_1 = require("../service/viewProvider");
+	    var index_1 = require("../lib/amd-loader/index");
+	    var configManager_1 = require("../service/configManager");
 	    var index_2 = require("../lib/amd-loader/index");
 	    exports.load = index_2.load;
 	    var view_1 = require("./view");
@@ -1591,17 +1757,17 @@ __MODE__ = undefined;
 	     * @return
 	     */
 	    function startup(selector, view) {
-	        var observer = new MutationObserver((records) => {
-	            records.forEach(record => {
-	                var removedNodes = Array.prototype.map.call(record.removedNodes, x => x);
-	                var addedNodes = Array.prototype.map.call(record.addedNodes, x => x);
-	                removedNodes.forEach(e => e.dispatchEvent(new Event("custom:view:dom:remove")));
-	                addedNodes.forEach(e => e.dispatchEvent(new Event("custom:view:dom:added")));
+	        var observer = new MutationObserver(function (records) {
+	            records.forEach(function (record) {
+	                var removedNodes = Array.prototype.map.call(record.removedNodes, function (x) { return x; });
+	                var addedNodes = Array.prototype.map.call(record.addedNodes, function (x) { return x; });
+	                removedNodes.forEach(function (e) { return e.dispatchEvent(new Event("custom:view:dom:remove")); });
+	                addedNodes.forEach(function (e) { return e.dispatchEvent(new Event("custom:view:dom:added")); });
 	            });
 	        });
 	        observer.observe(document.querySelector("body"), { childList: true, subtree: true });
 	        var viewProvider = service_1.serviceProvider.getService(viewProvider_1.IViewProvider);
-	        viewProvider.getNode(viewProvider.newInstance(view)).then((el) => document.querySelector(selector).appendChild(el));
+	        viewProvider.getNode(viewProvider.newInstance(view)).then(function (el) { return document.querySelector(selector).appendChild(el); });
 	    }
 	    exports.startup = startup;
 	    if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {
@@ -1610,15 +1776,15 @@ __MODE__ = undefined;
 	        var configFileName = script.getAttribute("config");
 	        var mainFileName = script.getAttribute("startup");
 	        var placeHolder = script.getAttribute("placeholder");
-	        index_1.define(script.src, [], () => { return exports; })();
-	        placeHolder && ((configFileName && index_1.load(configFileName).then((conf) => {
+	        index_1.define(script.src, [], function () { return exports; })();
+	        placeHolder && ((configFileName && index_1.load(configFileName).then(function (conf) {
 	            service_1.serviceProvider.getService(configManager_1.IConfigManager).setConfig(conf.default);
 	            index_1.config(conf && conf.default || {});
 	        }) || Promise.resolve())
-	            .then(() => (mainFileName && index_1.load(mainFileName) || Promise.resolve(null)).then(modules => {
-	            var clss = modules && modules[Object.keys(modules).filter(_ => _.indexOf("_") !== 0)[0]];
+	            .then(function () { return (mainFileName && index_1.load(mainFileName) || Promise.resolve(null)).then(function (modules) {
+	            var clss = modules && modules[Object.keys(modules).filter(function (_) { return _.indexOf("_") !== 0; })[0]];
 	            clss && startup(placeHolder, clss);
-	        })));
+	        }); }));
 	    }
 	});
 	

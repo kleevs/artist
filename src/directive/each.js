@@ -9,10 +9,10 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const view_1 = require("../core/view");
-    const index_1 = require("../lib/dom/index");
+    var view_1 = require("../core/view");
+    var index_1 = require("../lib/dom/index");
     function foreach(item, callback) {
-        let i;
+        var i;
         if (item instanceof Array) {
             for (i = 0; i < item.length; i++) {
                 callback(item[i], i);
@@ -25,21 +25,21 @@
         }
     }
     function each(valueAccessor) {
-        return (element, serviceProvider) => {
+        return function (element, serviceProvider) {
             var template = element.innerHTML;
             element.innerHTML = "";
-            return () => {
+            return function () {
                 var value = valueAccessor();
                 element.innerHTML = "";
-                value.map((item) => {
+                value.map(function (item) {
                     var t = index_1.createElement(template);
-                    foreach(item, (valueAccessor, selector) => {
-                        (selector.trim() === "this" && [t] || t.querySelectorAll(selector)).forEach((el, i) => {
+                    foreach(item, function (valueAccessor, selector) {
+                        (selector.trim() === "this" && [t] || t.querySelectorAll(selector)).forEach(function (el, i) {
                             new view_1.BindManager(el, serviceProvider).manage(valueAccessor);
                         });
                     });
                     return t;
-                }).forEach(el => element.appendChild(el));
+                }).forEach(function (el) { return element.appendChild(el); });
             };
         };
     }

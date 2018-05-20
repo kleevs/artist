@@ -11,12 +11,12 @@
     Object.defineProperty(exports, "__esModule", { value: true });
     var context = window;
     context.Reflect = context.Reflect || {};
-    context.Reflect.metadata = (k, v) => {
-        return (target, metadata) => {
+    context.Reflect.metadata = function (k, v) {
+        return function (target, metadata) {
             metadata[k] = v;
         };
     };
-    context.Reflect.decorate = (decorators, target, key, desc) => {
+    context.Reflect.decorate = function (decorators, target, key, desc) {
         var r = key === undefined ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, metadata = {}, d;
         for (var i = decorators.length - 1; i >= 0; i--) {
             if (d = decorators[i]) {

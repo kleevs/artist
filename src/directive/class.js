@@ -17,12 +17,12 @@
     }
     function removeClass(element, className) {
         var arr = element.className.split(" ");
-        arr = arr.filter(name => name !== className);
+        arr = arr.filter(function (name) { return name !== className; });
         element.className = arr.join(' ');
     }
     function classes(valueAccessor) {
-        return (element) => {
-            return () => {
+        return function (element) {
+            return function () {
                 var value = valueAccessor();
                 for (var key in value) {
                     if (value[key]) {

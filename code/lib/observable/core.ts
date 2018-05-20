@@ -33,11 +33,12 @@ function peek(): { func: Function } {
 }
 
 export function observable<T>(fn: ()=>T): () => T {
-    var listeners = [],
+	var me = this,
+		listeners = [],
 		defaultValue = {},
 		value: T = <any>defaultValue;
 
-	return () => {
+	return function () {
 		var observer = peek() && peek().func, 
 			firstCall = defaultValue === value;
 
@@ -49,7 +50,7 @@ export function observable<T>(fn: ()=>T): () => T {
 			return value;
 		}
 
-		if (value !== (value=fn.apply(this, arguments)) && !firstCall) {
+		if (value !== (value=fn.apply(me, arguments)) && !firstCall) {
 			var tmp = listeners;
 			listeners = [];
 			tmp.forEach((observer) => observer());

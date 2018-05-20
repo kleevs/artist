@@ -81,7 +81,7 @@ __MODE__ = undefined;
 			return tmp.filter(function(_) { return _ !== "."; }).join("/");
 		}
 		var getUri = function(uri, context) {
-			paths.some(path => {
+			paths.some(function(path) {
 				if (uri.match(path.test)) {
 					uri = uri.replace(path.test, path.result);
 					return true;

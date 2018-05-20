@@ -9,23 +9,23 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const viewProvider_1 = require("../service/viewProvider");
-    const index_1 = require("../lib/dom/index");
+    var viewProvider_1 = require("../service/viewProvider");
+    var index_1 = require("../lib/dom/index");
     function view(valueAccessor, callback) {
-        return (element, serviceProvider) => {
+        return function (element, serviceProvider) {
             element.innerHTML = "";
-            return () => {
+            return function () {
                 var value = valueAccessor();
                 var array = !value || value instanceof Array ? (value || []) : [value];
                 var deleted = index_1.createElement("<div></div>");
                 var added = index_1.createElement("<div></div>");
-                var promises = array.map((item) => serviceProvider.getService(viewProvider_1.IViewProvider).getNode(item));
+                var promises = array.map(function (item) { return serviceProvider.getService(viewProvider_1.IViewProvider).getNode(item); });
                 Promise.all(promises)
-                    .then((elts) => {
-                    element.childNodes.forEach((el) => {
+                    .then(function (elts) {
+                    element.childNodes.forEach(function (el) {
                         deleted.appendChild(el);
                     });
-                    elts.forEach((el) => {
+                    elts.forEach(function (el) {
                         element.appendChild(el);
                     });
                     callback && callback(value);

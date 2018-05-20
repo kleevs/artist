@@ -9,7 +9,7 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const core_1 = require("./core");
+    var core_1 = require("./core");
     function create(fn) {
         return core_1.observer(fn);
     }

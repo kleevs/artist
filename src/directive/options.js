@@ -9,19 +9,19 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("../lib/dom/index");
+    var index_1 = require("../lib/dom/index");
     function options(valueAccessor) {
-        return (element) => {
+        return function (element) {
             element.innerHTML = "";
-            return () => {
+            return function () {
                 var value = valueAccessor();
                 element.innerHTML = "";
-                value.map((item) => {
+                value.map(function (item) {
                     var opt = index_1.createElement("<option></option>");
                     opt.value = item.id;
                     opt.textContent = item.text;
                     return opt;
-                }).forEach(o => element.appendChild(o));
+                }).forEach(function (o) { return element.appendChild(o); });
             };
         };
     }

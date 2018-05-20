@@ -10,8 +10,8 @@
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function attr(valueAccessor) {
-        return (element) => {
-            return () => {
+        return function (element) {
+            return function () {
                 var value = valueAccessor();
                 for (var key in value) {
                     if (value[key] === undefined) {

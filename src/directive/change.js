@@ -9,7 +9,7 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const on_1 = require("on");
+    var on_1 = require("on");
     function change(valueAccessor) {
         return on_1.on('change', valueAccessor);
     }

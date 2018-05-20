@@ -10,12 +10,12 @@
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function on(event, valueAccessor) {
-        return (element) => {
-            element.addEventListener(event, (e) => {
+        return function (element) {
+            element.addEventListener(event, function (e) {
                 var stopPropagation = valueAccessor().call(element, e);
                 stopPropagation && e.stopPropagation();
             });
-            return () => { };
+            return function () { };
         };
     }
     exports.on = on;

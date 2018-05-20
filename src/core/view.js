@@ -1,3 +1,13 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 (function (factory) {
     if (typeof module === "object" && typeof module.exports === "object") {
         var v = factory(require, exports);
@@ -9,12 +19,12 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const index_1 = require("../lib/binder/index");
-    const index_2 = require("../lib/dom/index");
-    const service_1 = require("./service");
-    const ajax_1 = require("../service/ajax");
+    var index_1 = require("../lib/binder/index");
+    var index_2 = require("../lib/dom/index");
+    var service_1 = require("./service");
+    var ajax_1 = require("../service/ajax");
     function foreach(item, callback) {
-        let i;
+        var i;
         if (item instanceof Array) {
             for (i = 0; i < item.length; i++) {
                 callback(item[i], i);
@@ -28,31 +38,34 @@
     }
     /** @description Classe permettant de lier une partie du DOM à un binder
      */
-    class BindManager extends index_1.BindManager {
-        constructor(element, data = undefined) {
-            super(element, data);
+    var BindManager = /** @class */ (function (_super) {
+        __extends(BindManager, _super);
+        function BindManager(element, data) {
+            if (data === void 0) { data = undefined; }
+            return _super.call(this, element, data) || this;
         }
         /** @description Applique le lien entre l'élément du DOM et le binder.
          * @param {callback} Binder Binder à lier.
          * @return void
          */
-        manage(callback) {
-            super.manage(callback);
-        }
-    }
+        BindManager.prototype.manage = function (callback) {
+            _super.prototype.manage.call(this, callback);
+        };
+        return BindManager;
+    }(index_1.BindManager));
     exports.BindManager = BindManager;
     exports.registeredView = [];
     function View(options) {
-        return (constructor, metadata) => {
+        return function (constructor, metadata) {
             options = constructor.prototype.__view__option__ = Object.assign({}, constructor.prototype.__view__option__, options);
             var viewType;
             exports.registeredView.push(viewType = {
                 construct: constructor,
                 binding: options.binding,
-                html: new Promise((resolve, reject) => {
+                html: new Promise(function (resolve, reject) {
                     options.html && resolve(options.html);
-                    options.template && !options.html && (() => {
-                        service_1.serviceProvider.getService(ajax_1.IAjax).ajax({ url: `/${options.template}`, method: 'GET' }).then((response) => {
+                    options.template && !options.html && (function () {
+                        service_1.serviceProvider.getService(ajax_1.IAjax).ajax({ url: "/" + options.template, method: 'GET' }).then(function (response) {
                             response.status == "error" && (reject() || true) ||
                                 resolve(response.result);
                         });
@@ -64,17 +77,17 @@
                 service_1.Service({
                     key: key,
                     registerable: false,
-                    initialize: (view) => {
+                    initialize: function (view) {
                         var binding = viewType.binding;
                         view && view.initialize && view.initialize();
-                        viewType && (view.__elt__ = viewType.html.then(template => {
+                        viewType && (view.__elt__ = viewType.html.then(function (template) {
                             var t = index_2.createElement(template);
                             t.setAttribute("artist-view", "true");
-                            foreach(binding, (valueAccessor, selector) => {
-                                (selector.trim() === "this" && [t] || t.querySelectorAll(selector)).forEach((el) => {
+                            foreach(binding, function (valueAccessor, selector) {
+                                (selector.trim() === "this" && [t] || t.querySelectorAll(selector)).forEach(function (el) {
                                     var binder = valueAccessor(view);
                                     var binders = binder && !(binder instanceof Array) && [binder] || binder;
-                                    binders.forEach(b => new BindManager(el, service_1.serviceProvider).manage(b));
+                                    binders.forEach(function (b) { return new BindManager(el, service_1.serviceProvider).manage(b); });
                                 });
                             });
                             t.__view__ = view;

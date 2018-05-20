@@ -1,3 +1,13 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -15,59 +25,67 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const service_1 = require("../core/service");
+    var service_1 = require("../core/service");
     /** @description Interface du service gérant la communication entre vue.
      */
-    class INotifier {
-    }
+    var INotifier = /** @class */ (function () {
+        function INotifier() {
+        }
+        return INotifier;
+    }());
     exports.INotifier = INotifier;
     /** @description Classe définissant les évènements à manipuler pour la communication entre vue.
      */
-    class Event {
-        constructor(key) {
+    var Event = /** @class */ (function () {
+        function Event(key) {
             this.key = key;
         }
-    }
+        return Event;
+    }());
     exports.Event = Event;
     ;
-    let Notifier = class Notifier extends INotifier {
-        constructor() {
-            super(...arguments);
-            this._callbacks = {};
+    var Notifier = /** @class */ (function (_super) {
+        __extends(Notifier, _super);
+        function Notifier() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._callbacks = {};
+            return _this;
         }
-        notify(obj, key, data) {
+        Notifier.prototype.notify = function (obj, key, data) {
             var callbacks = this.register(obj, key);
-            callbacks && callbacks.forEach((callback) => {
+            callbacks && callbacks.forEach(function (callback) {
                 callback(data);
             });
-        }
-        listen(obj, key, callback) {
+        };
+        Notifier.prototype.listen = function (obj, key, callback) {
             var callbacks = this.register(obj, key);
             callbacks.push(callback);
             return {
-                stop: () => {
+                stop: function () {
                     var index = callbacks.indexOf(callback);
                     if (index > -1) {
                         callbacks.splice(index, 1);
                     }
                 }
             };
-        }
-        forEvent(event) {
+        };
+        Notifier.prototype.forEvent = function (event) {
+            var _this = this;
             return {
-                listen: (obj, callback) => this.listen(obj, event.key, callback),
-                notify: (obj, data) => this.notify(obj, event.key, data)
+                listen: function (obj, callback) { return _this.listen(obj, event.key, callback); },
+                notify: function (obj, data) { return _this.notify(obj, event.key, data); }
             };
-        }
-        register(obj, key) {
+        };
+        Notifier.prototype.register = function (obj, key) {
             obj.__notifier__id__ = obj.__notifier__id__ || [new Date().getTime(), Math.random() * 100].join("");
             return this._callbacks[obj.__notifier__id__ + "_" + key] = this._callbacks[obj.__notifier__id__ + "_" + key] || [];
-        }
-    };
-    Notifier = __decorate([
-        service_1.Service({
-            key: INotifier
-        })
-    ], Notifier);
+        };
+        Notifier = __decorate([
+            service_1.Service({
+                key: INotifier
+            })
+        ], Notifier);
+        return Notifier;
+    }(INotifier));
     exports.Notifier = Notifier;
 });

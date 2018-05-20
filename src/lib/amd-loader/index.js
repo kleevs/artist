@@ -28,12 +28,12 @@
             last++;
             i++;
         }
-        return tmp.filter(_ => _ !== ".").join("/");
+        return tmp.filter(function (_) { return _ !== "."; }).join("/");
     };
-    var getAbsoluteUri = (uri, context) => {
+    var getAbsoluteUri = function (uri, context) {
         var match = false;
         if (configuration && configuration.path) {
-            configuration.path.some(path => {
+            configuration.path.some(function (path) {
                 if (uri.match(path.test)) {
                     uri = uri.replace(path.test, path.result);
                     return match = true;
@@ -49,8 +49,8 @@
         return href;
     };
     function load(uri) {
-        return new Promise(resolve => {
-            var mod = define([uri], (module) => { resolve(module); });
+        return new Promise(function (resolve) {
+            var mod = define([uri], function (module) { resolve(module); });
             allmodules["..."] = {};
             mod();
         });
@@ -72,22 +72,22 @@
             dependencies = [];
             modulefactory = arguments[0];
         }
-        return allmodules["..."]["..."] = allmodules["..."][id] = (context) => {
+        return allmodules["..."]["..."] = allmodules["..."][id] = function (context) {
             return Promise.all(dependencies.map(function (dependency) {
                 if (dependency === "require")
-                    return (uri) => loadedmodules[getAbsoluteUri(uri, context)];
+                    return function (uri) { return loadedmodules[getAbsoluteUri(uri, context)]; };
                 if (dependency === "exports")
                     return exp = {};
                 var src = getAbsoluteUri(dependency, context);
-                return allmodules[src] = allmodules[src] || new Promise(resolve => {
+                return allmodules[src] = allmodules[src] || new Promise(function (resolve) {
                     var script = document.createElement('script');
                     script.src = src;
                     script.async = true;
                     document.head.appendChild(script);
-                    script.onload = script.onreadystatechange = () => {
+                    script.onload = script.onreadystatechange = function () {
                         allmodules[src] = allmodules["..."]["..."];
                         allmodules["..."] = {};
-                        allmodules[src] = allmodules[src] && allmodules[src](src).then(module => { resolve(loadedmodules[src] = module); return module; }) || resolve();
+                        allmodules[src] = allmodules[src] && allmodules[src](src).then(function (module) { resolve(loadedmodules[src] = module); return module; }) || resolve();
                     };
                 });
             })).then(function (result) {

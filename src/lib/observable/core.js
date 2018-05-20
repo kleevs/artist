@@ -10,7 +10,7 @@
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function foreach(item, callback) {
-        let i;
+        var i;
         if (item instanceof Array) {
             for (i = 0; i < item.length; i++) {
                 callback(item[i], i);
@@ -23,11 +23,11 @@
         }
     }
     function contains(array, item) {
-        let res = false;
-        foreach(array, (x) => { res = res || item === x; });
+        var res = false;
+        foreach(array, function (x) { res = res || item === x; });
         return res;
     }
-    let stack = [];
+    var stack = [];
     function push(func) {
         stack.push({ func: func });
     }
@@ -38,8 +38,8 @@
         return stack[stack.length - 1];
     }
     function observable(fn) {
-        var listeners = [], defaultValue = {}, value = defaultValue;
-        return () => {
+        var me = this, listeners = [], defaultValue = {}, value = defaultValue;
+        return function () {
             var observer = peek() && peek().func, firstCall = defaultValue === value;
             if (observer && !contains(listeners, observer)) {
                 listeners.push(observer);
@@ -47,10 +47,10 @@
             if (observer && !firstCall) {
                 return value;
             }
-            if (value !== (value = fn.apply(this, arguments)) && !firstCall) {
+            if (value !== (value = fn.apply(me, arguments)) && !firstCall) {
                 var tmp = listeners;
                 listeners = [];
-                tmp.forEach((observer) => observer());
+                tmp.forEach(function (observer) { return observer(); });
             }
             return value;
         };
@@ -58,7 +58,7 @@
     exports.observable = observable;
     function observer(fn) {
         var me;
-        (me = () => {
+        (me = function () {
             push(me);
             var res = fn();
             pop();
@@ -68,7 +68,7 @@
     exports.observer = observer;
     function blind(fn) {
         var me;
-        (me = () => {
+        (me = function () {
             push(null);
             var res = fn();
             pop();
