@@ -50,7 +50,7 @@ __MODE__ = undefined;
 				i++;
 			}
 
-			return tmp.filter(_ => _ !== ".").join("/");
+			return tmp.filter(function(_) { return _ !== "."; }).join("/");
 		}
 		var getUri = function(uri, context) {
 			paths.some(path => {
