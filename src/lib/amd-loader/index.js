@@ -4,11 +4,12 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports"], factory);
+        define(["require", "exports", "../polyfills/promise"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    var promise_1 = require("../polyfills/promise");
     var allmodules = { "...": {} };
     var loadedmodules = {};
     var configuration;
@@ -110,6 +111,9 @@
     if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {
         var context = window;
         context.define = define;
+        if (typeof (Promise) === "undefined") {
+            context.Promise = promise_1.Promise;
+        }
         var scripts = document.getElementsByTagName('script');
         var path = scripts[scripts.length - 1].src.split('?')[0];
         allmodules[path] = Promise.resolve(exports);

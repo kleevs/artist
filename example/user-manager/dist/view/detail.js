@@ -95,9 +95,10 @@ define(["require", "exports", "node_modules/artistejs/dist/artiste"], function (
                     "[data-id=save]": function (detailView) { return artiste_1.click(function () { return function () { return detailView.save(); }; }); }
                 }
             }),
-            __metadata("design:paramtypes", [typeof (_a = typeof artiste_1.IObservablizer !== "undefined" && artiste_1.IObservablizer) === "function" && _a || Object, typeof (_b = typeof artiste_1.IRouter !== "undefined" && artiste_1.IRouter) === "function" && _b || Object, typeof (_c = typeof artiste_1.INotifier !== "undefined" && artiste_1.INotifier) === "function" && _c || Object])
+            __metadata("design:paramtypes", [artiste_1.IObservablizer,
+                artiste_1.IRouter,
+                artiste_1.INotifier])
         ], Detail);
         return Detail;
-        var _a, _b, _c;
     }(IDetail));
 });

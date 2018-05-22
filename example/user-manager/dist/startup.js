@@ -76,11 +76,13 @@ define(["require", "exports", "node_modules/artistejs/dist/artiste", "view/list"
                     "this": function (starter) { return artiste_1.view(function () { return starter.observable.view; }); }
                 }
             }),
-            __metadata("design:paramtypes", [typeof (_a = typeof artiste_1.IObservablizer !== "undefined" && artiste_1.IObservablizer) === "function" && _a || Object, typeof (_b = typeof artiste_1.INotifier !== "undefined" && artiste_1.INotifier) === "function" && _b || Object, typeof (_c = typeof artiste_1.IRouter !== "undefined" && artiste_1.IRouter) === "function" && _c || Object, list_1.IList,
+            __metadata("design:paramtypes", [artiste_1.IObservablizer,
+                artiste_1.INotifier,
+                artiste_1.IRouter,
+                list_1.IList,
                 detail_1.IDetail])
         ], Startup);
         return Startup;
-        var _a, _b, _c;
     }());
     exports.Startup = Startup;
 });

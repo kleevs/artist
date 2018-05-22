@@ -63,9 +63,8 @@ define(["require", "exports", "node_modules/artistejs/dist/artiste"], function (
                     }); }
                 }
             }),
-            __metadata("design:paramtypes", [typeof (_a = typeof artiste_1.IObservablizer !== "undefined" && artiste_1.IObservablizer) === "function" && _a || Object])
+            __metadata("design:paramtypes", [artiste_1.IObservablizer])
         ], List);
         return List;
-        var _a;
     }(IList));
 });

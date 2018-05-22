@@ -1,3 +1,4 @@
+import '../lib/polyfills/object-assign';
 export { load } from '../lib/amd-loader/index';
 export { View, Binder, ViewOption } from './view';
 export { Service } from './service';

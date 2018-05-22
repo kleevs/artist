@@ -1,3 +1,4 @@
+import '../lib/polyfills/object-assign';
 import { serviceProvider } from './service';
 import { IViewProvider } from '../service/viewProvider';
 import { load, config, define } from '../lib/amd-loader/index';
