@@ -1,3 +1,4 @@
+import { Promise } from '../polyfills/promise';
 export declare function load(uri: any): Promise<{}>;
 export declare function define(modulefactory: any): (context?) => Promise<any>;
 export declare function define(dependencies: any, modulefactory: any): (context?) => Promise<any>;

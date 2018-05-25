@@ -1,3 +1,4 @@
+import { Promise } from '../lib/polyfills/promise';
 import { Service } from '../core/service';
 import { load } from '../lib/amd-loader/index';
 

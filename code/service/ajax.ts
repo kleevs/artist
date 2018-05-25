@@ -1,3 +1,4 @@
+import { Promise } from '../lib/polyfills/promise';
 import { Service } from '../core/service';
 import { IConfigManager } from '../service/configManager';
 

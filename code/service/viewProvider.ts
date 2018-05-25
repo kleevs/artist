@@ -1,3 +1,4 @@
+import { Promise } from '../lib/polyfills/promise';
 import { Service, config } from "../core/service";
 import { IServiceProvider } from '../service/serviceProvider';
 import { registeredView } from '../core/view';

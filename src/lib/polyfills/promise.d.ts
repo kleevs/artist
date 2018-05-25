@@ -1,19 +1,12 @@
-export declare type PromiseParameter<T> = Promise<T> | T | ((resolve: (result?: T) => void, reject: (result?: any) => void, notify: (result?: any) => void) => any);
 export declare class Promise<T> {
-    private _eventHandle;
-    private _resolve;
-    private _reject;
-    private _notify;
-    private _result;
-    private _catched;
-    constructor(callback: PromiseParameter<T>);
-    private triggerSuccess(value);
-    private resolve(result?);
-    private reject(result?);
-    private notify(result?);
-    then<T2>(resolve: (result?: T) => Promise<T2> | T2): Promise<T2>;
-    catch(reject: (result?: any) => T | void): Promise<T>;
-    progress(notify: (result?: any) => any): Promise<T>;
-    static all<T2>(promises: Promise<T2>[]): Promise<T2[]>;
-    static resolve<T>(value: T): Promise<T>;
+    private _nextFulfilled;
+    private _nextRejected;
+    private _value;
+    private _isRejected;
+    constructor(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void);
+    private getRejected();
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>), onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    static all<T2>(values: (T2 | PromiseLike<T2>)[]): Promise<T2[]>;
+    static resolve<T>(value?: T): Promise<T>;
 }

@@ -4,7 +4,7 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../lib/polyfills/object-assign", "./service", "../service/viewProvider", "../lib/amd-loader/index", "../service/configManager", "../lib/amd-loader/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../service/configManager", "../directive/view", "../directive/on", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
+        define(["require", "exports", "../lib/polyfills/object-assign", "../lib/polyfills/array-foreach", "../lib/polyfills/array-map", "../lib/polyfills/promise", "./service", "../service/viewProvider", "../lib/amd-loader/index", "../service/configManager", "../lib/amd-loader/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../service/configManager", "../directive/view", "../directive/on", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
     }
 })(function (require, exports) {
     "use strict";
@@ -13,6 +13,9 @@
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     require("../lib/polyfills/object-assign");
+    require("../lib/polyfills/array-foreach");
+    require("../lib/polyfills/array-map");
+    var promise_1 = require("../lib/polyfills/promise");
     var service_1 = require("./service");
     var viewProvider_1 = require("../service/viewProvider");
     var index_1 = require("../lib/amd-loader/index");
@@ -70,8 +73,24 @@
             records.forEach(function (record) {
                 var removedNodes = Array.prototype.map.call(record.removedNodes, function (x) { return x; });
                 var addedNodes = Array.prototype.map.call(record.addedNodes, function (x) { return x; });
-                removedNodes.forEach(function (e) { return e.dispatchEvent(new Event("custom:view:dom:remove")); });
-                addedNodes.forEach(function (e) { return e.dispatchEvent(new Event("custom:view:dom:added")); });
+                removedNodes.forEach(function (e) {
+                    var event = typeof (Event) === 'function' && new Event("custom:view:dom:remove") ||
+                        (function () {
+                            var event = document.createEvent("Event");
+                            event.initEvent('custom:view:dom:remove', true, true);
+                            return event;
+                        })();
+                    e.dispatchEvent(event);
+                });
+                addedNodes.forEach(function (e) {
+                    var event = typeof (Event) === 'function' && new Event("custom:view:dom:added") ||
+                        (function () {
+                            var event = document.createEvent("Event");
+                            event.initEvent('custom:view:dom:added', true, true);
+                            return event;
+                        })();
+                    e.dispatchEvent(event);
+                });
             });
         });
         observer.observe(document.querySelector("body"), { childList: true, subtree: true });
@@ -89,8 +108,8 @@
         placeHolder && ((configFileName && index_1.load(configFileName).then(function (conf) {
             service_1.serviceProvider.getService(configManager_1.IConfigManager).setConfig(conf.default);
             index_1.config(conf && conf.default || {});
-        }) || Promise.resolve())
-            .then(function () { return (mainFileName && index_1.load(mainFileName) || Promise.resolve(null)).then(function (modules) {
+        }) || promise_1.Promise.resolve())
+            .then(function () { return (mainFileName && index_1.load(mainFileName) || promise_1.Promise.resolve(null)).then(function (modules) {
             var clss = modules && modules[Object.keys(modules).filter(function (_) { return _.indexOf("_") !== 0; })[0]];
             clss && startup(placeHolder, clss);
         }); }));

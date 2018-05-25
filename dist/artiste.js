@@ -112,6 +112,315 @@ __MODE__ = undefined;
 	    });
 	}
 	
+	// ECMA-262, Edition 5, 15.4.4.18
+	// Référence: http://es5.github.io/#x15.4.4.18
+	if (!Array.prototype.forEach) {
+	    Array.prototype.forEach = function (callback /*, thisArg*/) {
+	        var T, k;
+	        if (this == null) {
+	            throw new TypeError(' this vaut null ou n est pas défini');
+	        }
+	        // 1. Soit O le résultat de l'appel à ToObject
+	        //    auquel on a passé |this| en argument.
+	        var O = Object(this);
+	        // 2. Soit lenValue le résultat de l'appel de la méthode 
+	        //    interne Get sur O avec l'argument "length".
+	        // 3. Soit len la valeur ToUint32(lenValue).
+	        var len = O.length >>> 0;
+	        // 4. Si IsCallable(callback) est false, on lève une TypeError.
+	        // Voir : http://es5.github.com/#x9.11
+	        if (typeof callback !== "function") {
+	            throw new TypeError(callback + ' n est pas une fonction');
+	        }
+	        // 5. Si thisArg a été fourni, soit T ce thisArg ;
+	        //    sinon soit T égal à undefined.
+	        if (arguments.length > 1) {
+	            T = arguments[1];
+	        }
+	        // 6. Soit k égal à 0
+	        k = 0;
+	        // 7. On répète tant que k < len
+	        while (k < len) {
+	            var kValue;
+	            // a. Soit Pk égal ToString(k).
+	            //   (implicite pour l'opérande gauche de in)
+	            // b. Soit kPresent le résultat de l'appel de la 
+	            //    méthode interne HasProperty de O avec l'argument Pk.
+	            //    Cette étape peut être combinée avec c
+	            // c. Si kPresent vaut true, alors
+	            if (k in O) {
+	                // i. Soit kValue le résultat de l'appel de la 
+	                //    méthode interne Get de O avec l'argument Pk.
+	                kValue = O[k];
+	                // ii. On appelle la méthode interne Call de callback 
+	                //     avec T comme valeur this et la liste des arguments
+	                //     qui contient kValue, k, et O.
+	                callback.call(T, kValue, k, O);
+	            }
+	            // d. On augmente k de 1.
+	            k++;
+	        }
+	        // 8. on renvoie undefined
+	    };
+	}
+	if (!NodeList.prototype.forEach) {
+	    NodeList.prototype.forEach = function (callback /*, thisArg*/) {
+	        var T, k;
+	        if (this == null) {
+	            throw new TypeError(' this vaut null ou n est pas défini');
+	        }
+	        // 1. Soit O le résultat de l'appel à ToObject
+	        //    auquel on a passé |this| en argument.
+	        var O = Object(this);
+	        // 2. Soit lenValue le résultat de l'appel de la méthode 
+	        //    interne Get sur O avec l'argument "length".
+	        // 3. Soit len la valeur ToUint32(lenValue).
+	        var len = O.length >>> 0;
+	        // 4. Si IsCallable(callback) est false, on lève une TypeError.
+	        // Voir : http://es5.github.com/#x9.11
+	        if (typeof callback !== "function") {
+	            throw new TypeError(callback + ' n est pas une fonction');
+	        }
+	        // 5. Si thisArg a été fourni, soit T ce thisArg ;
+	        //    sinon soit T égal à undefined.
+	        if (arguments.length > 1) {
+	            T = arguments[1];
+	        }
+	        // 6. Soit k égal à 0
+	        k = 0;
+	        // 7. On répète tant que k < len
+	        while (k < len) {
+	            var kValue;
+	            // a. Soit Pk égal ToString(k).
+	            //   (implicite pour l'opérande gauche de in)
+	            // b. Soit kPresent le résultat de l'appel de la 
+	            //    méthode interne HasProperty de O avec l'argument Pk.
+	            //    Cette étape peut être combinée avec c
+	            // c. Si kPresent vaut true, alors
+	            if (k in O) {
+	                // i. Soit kValue le résultat de l'appel de la 
+	                //    méthode interne Get de O avec l'argument Pk.
+	                kValue = O[k];
+	                // ii. On appelle la méthode interne Call de callback 
+	                //     avec T comme valeur this et la liste des arguments
+	                //     qui contient kValue, k, et O.
+	                callback.call(T, kValue, k, O);
+	            }
+	            // d. On augmente k de 1.
+	            k++;
+	        }
+	        // 8. on renvoie undefined
+	    };
+	}
+	
+	// Production steps / ECMA-262, Edition 5, 15.4.4.19
+	// Référence : https://es5.github.io/#x15.4.4.19
+	if (!Array.prototype.map) {
+	    Array.prototype.map = function (callback /*, thisArg*/) {
+	        var T, A, k;
+	        if (this == null) {
+	            throw new TypeError(' this est null ou non défini');
+	        }
+	        // 1. Soit O le résultat de l'appel ToObject avec |this| 
+	        //    comme argument.
+	        var O = Object(this);
+	        // 2. Soit lenValue le résultat de l'appel de la méthode interne
+	        //    Get de O avec l'argument "length".
+	        // 3. Soit len égal à ToUint32(lenValue).
+	        var len = O.length >>> 0;
+	        // 4. Si IsCallable(callback) vaut false, on renvoie une TypeError
+	        // Voir : https://es5.github.com/#x9.11
+	        if (typeof callback !== 'function') {
+	            throw new TypeError(callback + ' n est pas une fonction');
+	        }
+	        // 5. Si thisArg a été utilisé, on définit T avec thisArg
+	        //    sinon T vaudra undefined.
+	        if (arguments.length > 1) {
+	            T = arguments[1];
+	        }
+	        // 6. Soit A un nouveau tableau créé tel
+	        //    qu'avec l'expression new Array(len) 
+	        //    où Array est le constructeur natif standard
+	        A = new Array(len);
+	        // 7. Soit k égal à 0
+	        k = 0;
+	        // 8. On répète tant que k < len
+	        while (k < len) {
+	            var kValue, mappedValue;
+	            // a. Soit Pk égal à ToString(k).
+	            //    (implicite pour l'opérande gauche de in)
+	            // b. Soit kPresent le résultat de l'appel à la méthode
+	            //    interne de O HasProperty appelée avec l'argument 
+	            //     Pk.
+	            //    Cette étape peut être combinée avec c
+	            // c. Si kPresent vaut true, alors
+	            if (k in O) {
+	                // i. Soit kValue le résultat de l'appel de la méthode
+	                //    interne Get de O avec l'argument Pk.
+	                kValue = O[k];
+	                // ii. Soit mappedValue le résultat de l'appel de la 
+	                //     méthode interne Call de callback avec T comme première
+	                //     valeur et la liste des arguments kValue, k, et O.
+	                mappedValue = callback.call(T, kValue, k, O);
+	                // iii. On appelle la méthode intnerne DefineOwnProperty de A
+	                // avec les arguments Pk, Property Descriptor
+	                // { Value: mappedValue,
+	                //   Writable: true,
+	                //   Enumerable: true,
+	                //   Configurable: true },
+	                // et false.
+	                // Pour les navigateurs qui supportent Object.defineProperty
+	                // on pourra utiliser :
+	                // Object.defineProperty(A, k, {
+	                //   value: mappedValue,
+	                //   writable: true,
+	                //   enumerable: true,
+	                //   configurable: true
+	                // });
+	                // Pour un meilleur support, on utilisera :
+	                A[k] = mappedValue;
+	            }
+	            // d. On augmente k de 1.
+	            k++;
+	        }
+	        // 9. On renvoie A
+	        return A;
+	    };
+	}
+	
+	(function (factory) {
+	    if (typeof module === "object" && typeof module.exports === "object") {
+	        var v = factory(require, exports);
+	        if (v !== undefined) module.exports = v;
+	    }
+	    else if (typeof define === "function" && define.amd) {
+	        define('src/lib/polyfills/promise.js', ["require", "exports"], factory);
+	    }
+	})(function (require, exports) {
+	    "use strict";
+	    Object.defineProperty(exports, "__esModule", { value: true });
+	    var Promise = /** @class */ (function () {
+	        function Promise(executor) {
+	            var _this = this;
+	            this._nextFulfilled = [];
+	            this._nextRejected = [];
+	            this._isRejected = undefined;
+	            executor(function (value) {
+	                _this._value = value;
+	                _this._isRejected = false;
+	                setTimeout(function () {
+	                    _this._nextFulfilled.map(function (next) {
+	                        next.exec(value);
+	                    });
+	                });
+	            }, function (reason) {
+	                var rejected = _this.getRejected();
+	                _this._value = reason;
+	                _this._isRejected = true;
+	                setTimeout(function () {
+	                    rejected.map(function (next) {
+	                        next(reason);
+	                    });
+	                });
+	            });
+	        }
+	        Promise.prototype.getRejected = function () {
+	            var res = [];
+	            return this._nextFulfilled.forEach(function (p) {
+	                res = res.concat(p.promise._nextRejected.map(function (f) { return f.exec; }));
+	                res = res.length > 0 && res || res.concat(p.promise.getRejected());
+	            }) || res;
+	        };
+	        Promise.prototype.then = function (onfulfilled, onrejected) {
+	            var exec, next = new Promise(function (resolve, reject) {
+	                exec = function (value) {
+	                    var rejected = next.getRejected();
+	                    var res;
+	                    if (onfulfilled) {
+	                        if (rejected.length > 0) {
+	                            try {
+	                                res = onfulfilled(value);
+	                            }
+	                            catch (e) {
+	                                rejected.map(function (f) { return f(e); });
+	                                return;
+	                            }
+	                        }
+	                        else {
+	                            res = onfulfilled(value);
+	                        }
+	                        resolve(res);
+	                    }
+	                };
+	            });
+	            if (this._isRejected === false) {
+	                exec(this._value);
+	            }
+	            else if (this._isRejected === undefined) {
+	                this._nextFulfilled.push({ exec: exec, promise: next });
+	            }
+	            return next;
+	        };
+	        Promise.prototype.catch = function (onrejected) {
+	            var exec, next = new Promise(function (resolve, reject) {
+	                exec = function (reason) {
+	                    var rejected = next.getRejected();
+	                    var res;
+	                    if (onrejected) {
+	                        if (rejected.length > 0) {
+	                            try {
+	                                res = onrejected(reason);
+	                            }
+	                            catch (e) {
+	                                rejected.map(function (f) { return f(e); });
+	                                return;
+	                            }
+	                        }
+	                        else {
+	                            res = onrejected(reason);
+	                        }
+	                        resolve(res);
+	                    }
+	                };
+	            });
+	            if (this._isRejected === true) {
+	                exec(this._value);
+	            }
+	            else if (this._isRejected === undefined) {
+	                this._nextRejected.push({ exec: exec, promise: next });
+	            }
+	            return next;
+	        };
+	        Promise.all = function (values) {
+	            var promises = values;
+	            return new Promise(function (success) {
+	                var i = 0, length = promises ? promises.length : 0, res = [];
+	                for (var j = 0; j < length; j++) {
+	                    res.push(null);
+	                }
+	                if (!length) {
+	                    success(res);
+	                    return;
+	                }
+	                promises.forEach(function (promise, index) {
+	                    (promise instanceof Promise && promise || Promise.resolve(promise)).then(function (value) {
+	                        i++;
+	                        res[index] = value;
+	                        if (i >= length) {
+	                            success(res);
+	                        }
+	                    });
+	                });
+	            });
+	        };
+	        Promise.resolve = function (value) {
+	            return new Promise(function (resolve) { resolve(value); });
+	        };
+	        return Promise;
+	    }());
+	    exports.Promise = Promise;
+	});
+	
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
 	        var v = factory(require, exports);
@@ -650,11 +959,12 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/service/ajax.js', ["require", "exports", "../core/service", "../service/configManager"], factory);
+	        define('src/service/ajax.js', ["require", "exports", "../lib/polyfills/promise", "../core/service", "../service/configManager"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
+	    var promise_1 = require("../lib/polyfills/promise");
 	    var service_1 = require("../core/service");
 	    var configManager_1 = require("../service/configManager");
 	    var IAjax = /** @class */ (function () {
@@ -672,7 +982,7 @@ __MODE__ = undefined;
 	        }
 	        Ajax.prototype.ajax = function (options) {
 	            var _this = this;
-	            return new Promise(function (resolve, reject) {
+	            return new promise_1.Promise(function (resolve, reject) {
 	                var xhr = _this.getXMLHttpRequest();
 	                var configuration = _this.configManager.getConfig();
 	                var url = options.url;
@@ -750,11 +1060,12 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/core/view.js', ["require", "exports", "../lib/binder/index", "../lib/dom/index", "./service", "../service/ajax"], factory);
+	        define('src/core/view.js', ["require", "exports", "../lib/polyfills/promise", "../lib/binder/index", "../lib/dom/index", "./service", "../service/ajax"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
+	    var promise_1 = require("../lib/polyfills/promise");
 	    var index_1 = require("../lib/binder/index");
 	    var index_2 = require("../lib/dom/index");
 	    var service_1 = require("./service");
@@ -798,7 +1109,7 @@ __MODE__ = undefined;
 	            exports.registeredView.push(viewType = {
 	                construct: constructor,
 	                binding: options.binding,
-	                html: new Promise(function (resolve, reject) {
+	                html: new promise_1.Promise(function (resolve, reject) {
 	                    options.html && resolve(options.html);
 	                    options.template && !options.html && (function () {
 	                        service_1.serviceProvider.getService(ajax_1.IAjax).ajax({ url: "/" + options.template, method: 'GET' }).then(function (response) {
@@ -905,178 +1216,6 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/lib/polyfills/promise.js', ["require", "exports"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    var EventHandle = /** @class */ (function () {
-	        function EventHandle() {
-	            this._dico = {};
-	        }
-	        EventHandle.prototype.once = function (key, callback) {
-	            callback && callback instanceof Function && (this._dico[key] = callback);
-	        };
-	        EventHandle.prototype.trigger = function (key, value) {
-	            var callback = this._dico[key];
-	            this._dico[key] = undefined;
-	            if (callback) {
-	                callback(value);
-	            }
-	            else if (key === "reject" && value) {
-	                throw value;
-	            }
-	        };
-	        return EventHandle;
-	    }());
-	    var Promise = /** @class */ (function () {
-	        function Promise(callback) {
-	            var _this = this;
-	            this._resolve = [];
-	            this._reject = [];
-	            this._notify = [];
-	            this._eventHandle = new EventHandle();
-	            if (callback && callback instanceof Promise) {
-	                callback.then(function (success) {
-	                    _this.resolve(success);
-	                });
-	            }
-	            else if (callback && callback instanceof Function) {
-	                var obj = callback(function (result) { _this.resolve(result); }, function (result) { _this.reject(result); }, function (result) { _this.notify(result); });
-	                if (obj && obj instanceof Promise) {
-	                    obj.then(function (success) {
-	                        _this.resolve(success);
-	                    });
-	                }
-	            }
-	            else {
-	                this.resolve(callback);
-	            }
-	        }
-	        Promise.prototype.triggerSuccess = function (value) {
-	            var _this = this;
-	            if (value && value instanceof Promise) {
-	                value.then(function (success) {
-	                    _this.triggerSuccess(success);
-	                });
-	            }
-	            else {
-	                this._eventHandle.trigger("success", value);
-	            }
-	        };
-	        Promise.prototype.resolve = function (result) {
-	            var _this = this;
-	            setTimeout(function () {
-	                _this._result = result;
-	                if (_this._resolve && _this._resolve.length > 0) {
-	                    try {
-	                        for (var i = 0; i < _this._resolve.length; i++) {
-	                            _this._resolve[i] instanceof Function && _this.triggerSuccess(_this._resolve[i](result));
-	                        }
-	                    }
-	                    catch (e) {
-	                        _this._eventHandle.trigger("reject", e);
-	                    }
-	                }
-	                else {
-	                    _this._eventHandle.trigger("success", result);
-	                }
-	            });
-	        };
-	        Promise.prototype.reject = function (result) {
-	            var _this = this;
-	            setTimeout(function () {
-	                _this._catched = result;
-	                var value = result;
-	                if (_this._reject.length > 0) {
-	                    try {
-	                        for (var i = 0; i < _this._reject.length; i++) {
-	                            _this.triggerSuccess(_this._reject[i](value));
-	                        }
-	                    }
-	                    catch (e) {
-	                        _this._eventHandle.trigger("reject", e);
-	                    }
-	                }
-	                else {
-	                    _this._eventHandle.trigger("reject", value);
-	                }
-	            });
-	        };
-	        Promise.prototype.notify = function (result) {
-	            var _this = this;
-	            setTimeout(function () {
-	                var value = result;
-	                for (var i = 0; i < _this._notify.length; i++) {
-	                    _this._notify[i](value);
-	                }
-	            });
-	        };
-	        Promise.prototype.then = function (resolve) {
-	            var _this = this;
-	            this._resolve.push(resolve);
-	            this._result && this.resolve(this._result);
-	            return new Promise(function (success, reject) {
-	                _this._eventHandle.once("success", function (value) {
-	                    success(value);
-	                });
-	                _this._eventHandle.once("reject", function (value) {
-	                    reject(value);
-	                });
-	            });
-	        };
-	        Promise.prototype.catch = function (reject) {
-	            var _this = this;
-	            this._reject.push(reject);
-	            this._catched && this.reject(this._catched);
-	            return new Promise(function (success, reject) {
-	                _this._eventHandle.once("success", function (value) {
-	                    success(value);
-	                });
-	                _this._eventHandle.once("reject", function (value) {
-	                    reject(value);
-	                });
-	            });
-	        };
-	        Promise.prototype.progress = function (notify) {
-	            this._notify.push(notify);
-	            return this;
-	        };
-	        Promise.all = function (promises) {
-	            return new Promise(function (success) {
-	                var i = 0, length = promises ? promises.length : 0, res = [];
-	                for (var j = 0; j < length; j++) {
-	                    res.push(null);
-	                }
-	                if (!length) {
-	                    success(res);
-	                    return;
-	                }
-	                promises.forEach(function (promise, index) {
-	                    (promise instanceof Promise && promise || Promise.resolve(promise)).then(function (value) {
-	                        i++;
-	                        res[index] = value;
-	                        if (i >= length) {
-	                            success(res);
-	                        }
-	                    });
-	                });
-	            });
-	        };
-	        Promise.resolve = function (value) {
-	            return new Promise(function (resolve) { resolve(value); });
-	        };
-	        return Promise;
-	    }());
-	    exports.Promise = Promise;
-	});
-	
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
 	        define('src/lib/amd-loader/index.js', ["require", "exports", "../polyfills/promise"], factory);
 	    }
 	})(function (require, exports) {
@@ -1123,7 +1262,7 @@ __MODE__ = undefined;
 	        return href;
 	    };
 	    function load(uri) {
-	        return new Promise(function (resolve) {
+	        return new promise_1.Promise(function (resolve) {
 	            var mod = define([uri], function (module) { resolve(module); });
 	            allmodules["..."] = {};
 	            mod();
@@ -1147,13 +1286,13 @@ __MODE__ = undefined;
 	            modulefactory = arguments[0];
 	        }
 	        return allmodules["..."]["..."] = allmodules["..."][id] = function (context) {
-	            return Promise.all(dependencies.map(function (dependency) {
+	            return promise_1.Promise.all(dependencies.map(function (dependency) {
 	                if (dependency === "require")
 	                    return function (uri) { return loadedmodules[getAbsoluteUri(uri, context)]; };
 	                if (dependency === "exports")
 	                    return exp = {};
 	                var src = getAbsoluteUri(dependency, context);
-	                return allmodules[src] = allmodules[src] || new Promise(function (resolve) {
+	                return allmodules[src] = allmodules[src] || new promise_1.Promise(function (resolve) {
 	                    var script = document.createElement('script');
 	                    script.src = src;
 	                    script.async = true;
@@ -1167,7 +1306,7 @@ __MODE__ = undefined;
 	            })).then(function (result) {
 	                var module = modulefactory.apply(this, result) || exp;
 	                if (id && id !== "...") {
-	                    allmodules[id] = Promise.resolve(module);
+	                    allmodules[id] = promise_1.Promise.resolve(module);
 	                    loadedmodules[id] = module;
 	                }
 	                ;
@@ -1184,12 +1323,9 @@ __MODE__ = undefined;
 	    if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {
 	        var context = window;
 	        context.define = define;
-	        if (typeof (Promise) === "undefined") {
-	            context.Promise = promise_1.Promise;
-	        }
 	        var scripts = document.getElementsByTagName('script');
 	        var path = scripts[scripts.length - 1].src.split('?')[0];
-	        allmodules[path] = Promise.resolve(exports);
+	        allmodules[path] = promise_1.Promise.resolve(exports);
 	    }
 	});
 	
@@ -1481,6 +1617,8 @@ __MODE__ = undefined;
 	            var _this = _super.call(this) || this;
 	            _this.configManager = configManager;
 	            _this._callbacks = [];
+	            if (!window.onpopstate)
+	                window.onhashchange = function (state) { return _this.change(location.href); };
 	            window.onpopstate = function (state) { return _this.change(location.href); };
 	            return _this;
 	        }
@@ -1532,11 +1670,12 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/directive/view.js', ["require", "exports", "../service/viewProvider", "../lib/dom/index"], factory);
+	        define('src/directive/view.js', ["require", "exports", "../lib/polyfills/promise", "../service/viewProvider", "../lib/dom/index"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
+	    var promise_1 = require("../lib/polyfills/promise");
 	    var viewProvider_1 = require("../service/viewProvider");
 	    var index_1 = require("../lib/dom/index");
 	    function view(valueAccessor, callback) {
@@ -1548,7 +1687,7 @@ __MODE__ = undefined;
 	                var deleted = index_1.createElement("<div></div>");
 	                var added = index_1.createElement("<div></div>");
 	                var promises = array.map(function (item) { return serviceProvider.getService(viewProvider_1.IViewProvider).getNode(item); });
-	                Promise.all(promises)
+	                promise_1.Promise.all(promises)
 	                    .then(function (elts) {
 	                    element.childNodes.forEach(function (el) {
 	                        deleted.appendChild(el);
@@ -1899,7 +2038,7 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/core/index.js', ["require", "exports", "../lib/polyfills/object-assign", "./service", "../service/viewProvider", "../lib/amd-loader/index", "../service/configManager", "../lib/amd-loader/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../service/configManager", "../directive/view", "../directive/on", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
+	        define('src/core/index.js', ["require", "exports", "../lib/polyfills/object-assign", "../lib/polyfills/array-foreach", "../lib/polyfills/array-map", "../lib/polyfills/promise", "./service", "../service/viewProvider", "../lib/amd-loader/index", "../service/configManager", "../lib/amd-loader/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../service/configManager", "../directive/view", "../directive/on", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
@@ -1908,6 +2047,9 @@ __MODE__ = undefined;
 	    }
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    require("../lib/polyfills/object-assign");
+	    require("../lib/polyfills/array-foreach");
+	    require("../lib/polyfills/array-map");
+	    var promise_1 = require("../lib/polyfills/promise");
 	    var service_1 = require("./service");
 	    var viewProvider_1 = require("../service/viewProvider");
 	    var index_1 = require("../lib/amd-loader/index");
@@ -1965,8 +2107,24 @@ __MODE__ = undefined;
 	            records.forEach(function (record) {
 	                var removedNodes = Array.prototype.map.call(record.removedNodes, function (x) { return x; });
 	                var addedNodes = Array.prototype.map.call(record.addedNodes, function (x) { return x; });
-	                removedNodes.forEach(function (e) { return e.dispatchEvent(new Event("custom:view:dom:remove")); });
-	                addedNodes.forEach(function (e) { return e.dispatchEvent(new Event("custom:view:dom:added")); });
+	                removedNodes.forEach(function (e) {
+	                    var event = typeof (Event) === 'function' && new Event("custom:view:dom:remove") ||
+	                        (function () {
+	                            var event = document.createEvent("Event");
+	                            event.initEvent('custom:view:dom:remove', true, true);
+	                            return event;
+	                        })();
+	                    e.dispatchEvent(event);
+	                });
+	                addedNodes.forEach(function (e) {
+	                    var event = typeof (Event) === 'function' && new Event("custom:view:dom:added") ||
+	                        (function () {
+	                            var event = document.createEvent("Event");
+	                            event.initEvent('custom:view:dom:added', true, true);
+	                            return event;
+	                        })();
+	                    e.dispatchEvent(event);
+	                });
 	            });
 	        });
 	        observer.observe(document.querySelector("body"), { childList: true, subtree: true });
@@ -1984,8 +2142,8 @@ __MODE__ = undefined;
 	        placeHolder && ((configFileName && index_1.load(configFileName).then(function (conf) {
 	            service_1.serviceProvider.getService(configManager_1.IConfigManager).setConfig(conf.default);
 	            index_1.config(conf && conf.default || {});
-	        }) || Promise.resolve())
-	            .then(function () { return (mainFileName && index_1.load(mainFileName) || Promise.resolve(null)).then(function (modules) {
+	        }) || promise_1.Promise.resolve())
+	            .then(function () { return (mainFileName && index_1.load(mainFileName) || promise_1.Promise.resolve(null)).then(function (modules) {
 	            var clss = modules && modules[Object.keys(modules).filter(function (_) { return _.indexOf("_") !== 0; })[0]];
 	            clss && startup(placeHolder, clss);
 	        }); }));

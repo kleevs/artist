@@ -50,7 +50,7 @@
         return href;
     };
     function load(uri) {
-        return new Promise(function (resolve) {
+        return new promise_1.Promise(function (resolve) {
             var mod = define([uri], function (module) { resolve(module); });
             allmodules["..."] = {};
             mod();
@@ -74,13 +74,13 @@
             modulefactory = arguments[0];
         }
         return allmodules["..."]["..."] = allmodules["..."][id] = function (context) {
-            return Promise.all(dependencies.map(function (dependency) {
+            return promise_1.Promise.all(dependencies.map(function (dependency) {
                 if (dependency === "require")
                     return function (uri) { return loadedmodules[getAbsoluteUri(uri, context)]; };
                 if (dependency === "exports")
                     return exp = {};
                 var src = getAbsoluteUri(dependency, context);
-                return allmodules[src] = allmodules[src] || new Promise(function (resolve) {
+                return allmodules[src] = allmodules[src] || new promise_1.Promise(function (resolve) {
                     var script = document.createElement('script');
                     script.src = src;
                     script.async = true;
@@ -94,7 +94,7 @@
             })).then(function (result) {
                 var module = modulefactory.apply(this, result) || exp;
                 if (id && id !== "...") {
-                    allmodules[id] = Promise.resolve(module);
+                    allmodules[id] = promise_1.Promise.resolve(module);
                     loadedmodules[id] = module;
                 }
                 ;
@@ -111,11 +111,8 @@
     if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {
         var context = window;
         context.define = define;
-        if (typeof (Promise) === "undefined") {
-            context.Promise = promise_1.Promise;
-        }
         var scripts = document.getElementsByTagName('script');
         var path = scripts[scripts.length - 1].src.split('?')[0];
-        allmodules[path] = Promise.resolve(exports);
+        allmodules[path] = promise_1.Promise.resolve(exports);
     }
 });

@@ -15,6 +15,7 @@ export class Router extends IRouter {
 
     constructor(private configManager: IConfigManager) {
         super();
+        if (!window.onpopstate) window.onhashchange = (state) => this.change(location.href);
         window.onpopstate = (state) => this.change(location.href);
     }
 

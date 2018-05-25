@@ -14,11 +14,12 @@ var __extends = (this && this.__extends) || (function () {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../lib/binder/index", "../lib/dom/index", "./service", "../service/ajax"], factory);
+        define(["require", "exports", "../lib/polyfills/promise", "../lib/binder/index", "../lib/dom/index", "./service", "../service/ajax"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    var promise_1 = require("../lib/polyfills/promise");
     var index_1 = require("../lib/binder/index");
     var index_2 = require("../lib/dom/index");
     var service_1 = require("./service");
@@ -62,7 +63,7 @@ var __extends = (this && this.__extends) || (function () {
             exports.registeredView.push(viewType = {
                 construct: constructor,
                 binding: options.binding,
-                html: new Promise(function (resolve, reject) {
+                html: new promise_1.Promise(function (resolve, reject) {
                     options.html && resolve(options.html);
                     options.template && !options.html && (function () {
                         service_1.serviceProvider.getService(ajax_1.IAjax).ajax({ url: "/" + options.template, method: 'GET' }).then(function (response) {

@@ -1,4 +1,4 @@
-import { Promise as PromisePolyfill } from '../polyfills/promise';
+import { Promise } from '../polyfills/promise';
 
 declare let __META__: any;
 declare let exports;
@@ -109,9 +109,6 @@ if (typeof __META__ === "undefined" || __META__.MODE !== "AMD") {
     
     var context: any = window;
     context.define = define;
-    if (typeof (Promise) === "undefined") {
-        (<any>context).Promise = PromisePolyfill;
-    }
     var scripts= document.getElementsByTagName('script');
     var path = scripts[scripts.length-1].src.split('?')[0];
     allmodules[path] = Promise.resolve(exports);

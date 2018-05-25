@@ -42,6 +42,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             var _this = _super.call(this) || this;
             _this.configManager = configManager;
             _this._callbacks = [];
+            if (!window.onpopstate)
+                window.onhashchange = function (state) { return _this.change(location.href); };
             window.onpopstate = function (state) { return _this.change(location.href); };
             return _this;
         }

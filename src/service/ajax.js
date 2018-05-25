@@ -23,11 +23,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../core/service", "../service/configManager"], factory);
+        define(["require", "exports", "../lib/polyfills/promise", "../core/service", "../service/configManager"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    var promise_1 = require("../lib/polyfills/promise");
     var service_1 = require("../core/service");
     var configManager_1 = require("../service/configManager");
     var IAjax = /** @class */ (function () {
@@ -45,7 +46,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         }
         Ajax.prototype.ajax = function (options) {
             var _this = this;
-            return new Promise(function (resolve, reject) {
+            return new promise_1.Promise(function (resolve, reject) {
                 var xhr = _this.getXMLHttpRequest();
                 var configuration = _this.configManager.getConfig();
                 var url = options.url;

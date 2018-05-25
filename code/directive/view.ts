@@ -1,3 +1,4 @@
+import { Promise } from '../lib/polyfills/promise';
 import { IViewProvider } from '../service/viewProvider';
 import { Binder } from '../core/view';
 import { createElement } from '../lib/dom/index';

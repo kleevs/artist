@@ -1,4 +1,7 @@
 import '../lib/polyfills/object-assign';
+import '../lib/polyfills/array-foreach';
+import '../lib/polyfills/array-map';
+import { Promise } from '../lib/polyfills/promise';
 import { serviceProvider } from './service';
 import { IViewProvider } from '../service/viewProvider';
 import { load, config, define } from '../lib/amd-loader/index';
@@ -44,8 +47,27 @@ export function startup(selector: string, view) {
             var removedNodes: Element[] = Array.prototype.map.call(record.removedNodes, x => x);
             var addedNodes: Element[] = Array.prototype.map.call(record.addedNodes, x => x);
 
-            removedNodes.forEach(e => e.dispatchEvent(new Event("custom:view:dom:remove")));
-            addedNodes.forEach(e => e.dispatchEvent(new Event("custom:view:dom:added")));
+            removedNodes.forEach(e => { 
+                var event = typeof(Event) === 'function' && new Event("custom:view:dom:remove") || 
+                    (() => { 
+                        var event = document.createEvent("Event"); 
+                        event.initEvent('custom:view:dom:remove', true, true);
+                        return event;
+                    })();
+
+                e.dispatchEvent(event);
+            });
+
+            addedNodes.forEach(e => {
+                var event = typeof(Event) === 'function' && new Event("custom:view:dom:added") || 
+                    (() => { 
+                        var event = document.createEvent("Event"); 
+                        event.initEvent('custom:view:dom:added', true, true);
+                        return event;
+                    })();
+
+                e.dispatchEvent(event);
+            });
         });
     });
 

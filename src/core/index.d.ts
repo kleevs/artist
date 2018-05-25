@@ -1,4 +1,6 @@
 import '../lib/polyfills/object-assign';
+import '../lib/polyfills/array-foreach';
+import '../lib/polyfills/array-map';
 export { load } from '../lib/amd-loader/index';
 export { View, Binder, ViewOption } from './view';
 export { Service } from './service';

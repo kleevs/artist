@@ -1,145 +1,102 @@
-class EventHandle {
-
-    private _dico;
-
-    constructor() {
-        this._dico = {};
-    }
-
-    public once(key: string, callback: Function) {
-        callback && callback instanceof Function && (this._dico[key] = callback);
-    }
-
-    public trigger(key: string, value: any) {
-        var callback = this._dico[key];
-        this._dico[key] = undefined;
-        if (callback) {
-            callback(value);
-        } else if (key === "reject" && value) {
-            throw value;
-        }
-    }
-}
-
-export declare type PromiseParameter<T> = Promise<T> | T | ((resolve: (result?: T) => void, reject: (result?: any) => void, notify: (result?: any) => void) => any);
-
 export class Promise<T> {
+    private _nextFulfilled: { exec: (value: T) => any, promise: Promise<any> }[] = [];
+    private _nextRejected: {exec: (reason: any) => any, promise: Promise<any> }[] = [];
+    private _value: T;
+    private _isRejected: boolean = undefined;
 
-    private _eventHandle: EventHandle;
-    private _resolve: ((result?: T) => any)[];
-    private _reject: ((result?: any) => any)[];
-    private _notify: ((result?: any) => any)[];
-    private _result: any;
-    private _catched: any;
-
-    constructor(callback: PromiseParameter<T>) {
-        this._resolve = [];
-        this._reject = [];
-        this._notify = [];
-        this._eventHandle = new EventHandle();
-
-        if (callback && callback instanceof Promise) {
-            (callback as Promise<T>).then((success) => {
-                this.resolve(success);
-            });
-        } else if (callback && callback instanceof Function) {
-            var obj = (callback as Function)((result) => { this.resolve(result); }, (result) => { this.reject(result); }, (result) => { this.notify(result); });
-            if (obj && obj instanceof Promise) {
-                obj.then((success) => {
-                    this.resolve(success);
+    constructor(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void) {
+        executor((value) => {
+            this._value = <T>value;
+            this._isRejected = false;
+            setTimeout(() => {           
+                this._nextFulfilled.map((next) => { 
+                    next.exec(<T>value);
                 });
-            }
-        } else {
-            this.resolve(callback);
-        }
-    }
-
-    private triggerSuccess(value: any) {
-        if (value && value instanceof Promise) {
-            value.then((success) => {
-                this.triggerSuccess(success);
             });
-        } else {
-            this._eventHandle.trigger("success", value);
-        }
+        }, (reason) => {
+            var rejected = this.getRejected();
+            this._value = reason;
+            this._isRejected = true;
+            setTimeout(() => {           
+                rejected.map((next) => { 
+                    next(reason);
+                });
+            });
+        });
     }
 
-    private resolve(result?: any) {
-        setTimeout(() => {
-            this._result = result;
-            if (this._resolve && this._resolve.length > 0) {
-                try {
-                    for (var i = 0; i < this._resolve.length; i++) {
-                        this._resolve[i] instanceof Function && this.triggerSuccess(this._resolve[i](result));
+    private getRejected(): ((reason:any)=>any)[] {
+        var res = [];
+        return this._nextFulfilled.forEach(p => { 
+            res = res.concat(p.promise._nextRejected.map((f) => f.exec));
+            res = res.length > 0 && res || res.concat(p.promise.getRejected()); 
+        }) || res;
+    }
+
+    public then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>), onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2> {
+        var exec, next = new Promise<TResult1>((resolve, reject) => {
+            exec = (value) => { 
+                var rejected = next.getRejected();
+                var res;
+                if (onfulfilled) {
+                    if (rejected.length > 0) {
+                        try { 
+                            res = onfulfilled(value); 
+                        } catch(e) {
+                            rejected.map(f => f(e));
+                            return;
+                        }
+                    } else {
+                        res = onfulfilled(value); 
                     }
-                } catch (e) {
-                    this._eventHandle.trigger("reject", e);
+                    
+                    resolve(res);
                 }
-            } else {
-                this._eventHandle.trigger("success", result);
             }
         });
+
+        if (this._isRejected === false) { 
+            exec(this._value); 
+        } else if (this._isRejected === undefined) {
+            this._nextFulfilled.push({ exec: exec, promise: next });
+        }
+
+        return next;
     }
 
-    private reject(result?: any) {
-        setTimeout(() => {
-            this._catched = result;
-            var value = result;
-            if (this._reject.length > 0) {
-                try {
-                    for (var i = 0; i < this._reject.length; i++) {
-                        this.triggerSuccess(this._reject[i](value));
+    public catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult> {
+        var exec, next = new Promise<TResult>((resolve, reject) => {
+            exec = (reason) => { 
+                var rejected = next.getRejected();
+                var res;
+                if (onrejected) {
+                    if (rejected.length > 0) {
+                        try { 
+                            res = onrejected(reason); 
+                        } catch(e) {
+                            rejected.map(f => f(e));
+                            return;
+                        }
+                    } else {
+                        res = onrejected(reason); 
                     }
-                } catch (e) {
-                    this._eventHandle.trigger("reject", e);
+                    
+                    resolve(res);
                 }
-            } else {
-                this._eventHandle.trigger("reject", value);
             }
         });
+
+        if (this._isRejected === true) { 
+            exec(this._value); 
+        } else if (this._isRejected === undefined) {
+            this._nextRejected.push({ exec: exec, promise: next });
+        }
+
+        return next;
     }
 
-    private notify(result?: any) {
-        setTimeout(() => {
-            var value = result;
-            for (var i = 0; i < this._notify.length; i++) {
-                this._notify[i](value);
-            }
-        });
-    }
-
-    public then<T2>(resolve: (result?: T) => Promise<T2> | T2): Promise<T2> {
-        this._resolve.push(resolve);
-        this._result && this.resolve(this._result);
-        return new Promise<T2>((success: (value: T2) => void, reject: (value: any) => void) => {
-            this._eventHandle.once("success", (value: T2) => {
-                success(value);
-            });
-            this._eventHandle.once("reject", (value: any) => {
-                reject(value);
-            });
-        });
-    }
-
-    public catch(reject: (result?: any) => T | void): Promise<T> {
-        this._reject.push(reject);
-        this._catched && this.reject(this._catched);
-        return new Promise<T>((success: (value: any) => void, reject: (value: any) => void) => {
-            this._eventHandle.once("success", (value: any) => {
-                success(value);
-            });
-            this._eventHandle.once("reject", (value: any) => {
-                reject(value);
-            });
-        });
-    }
-
-    public progress(notify: (result?: any) => any): Promise<T> {
-        this._notify.push(notify);
-        return this;
-    }
-
-    public static all<T2>(promises: Promise<T2>[]): Promise<T2[]> {
+    public static all<T2>(values: (T2 | PromiseLike<T2>)[]): Promise<T2[]> {
+        var promises = values;
         return new Promise<T2[]>((success) => {
             var i = 0,
                 length = promises ? promises.length : 0,
@@ -166,7 +123,7 @@ export class Promise<T> {
         });
     }
 
-    public static resolve<T>(value: T): Promise<T> {
+    public static resolve<T>(value?: T): Promise<T> {
         return new Promise((resolve) => { resolve(value); });
     }
 }

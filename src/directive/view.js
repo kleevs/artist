@@ -4,11 +4,12 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../service/viewProvider", "../lib/dom/index"], factory);
+        define(["require", "exports", "../lib/polyfills/promise", "../service/viewProvider", "../lib/dom/index"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    var promise_1 = require("../lib/polyfills/promise");
     var viewProvider_1 = require("../service/viewProvider");
     var index_1 = require("../lib/dom/index");
     function view(valueAccessor, callback) {
@@ -20,7 +21,7 @@
                 var deleted = index_1.createElement("<div></div>");
                 var added = index_1.createElement("<div></div>");
                 var promises = array.map(function (item) { return serviceProvider.getService(viewProvider_1.IViewProvider).getNode(item); });
-                Promise.all(promises)
+                promise_1.Promise.all(promises)
                     .then(function (elts) {
                     element.childNodes.forEach(function (el) {
                         deleted.appendChild(el);
