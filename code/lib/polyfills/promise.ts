@@ -1,6 +1,6 @@
-export class Promise<T> {
-    private _nextFulfilled: { exec: (value: T) => any, promise: Promise<any> }[] = [];
-    private _nextRejected: {exec: (reason: any) => any, promise: Promise<any> }[] = [];
+class CustomPromise<T> {
+    private _nextFulfilled: { exec: (value: T) => any, promise: CustomPromise<any> }[] = [];
+    private _nextRejected: {exec: (reason: any) => any, promise: CustomPromise<any> }[] = [];
     private _value: T;
     private _isRejected: boolean = undefined;
 
@@ -33,8 +33,8 @@ export class Promise<T> {
         }) || res;
     }
 
-    public then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>), onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2> {
-        var exec, next = new Promise<TResult1>((resolve, reject) => {
+    public then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>), onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): CustomPromise<TResult1 | TResult2> {
+        var exec, next = new CustomPromise<TResult1>((resolve, reject) => {
             exec = (value) => { 
                 var rejected = next.getRejected();
                 var res;
@@ -64,8 +64,8 @@ export class Promise<T> {
         return next;
     }
 
-    public catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult> {
-        var exec, next = new Promise<TResult>((resolve, reject) => {
+    public catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): CustomPromise<T | TResult> {
+        var exec, next = new CustomPromise<TResult>((resolve, reject) => {
             exec = (reason) => { 
                 var rejected = next.getRejected();
                 var res;
@@ -95,9 +95,9 @@ export class Promise<T> {
         return next;
     }
 
-    public static all<T2>(values: (T2 | PromiseLike<T2>)[]): Promise<T2[]> {
+    public static all<T2>(values: (T2 | PromiseLike<T2>)[]): CustomPromise<T2[]> {
         var promises = values;
-        return new Promise<T2[]>((success) => {
+        return new CustomPromise<T2[]>((success) => {
             var i = 0,
                 length = promises ? promises.length : 0,
                 res: T2[] = [];
@@ -112,7 +112,7 @@ export class Promise<T> {
             }
 
             promises.forEach((promise, index) => {
-                (promise instanceof Promise && promise || Promise.resolve(<T2>(<any>promise))).then((value) => {
+                (promise instanceof CustomPromise && promise || CustomPromise.resolve(<T2>(<any>promise))).then((value) => {
                     i++;
                     res[index] = value;
                     if (i >= length) {
@@ -123,7 +123,9 @@ export class Promise<T> {
         });
     }
 
-    public static resolve<T>(value?: T): Promise<T> {
-        return new Promise((resolve) => { resolve(value); });
+    public static resolve<T>(value?: T): CustomPromise<T> {
+        return new CustomPromise((resolve) => { resolve(value); });
     }
 }
+
+(<any>window).Promise = (<any>window).Promise || CustomPromise;

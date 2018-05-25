@@ -1,4 +1,4 @@
-import { Promise } from '../polyfills/promise';
+import '../polyfills/promise';
 export declare function ajax<T>(options: {
     method: string;
     url: string;

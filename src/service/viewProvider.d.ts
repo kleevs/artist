@@ -1,4 +1,4 @@
-import { Promise } from '../lib/polyfills/promise';
+import '../lib/polyfills/promise';
 import { IServiceProvider } from '../service/serviceProvider';
 /** @description Interface du service fournisseur de vue.
  */

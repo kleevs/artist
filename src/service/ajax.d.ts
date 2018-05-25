@@ -1,4 +1,4 @@
-import { Promise } from '../lib/polyfills/promise';
+import '../lib/polyfills/promise';
 import { IConfigManager } from '../service/configManager';
 export declare abstract class IAjax {
     abstract ajax<T>(options: {

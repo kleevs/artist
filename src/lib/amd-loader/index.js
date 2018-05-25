@@ -9,7 +9,7 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var promise_1 = require("../polyfills/promise");
+    require("../polyfills/promise");
     var allmodules = { "...": {} };
     var loadedmodules = {};
     var configuration;
@@ -50,7 +50,7 @@
         return href;
     };
     function load(uri) {
-        return new promise_1.Promise(function (resolve) {
+        return new Promise(function (resolve) {
             var mod = define([uri], function (module) { resolve(module); });
             allmodules["..."] = {};
             mod();
@@ -74,13 +74,13 @@
             modulefactory = arguments[0];
         }
         return allmodules["..."]["..."] = allmodules["..."][id] = function (context) {
-            return promise_1.Promise.all(dependencies.map(function (dependency) {
+            return Promise.all(dependencies.map(function (dependency) {
                 if (dependency === "require")
                     return function (uri) { return loadedmodules[getAbsoluteUri(uri, context)]; };
                 if (dependency === "exports")
                     return exp = {};
                 var src = getAbsoluteUri(dependency, context);
-                return allmodules[src] = allmodules[src] || new promise_1.Promise(function (resolve) {
+                return allmodules[src] = allmodules[src] || new Promise(function (resolve) {
                     var script = document.createElement('script');
                     script.src = src;
                     script.async = true;
@@ -94,7 +94,7 @@
             })).then(function (result) {
                 var module = modulefactory.apply(this, result) || exp;
                 if (id && id !== "...") {
-                    allmodules[id] = promise_1.Promise.resolve(module);
+                    allmodules[id] = Promise.resolve(module);
                     loadedmodules[id] = module;
                 }
                 ;
@@ -113,6 +113,6 @@
         context.define = define;
         var scripts = document.getElementsByTagName('script');
         var path = scripts[scripts.length - 1].src.split('?')[0];
-        allmodules[path] = promise_1.Promise.resolve(exports);
+        allmodules[path] = Promise.resolve(exports);
     }
 });

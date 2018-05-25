@@ -288,138 +288,126 @@ __MODE__ = undefined;
 	    };
 	}
 	
-	(function (factory) {
-	    if (typeof module === "object" && typeof module.exports === "object") {
-	        var v = factory(require, exports);
-	        if (v !== undefined) module.exports = v;
-	    }
-	    else if (typeof define === "function" && define.amd) {
-	        define('src/lib/polyfills/promise.js', ["require", "exports"], factory);
-	    }
-	})(function (require, exports) {
-	    "use strict";
-	    Object.defineProperty(exports, "__esModule", { value: true });
-	    var Promise = /** @class */ (function () {
-	        function Promise(executor) {
-	            var _this = this;
-	            this._nextFulfilled = [];
-	            this._nextRejected = [];
-	            this._isRejected = undefined;
-	            executor(function (value) {
-	                _this._value = value;
-	                _this._isRejected = false;
-	                setTimeout(function () {
-	                    _this._nextFulfilled.map(function (next) {
-	                        next.exec(value);
-	                    });
-	                });
-	            }, function (reason) {
-	                var rejected = _this.getRejected();
-	                _this._value = reason;
-	                _this._isRejected = true;
-	                setTimeout(function () {
-	                    rejected.map(function (next) {
-	                        next(reason);
-	                    });
+	var CustomPromise = /** @class */ (function () {
+	    function CustomPromise(executor) {
+	        var _this = this;
+	        this._nextFulfilled = [];
+	        this._nextRejected = [];
+	        this._isRejected = undefined;
+	        executor(function (value) {
+	            _this._value = value;
+	            _this._isRejected = false;
+	            setTimeout(function () {
+	                _this._nextFulfilled.map(function (next) {
+	                    next.exec(value);
 	                });
 	            });
-	        }
-	        Promise.prototype.getRejected = function () {
-	            var res = [];
-	            return this._nextFulfilled.forEach(function (p) {
-	                res = res.concat(p.promise._nextRejected.map(function (f) { return f.exec; }));
-	                res = res.length > 0 && res || res.concat(p.promise.getRejected());
-	            }) || res;
-	        };
-	        Promise.prototype.then = function (onfulfilled, onrejected) {
-	            var exec, next = new Promise(function (resolve, reject) {
-	                exec = function (value) {
-	                    var rejected = next.getRejected();
-	                    var res;
-	                    if (onfulfilled) {
-	                        if (rejected.length > 0) {
-	                            try {
-	                                res = onfulfilled(value);
-	                            }
-	                            catch (e) {
-	                                rejected.map(function (f) { return f(e); });
-	                                return;
-	                            }
-	                        }
-	                        else {
+	        }, function (reason) {
+	            var rejected = _this.getRejected();
+	            _this._value = reason;
+	            _this._isRejected = true;
+	            setTimeout(function () {
+	                rejected.map(function (next) {
+	                    next(reason);
+	                });
+	            });
+	        });
+	    }
+	    CustomPromise.prototype.getRejected = function () {
+	        var res = [];
+	        return this._nextFulfilled.forEach(function (p) {
+	            res = res.concat(p.promise._nextRejected.map(function (f) { return f.exec; }));
+	            res = res.length > 0 && res || res.concat(p.promise.getRejected());
+	        }) || res;
+	    };
+	    CustomPromise.prototype.then = function (onfulfilled, onrejected) {
+	        var exec, next = new CustomPromise(function (resolve, reject) {
+	            exec = function (value) {
+	                var rejected = next.getRejected();
+	                var res;
+	                if (onfulfilled) {
+	                    if (rejected.length > 0) {
+	                        try {
 	                            res = onfulfilled(value);
 	                        }
-	                        resolve(res);
-	                    }
-	                };
-	            });
-	            if (this._isRejected === false) {
-	                exec(this._value);
-	            }
-	            else if (this._isRejected === undefined) {
-	                this._nextFulfilled.push({ exec: exec, promise: next });
-	            }
-	            return next;
-	        };
-	        Promise.prototype.catch = function (onrejected) {
-	            var exec, next = new Promise(function (resolve, reject) {
-	                exec = function (reason) {
-	                    var rejected = next.getRejected();
-	                    var res;
-	                    if (onrejected) {
-	                        if (rejected.length > 0) {
-	                            try {
-	                                res = onrejected(reason);
-	                            }
-	                            catch (e) {
-	                                rejected.map(function (f) { return f(e); });
-	                                return;
-	                            }
+	                        catch (e) {
+	                            rejected.map(function (f) { return f(e); });
+	                            return;
 	                        }
-	                        else {
+	                    }
+	                    else {
+	                        res = onfulfilled(value);
+	                    }
+	                    resolve(res);
+	                }
+	            };
+	        });
+	        if (this._isRejected === false) {
+	            exec(this._value);
+	        }
+	        else if (this._isRejected === undefined) {
+	            this._nextFulfilled.push({ exec: exec, promise: next });
+	        }
+	        return next;
+	    };
+	    CustomPromise.prototype.catch = function (onrejected) {
+	        var exec, next = new CustomPromise(function (resolve, reject) {
+	            exec = function (reason) {
+	                var rejected = next.getRejected();
+	                var res;
+	                if (onrejected) {
+	                    if (rejected.length > 0) {
+	                        try {
 	                            res = onrejected(reason);
 	                        }
-	                        resolve(res);
-	                    }
-	                };
-	            });
-	            if (this._isRejected === true) {
-	                exec(this._value);
-	            }
-	            else if (this._isRejected === undefined) {
-	                this._nextRejected.push({ exec: exec, promise: next });
-	            }
-	            return next;
-	        };
-	        Promise.all = function (values) {
-	            var promises = values;
-	            return new Promise(function (success) {
-	                var i = 0, length = promises ? promises.length : 0, res = [];
-	                for (var j = 0; j < length; j++) {
-	                    res.push(null);
-	                }
-	                if (!length) {
-	                    success(res);
-	                    return;
-	                }
-	                promises.forEach(function (promise, index) {
-	                    (promise instanceof Promise && promise || Promise.resolve(promise)).then(function (value) {
-	                        i++;
-	                        res[index] = value;
-	                        if (i >= length) {
-	                            success(res);
+	                        catch (e) {
+	                            rejected.map(function (f) { return f(e); });
+	                            return;
 	                        }
-	                    });
+	                    }
+	                    else {
+	                        res = onrejected(reason);
+	                    }
+	                    resolve(res);
+	                }
+	            };
+	        });
+	        if (this._isRejected === true) {
+	            exec(this._value);
+	        }
+	        else if (this._isRejected === undefined) {
+	            this._nextRejected.push({ exec: exec, promise: next });
+	        }
+	        return next;
+	    };
+	    CustomPromise.all = function (values) {
+	        var promises = values;
+	        return new CustomPromise(function (success) {
+	            var i = 0, length = promises ? promises.length : 0, res = [];
+	            for (var j = 0; j < length; j++) {
+	                res.push(null);
+	            }
+	            if (!length) {
+	                success(res);
+	                return;
+	            }
+	            promises.forEach(function (promise, index) {
+	                (promise instanceof CustomPromise && promise || CustomPromise.resolve(promise)).then(function (value) {
+	                    i++;
+	                    res[index] = value;
+	                    if (i >= length) {
+	                        success(res);
+	                    }
 	                });
 	            });
-	        };
-	        Promise.resolve = function (value) {
-	            return new Promise(function (resolve) { resolve(value); });
-	        };
-	        return Promise;
-	    }());
-	    exports.Promise = Promise;
-	});
+	        });
+	    };
+	    CustomPromise.resolve = function (value) {
+	        return new CustomPromise(function (resolve) { resolve(value); });
+	    };
+	    return CustomPromise;
+	}());
+	window.Promise = window.Promise || CustomPromise;
 	
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
@@ -964,7 +952,7 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    var promise_1 = require("../lib/polyfills/promise");
+	    require("../lib/polyfills/promise");
 	    var service_1 = require("../core/service");
 	    var configManager_1 = require("../service/configManager");
 	    var IAjax = /** @class */ (function () {
@@ -982,7 +970,7 @@ __MODE__ = undefined;
 	        }
 	        Ajax.prototype.ajax = function (options) {
 	            var _this = this;
-	            return new promise_1.Promise(function (resolve, reject) {
+	            return new Promise(function (resolve, reject) {
 	                var xhr = _this.getXMLHttpRequest();
 	                var configuration = _this.configManager.getConfig();
 	                var url = options.url;
@@ -1065,7 +1053,7 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    var promise_1 = require("../lib/polyfills/promise");
+	    require("../lib/polyfills/promise");
 	    var index_1 = require("../lib/binder/index");
 	    var index_2 = require("../lib/dom/index");
 	    var service_1 = require("./service");
@@ -1109,7 +1097,7 @@ __MODE__ = undefined;
 	            exports.registeredView.push(viewType = {
 	                construct: constructor,
 	                binding: options.binding,
-	                html: new promise_1.Promise(function (resolve, reject) {
+	                html: new Promise(function (resolve, reject) {
 	                    options.html && resolve(options.html);
 	                    options.template && !options.html && (function () {
 	                        service_1.serviceProvider.getService(ajax_1.IAjax).ajax({ url: "/" + options.template, method: 'GET' }).then(function (response) {
@@ -1164,11 +1152,12 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/service/viewProvider.js', ["require", "exports", "../core/service", "../service/serviceProvider", "../core/view"], factory);
+	        define('src/service/viewProvider.js', ["require", "exports", "../lib/polyfills/promise", "../core/service", "../service/serviceProvider", "../core/view"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
+	    require("../lib/polyfills/promise");
 	    var service_1 = require("../core/service");
 	    var serviceProvider_1 = require("../service/serviceProvider");
 	    var view_1 = require("../core/view");
@@ -1221,7 +1210,7 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    var promise_1 = require("../polyfills/promise");
+	    require("../polyfills/promise");
 	    var allmodules = { "...": {} };
 	    var loadedmodules = {};
 	    var configuration;
@@ -1262,7 +1251,7 @@ __MODE__ = undefined;
 	        return href;
 	    };
 	    function load(uri) {
-	        return new promise_1.Promise(function (resolve) {
+	        return new Promise(function (resolve) {
 	            var mod = define([uri], function (module) { resolve(module); });
 	            allmodules["..."] = {};
 	            mod();
@@ -1286,13 +1275,13 @@ __MODE__ = undefined;
 	            modulefactory = arguments[0];
 	        }
 	        return allmodules["..."]["..."] = allmodules["..."][id] = function (context) {
-	            return promise_1.Promise.all(dependencies.map(function (dependency) {
+	            return Promise.all(dependencies.map(function (dependency) {
 	                if (dependency === "require")
 	                    return function (uri) { return loadedmodules[getAbsoluteUri(uri, context)]; };
 	                if (dependency === "exports")
 	                    return exp = {};
 	                var src = getAbsoluteUri(dependency, context);
-	                return allmodules[src] = allmodules[src] || new promise_1.Promise(function (resolve) {
+	                return allmodules[src] = allmodules[src] || new Promise(function (resolve) {
 	                    var script = document.createElement('script');
 	                    script.src = src;
 	                    script.async = true;
@@ -1306,7 +1295,7 @@ __MODE__ = undefined;
 	            })).then(function (result) {
 	                var module = modulefactory.apply(this, result) || exp;
 	                if (id && id !== "...") {
-	                    allmodules[id] = promise_1.Promise.resolve(module);
+	                    allmodules[id] = Promise.resolve(module);
 	                    loadedmodules[id] = module;
 	                }
 	                ;
@@ -1325,7 +1314,7 @@ __MODE__ = undefined;
 	        context.define = define;
 	        var scripts = document.getElementsByTagName('script');
 	        var path = scripts[scripts.length - 1].src.split('?')[0];
-	        allmodules[path] = promise_1.Promise.resolve(exports);
+	        allmodules[path] = Promise.resolve(exports);
 	    }
 	});
 	
@@ -1541,11 +1530,12 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/service/moduleProvider.js', ["require", "exports", "../core/service", "../lib/amd-loader/index"], factory);
+	        define('src/service/moduleProvider.js', ["require", "exports", "../lib/polyfills/promise", "../core/service", "../lib/amd-loader/index"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
+	    require("../lib/polyfills/promise");
 	    var service_1 = require("../core/service");
 	    var index_1 = require("../lib/amd-loader/index");
 	    var IModuleProvider = /** @class */ (function () {
@@ -1675,7 +1665,7 @@ __MODE__ = undefined;
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
-	    var promise_1 = require("../lib/polyfills/promise");
+	    require("../lib/polyfills/promise");
 	    var viewProvider_1 = require("../service/viewProvider");
 	    var index_1 = require("../lib/dom/index");
 	    function view(valueAccessor, callback) {
@@ -1687,7 +1677,7 @@ __MODE__ = undefined;
 	                var deleted = index_1.createElement("<div></div>");
 	                var added = index_1.createElement("<div></div>");
 	                var promises = array.map(function (item) { return serviceProvider.getService(viewProvider_1.IViewProvider).getNode(item); });
-	                promise_1.Promise.all(promises)
+	                Promise.all(promises)
 	                    .then(function (elts) {
 	                    element.childNodes.forEach(function (el) {
 	                        deleted.appendChild(el);
@@ -2049,7 +2039,7 @@ __MODE__ = undefined;
 	    require("../lib/polyfills/object-assign");
 	    require("../lib/polyfills/array-foreach");
 	    require("../lib/polyfills/array-map");
-	    var promise_1 = require("../lib/polyfills/promise");
+	    require("../lib/polyfills/promise");
 	    var service_1 = require("./service");
 	    var viewProvider_1 = require("../service/viewProvider");
 	    var index_1 = require("../lib/amd-loader/index");
@@ -2142,8 +2132,8 @@ __MODE__ = undefined;
 	        placeHolder && ((configFileName && index_1.load(configFileName).then(function (conf) {
 	            service_1.serviceProvider.getService(configManager_1.IConfigManager).setConfig(conf.default);
 	            index_1.config(conf && conf.default || {});
-	        }) || promise_1.Promise.resolve())
-	            .then(function () { return (mainFileName && index_1.load(mainFileName) || promise_1.Promise.resolve(null)).then(function (modules) {
+	        }) || Promise.resolve())
+	            .then(function () { return (mainFileName && index_1.load(mainFileName) || Promise.resolve(null)).then(function (modules) {
 	            var clss = modules && modules[Object.keys(modules).filter(function (_) { return _.indexOf("_") !== 0; })[0]];
 	            clss && startup(placeHolder, clss);
 	        }); }));

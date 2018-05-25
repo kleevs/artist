@@ -1,4 +1,4 @@
-import { Promise } from '../lib/polyfills/promise';
+import '../lib/polyfills/promise';
 import { Binder as BBinder, BindManager as BBindManager } from '../lib/binder/index';
 import { IServiceProvider } from '../service/serviceProvider';
 export declare type Binder = BBinder<IServiceProvider>;

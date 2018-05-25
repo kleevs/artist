@@ -1,4 +1,4 @@
-import { Promise } from '../polyfills/promise';
+import '../polyfills/promise';
 declare let ActiveXObject: any;
 
 function getXMLHttpRequest() {

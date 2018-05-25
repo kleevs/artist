@@ -1,4 +1,4 @@
-import { Promise } from '../lib/polyfills/promise';
+import '../lib/polyfills/promise';
 export declare abstract class IModuleProvider {
     abstract get(uri: string): Promise<any>;
 }

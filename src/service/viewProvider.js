@@ -13,11 +13,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../core/service", "../service/serviceProvider", "../core/view"], factory);
+        define(["require", "exports", "../lib/polyfills/promise", "../core/service", "../service/serviceProvider", "../core/view"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    require("../lib/polyfills/promise");
     var service_1 = require("../core/service");
     var serviceProvider_1 = require("../service/serviceProvider");
     var view_1 = require("../core/view");

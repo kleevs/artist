@@ -1,8 +1,8 @@
 import { Binder } from '../core/view';
 import { on } from 'on';
 
-export function dom(option: { in: (e: Event) => void, out: (e: Event) => void }) : Binder[] {
-    return [
+export function dom(option: { in: (e: Event) => void, out: (e: Event) => void }) : Binder {
+    return <any>(<Binder[]>[
         on('custom:view:dom:remove', () => (e) => { 
             if (e.target === e.currentTarget) {
                 option.out(e);
@@ -19,5 +19,5 @@ export function dom(option: { in: (e: Event) => void, out: (e: Event) => void })
 
             return false;
         })
-    ];
+    ]);
 }

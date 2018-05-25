@@ -15,7 +15,7 @@
     require("../lib/polyfills/object-assign");
     require("../lib/polyfills/array-foreach");
     require("../lib/polyfills/array-map");
-    var promise_1 = require("../lib/polyfills/promise");
+    require("../lib/polyfills/promise");
     var service_1 = require("./service");
     var viewProvider_1 = require("../service/viewProvider");
     var index_1 = require("../lib/amd-loader/index");
@@ -108,8 +108,8 @@
         placeHolder && ((configFileName && index_1.load(configFileName).then(function (conf) {
             service_1.serviceProvider.getService(configManager_1.IConfigManager).setConfig(conf.default);
             index_1.config(conf && conf.default || {});
-        }) || promise_1.Promise.resolve())
-            .then(function () { return (mainFileName && index_1.load(mainFileName) || promise_1.Promise.resolve(null)).then(function (modules) {
+        }) || Promise.resolve())
+            .then(function () { return (mainFileName && index_1.load(mainFileName) || Promise.resolve(null)).then(function (modules) {
             var clss = modules && modules[Object.keys(modules).filter(function (_) { return _.indexOf("_") !== 0; })[0]];
             clss && startup(placeHolder, clss);
         }); }));

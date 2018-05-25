@@ -9,7 +9,7 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var promise_1 = require("../lib/polyfills/promise");
+    require("../lib/polyfills/promise");
     var viewProvider_1 = require("../service/viewProvider");
     var index_1 = require("../lib/dom/index");
     function view(valueAccessor, callback) {
@@ -21,7 +21,7 @@
                 var deleted = index_1.createElement("<div></div>");
                 var added = index_1.createElement("<div></div>");
                 var promises = array.map(function (item) { return serviceProvider.getService(viewProvider_1.IViewProvider).getNode(item); });
-                promise_1.Promise.all(promises)
+                Promise.all(promises)
                     .then(function (elts) {
                     element.childNodes.forEach(function (el) {
                         deleted.appendChild(el);

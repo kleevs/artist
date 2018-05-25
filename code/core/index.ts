@@ -1,7 +1,7 @@
 import '../lib/polyfills/object-assign';
 import '../lib/polyfills/array-foreach';
 import '../lib/polyfills/array-map';
-import { Promise } from '../lib/polyfills/promise';
+import '../lib/polyfills/promise';
 import { serviceProvider } from './service';
 import { IViewProvider } from '../service/viewProvider';
 import { load, config, define } from '../lib/amd-loader/index';

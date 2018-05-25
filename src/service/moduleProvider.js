@@ -23,11 +23,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../core/service", "../lib/amd-loader/index"], factory);
+        define(["require", "exports", "../lib/polyfills/promise", "../core/service", "../lib/amd-loader/index"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    require("../lib/polyfills/promise");
     var service_1 = require("../core/service");
     var index_1 = require("../lib/amd-loader/index");
     var IModuleProvider = /** @class */ (function () {

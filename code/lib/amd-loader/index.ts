@@ -1,4 +1,4 @@
-import { Promise } from '../polyfills/promise';
+import '../polyfills/promise';
 
 declare let __META__: any;
 declare let exports;
