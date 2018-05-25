@@ -8,20 +8,30 @@ class CustomPromise<T> {
         executor((value) => {
             this._value = <T>value;
             this._isRejected = false;
-            setTimeout(() => {           
+            var resolve = (value) => setTimeout(() => {           
                 this._nextFulfilled.map((next) => { 
-                    next.exec(<T>value);
+                    next.exec(value);
                 });
             });
+            if (value && value instanceof CustomPromise) {
+                value.then(v => resolve(v));
+            } else {
+                resolve(value);
+            }
         }, (reason) => {
             var rejected = this.getRejected();
             this._value = reason;
             this._isRejected = true;
-            setTimeout(() => {           
+            var resolve = (reason) => setTimeout(() => {           
                 rejected.map((next) => { 
                     next(reason);
                 });
             });
+            if (reason && reason instanceof CustomPromise) {
+                reason.then(v => resolve(v));
+            } else {
+                resolve(reason);
+            }
         });
     }
 

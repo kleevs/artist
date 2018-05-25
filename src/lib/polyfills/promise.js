@@ -7,20 +7,32 @@ var CustomPromise = /** @class */ (function () {
         executor(function (value) {
             _this._value = value;
             _this._isRejected = false;
-            setTimeout(function () {
+            var resolve = function (value) { return setTimeout(function () {
                 _this._nextFulfilled.map(function (next) {
                     next.exec(value);
                 });
-            });
+            }); };
+            if (value && value instanceof CustomPromise) {
+                value.then(function (v) { return resolve(v); });
+            }
+            else {
+                resolve(value);
+            }
         }, function (reason) {
             var rejected = _this.getRejected();
             _this._value = reason;
             _this._isRejected = true;
-            setTimeout(function () {
+            var resolve = function (reason) { return setTimeout(function () {
                 rejected.map(function (next) {
                     next(reason);
                 });
-            });
+            }); };
+            if (reason && reason instanceof CustomPromise) {
+                reason.then(function (v) { return resolve(v); });
+            }
+            else {
+                resolve(reason);
+            }
         });
     }
     CustomPromise.prototype.getRejected = function () {
