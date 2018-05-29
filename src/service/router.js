@@ -42,9 +42,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             var _this = _super.call(this) || this;
             _this.configManager = configManager;
             _this._callbacks = [];
-            if (!window.onpopstate)
-                window.onhashchange = function (state) { return _this.change(location.href); };
             window.onpopstate = function (state) { return _this.change(location.href); };
+            window.onhashchange = function (state) { return _this.change(location.href); };
             return _this;
         }
         Router.prototype.on = function (callback) {
@@ -57,8 +56,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
             this.change(href);
         };
         Router.prototype.change = function (str) {
-            var parsed = this.parse(str);
-            this._callbacks.forEach(function (callback) { return callback(parsed.href, parsed.pathname, parsed.hash); });
+            if (this._last !== str) {
+                this._last = str;
+                var parsed = this.parse(str);
+                this._callbacks.forEach(function (callback) { return callback(parsed.href, parsed.pathname, parsed.hash); });
+            }
         };
         Router.prototype.parse = function (href) {
             var a = document.createElement('a');

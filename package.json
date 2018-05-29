@@ -1,6 +1,6 @@
 {
   "name": "artistejs",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Un léger framework typescript",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",

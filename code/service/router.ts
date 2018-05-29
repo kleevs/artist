@@ -12,11 +12,11 @@ export abstract class IRouter {
 })
 export class Router extends IRouter {
     private _callbacks: ((href: string, pathname: string, hash: string) => void)[] = [];
-
+	private _last: string;
     constructor(private configManager: IConfigManager) {
         super();
-        if (!window.onpopstate) window.onhashchange = (state) => this.change(location.href);
         window.onpopstate = (state) => this.change(location.href);
+		window.onhashchange = (state) => this.change(location.href); 
     }
 
     on(callback: (href: string, pathname: string, hash: string) => void) {
@@ -31,8 +31,11 @@ export class Router extends IRouter {
     }
 
     change(str: string) {
-        var parsed = this.parse(str);
-        this._callbacks.forEach(callback => callback(parsed.href, parsed.pathname, parsed.hash));
+		if (this._last !== str) {
+			this._last = str;
+			var parsed = this.parse(str);
+			this._callbacks.forEach(callback => callback(parsed.href, parsed.pathname, parsed.hash));
+		}
     }
 
     parse(href: string) {

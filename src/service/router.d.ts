@@ -7,6 +7,7 @@ export declare abstract class IRouter {
 export declare class Router extends IRouter {
     private configManager;
     private _callbacks;
+    private _last;
     constructor(configManager: IConfigManager);
     on(callback: (href: string, pathname: string, hash: string) => void): void;
     trigger(href: string): void;
