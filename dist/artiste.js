@@ -1682,7 +1682,12 @@ __MODE__ = undefined;
 	    require("../lib/polyfills/promise");
 	    var viewProvider_1 = require("../service/viewProvider");
 	    var index_1 = require("../lib/dom/index");
-	    function view(valueAccessor, callback) {
+	    function view(valueAccessor, param) {
+	        var callback = param instanceof Function && param || param && param.callback;
+	        var beforeIn = param && param.beforeIn;
+	        var afterIn = param && param.afterIn;
+	        var beforeOut = param && param.beforeOut;
+	        var afterOut = param && param.afterOut;
 	        return function (element, serviceProvider) {
 	            element.innerHTML = "";
 	            return function () {
@@ -1694,10 +1699,14 @@ __MODE__ = undefined;
 	                Promise.all(promises)
 	                    .then(function (elts) {
 	                    element.childNodes.forEach(function (el) {
+	                        beforeOut && beforeOut(el);
 	                        deleted.appendChild(el);
+	                        afterOut && afterOut(el);
 	                    });
 	                    elts.forEach(function (el) {
+	                        beforeIn && beforeIn(el);
 	                        element.appendChild(el);
+	                        afterIn && afterIn(el);
 	                    });
 	                    callback && callback(value);
 	                    return elts;
