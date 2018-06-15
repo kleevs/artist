@@ -32,11 +32,13 @@
                         beforeOut && beforeOut(el);
                         deleted.appendChild(el);
                         afterOut && afterOut(el);
+                        index_1.dispatchEvent(el, 'custom:view:dom:remove');
                     });
                     elts.forEach(function (el) {
                         beforeIn && beforeIn(el);
                         element.appendChild(el);
                         afterIn && afterIn(el);
+                        index_1.dispatchEvent(el, 'custom:view:dom:added');
                     });
                     callback && callback(value);
                     return elts;

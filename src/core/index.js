@@ -4,7 +4,7 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../lib/polyfills/object-assign", "../lib/polyfills/array-foreach", "../lib/polyfills/array-map", "../lib/polyfills/promise", "./service", "../service/viewProvider", "../lib/amd-loader/index", "../service/configManager", "../lib/amd-loader/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../service/configManager", "../directive/view", "../directive/on", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
+        define(["require", "exports", "../lib/polyfills/object-assign", "../lib/polyfills/array-foreach", "../lib/polyfills/array-map", "../lib/polyfills/promise", "./service", "../service/viewProvider", "../lib/amd-loader/index", "../service/configManager", "../lib/amd-loader/index", "./view", "./service", "../service/serviceProvider", "../service/eventManager", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../service/configManager", "../directive/view", "../directive/on", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
     }
 })(function (require, exports) {
     "use strict";
@@ -29,10 +29,10 @@
     var serviceProvider_1 = require("../service/serviceProvider");
     exports.IServiceProvider = serviceProvider_1.IServiceProvider;
     exports.ServiceProvider = serviceProvider_1.ServiceProvider;
-    var notifier_1 = require("../service/notifier");
-    exports.INotifier = notifier_1.INotifier;
-    exports.Notifier = notifier_1.Notifier;
-    exports.Event = notifier_1.Event;
+    var eventManager_1 = require("../service/eventManager");
+    exports.IEventManager = eventManager_1.IEventManager;
+    exports.EventManager = eventManager_1.EventManager;
+    exports.Event = eventManager_1.Event;
     var viewProvider_2 = require("../service/viewProvider");
     exports.IViewProvider = viewProvider_2.IViewProvider;
     exports.ViewProvider = viewProvider_2.ViewProvider;
@@ -69,31 +69,6 @@
      * @return
      */
     function startup(selector, view) {
-        var observer = new MutationObserver(function (records) {
-            records.forEach(function (record) {
-                var removedNodes = Array.prototype.map.call(record.removedNodes, function (x) { return x; });
-                var addedNodes = Array.prototype.map.call(record.addedNodes, function (x) { return x; });
-                removedNodes.forEach(function (e) {
-                    var event = typeof (Event) === 'function' && new Event("custom:view:dom:remove") ||
-                        (function () {
-                            var event = document.createEvent("Event");
-                            event.initEvent('custom:view:dom:remove', true, true);
-                            return event;
-                        })();
-                    e.dispatchEvent(event);
-                });
-                addedNodes.forEach(function (e) {
-                    var event = typeof (Event) === 'function' && new Event("custom:view:dom:added") ||
-                        (function () {
-                            var event = document.createEvent("Event");
-                            event.initEvent('custom:view:dom:added', true, true);
-                            return event;
-                        })();
-                    e.dispatchEvent(event);
-                });
-            });
-        });
-        observer.observe(document.querySelector("body"), { childList: true, subtree: true });
         var viewProvider = service_1.serviceProvider.getService(viewProvider_1.IViewProvider);
         viewProvider.getNode(viewProvider.newInstance(view)).then(function (el) { return document.querySelector(selector).appendChild(el); });
     }

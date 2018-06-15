@@ -15,7 +15,7 @@ export { View, Binder, ViewOption } from './view';
 export { Service } from './service';
 
 export { IServiceProvider, ServiceProvider } from '../service/serviceProvider';
-export { INotifier, Notifier, Event } from '../service/notifier';
+export { IEventManager, EventManager, Event } from '../service/eventManager';
 export { IViewProvider, ViewProvider } from '../service/viewProvider';
 export { IObservablizer, Observablizer } from '../service/observalizer';
 export { IModuleProvider, ModuleProvider } from '../service/moduleProvider';
@@ -42,36 +42,6 @@ export * from '../directive/router';
  * @return
  */  
 export function startup(selector: string, view) {
-    var observer = new MutationObserver((records) => {
-        records.forEach(record => { 
-            var removedNodes: Element[] = Array.prototype.map.call(record.removedNodes, x => x);
-            var addedNodes: Element[] = Array.prototype.map.call(record.addedNodes, x => x);
-
-            removedNodes.forEach(e => { 
-                var event = typeof(Event) === 'function' && new Event("custom:view:dom:remove") || 
-                    (() => { 
-                        var event = document.createEvent("Event"); 
-                        event.initEvent('custom:view:dom:remove', true, true);
-                        return event;
-                    })();
-
-                e.dispatchEvent(event);
-            });
-
-            addedNodes.forEach(e => {
-                var event = typeof(Event) === 'function' && new Event("custom:view:dom:added") || 
-                    (() => { 
-                        var event = document.createEvent("Event"); 
-                        event.initEvent('custom:view:dom:added', true, true);
-                        return event;
-                    })();
-
-                e.dispatchEvent(event);
-            });
-        });
-    });
-
-    observer.observe(document.querySelector("body"), { childList: true, subtree: true });
 	var viewProvider = serviceProvider.getService(IViewProvider);
     viewProvider.getNode(viewProvider.newInstance(view)).then((el) => document.querySelector(selector).appendChild(el));
 }

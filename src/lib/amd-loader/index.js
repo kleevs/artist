@@ -88,7 +88,7 @@
                     script.onload = script.onreadystatechange = function () {
                         allmodules[src] = allmodules["..."]["..."];
                         allmodules["..."] = {};
-                        allmodules[src] = allmodules[src] && allmodules[src](src).then(function (module) { resolve(loadedmodules[src] = module); return module; }) || resolve();
+                        allmodules[src] = allmodules[src] && allmodules[src](src).then(function (module) { resolve(loadedmodules[src] = module); return module; });
                     };
                 });
             })).then(function (result) {

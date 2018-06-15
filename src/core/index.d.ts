@@ -6,7 +6,7 @@ export { load } from '../lib/amd-loader/index';
 export { View, Binder, ViewOption } from './view';
 export { Service } from './service';
 export { IServiceProvider, ServiceProvider } from '../service/serviceProvider';
-export { INotifier, Notifier, Event } from '../service/notifier';
+export { IEventManager, EventManager, Event } from '../service/eventManager';
 export { IViewProvider, ViewProvider } from '../service/viewProvider';
 export { IObservablizer, Observablizer } from '../service/observalizer';
 export { IModuleProvider, ModuleProvider } from '../service/moduleProvider';

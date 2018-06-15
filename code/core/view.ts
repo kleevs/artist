@@ -98,7 +98,6 @@ export function View<T>(options: ViewOption<T>) {
 				initialize: (view) => {
 					var binding = viewType.binding;
 
-					view && view.initialize && view.initialize();
 					viewType && (view.__elt__ = viewType.html.then(template => {
 						var t = createElement(template);
 						t.setAttribute("artist-view", "true");
@@ -110,6 +109,7 @@ export function View<T>(options: ViewOption<T>) {
 							});
 						});
 
+                        view && view.initialize && view.initialize();
 						(<any>t).__view__ = view;
 						return t;
 					}));

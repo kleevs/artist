@@ -1,7 +1,7 @@
 import '../lib/polyfills/promise';
 import { IViewProvider } from '../service/viewProvider';
 import { Binder } from '../core/view';
-import { createElement } from '../lib/dom/index';
+import { createElement, dispatchEvent } from '../lib/dom/index';
 
 export function view(valueAccessor: () => any) : Binder
 export function view(valueAccessor: () => any, callback: (view: any) => void) : Binder
@@ -34,12 +34,14 @@ export function view(valueAccessor: () => any, param?: any) : Binder {
 						beforeOut && beforeOut(el);
 						deleted.appendChild(el); 
 						afterOut && afterOut(el);
+						dispatchEvent(el, 'custom:view:dom:remove');
 					});
                     
 					elts.forEach((el: any) => { 
 						beforeIn && beforeIn(el);
 						element.appendChild(el);
 						afterIn && afterIn(el);
+						dispatchEvent(el, 'custom:view:dom:added');
 					});
 					
 					callback && callback(value);

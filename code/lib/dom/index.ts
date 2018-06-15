@@ -17,3 +17,17 @@ export function createElement(html: string): Element {
 	parser.innerHTML = html;
 	return <Element>parser.firstChild;
 };
+
+export function dispatchEvent(element: Element, type: string);
+export function dispatchEvent<T>(element: Element, type: string, data: T);
+export function dispatchEvent<T>(element: Element, type: string, data?: T) {
+	var event = typeof(Event) === 'function' && new Event(type, { bubbles:true }) || 
+		(() => { 
+			var event = document.createEvent("Event"); 
+			event.initEvent(type, true, true);
+			return event;
+		})();
+
+	(<any>event).data = data;
+	element.dispatchEvent(event);
+}

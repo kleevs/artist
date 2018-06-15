@@ -877,6 +877,17 @@ __MODE__ = undefined;
 	    }
 	    exports.createElement = createElement;
 	    ;
+	    function dispatchEvent(element, type, data) {
+	        var event = typeof (Event) === 'function' && new Event(type, { bubbles: true }) ||
+	            (function () {
+	                var event = document.createEvent("Event");
+	                event.initEvent(type, true, true);
+	                return event;
+	            })();
+	        event.data = data;
+	        element.dispatchEvent(event);
+	    }
+	    exports.dispatchEvent = dispatchEvent;
 	});
 	
 	var __extends = (this && this.__extends) || (function () {
@@ -1126,7 +1137,6 @@ __MODE__ = undefined;
 	                    registerable: false,
 	                    initialize: function (view) {
 	                        var binding = viewType.binding;
-	                        view && view.initialize && view.initialize();
 	                        viewType && (view.__elt__ = viewType.html.then(function (template) {
 	                            var t = index_2.createElement(template);
 	                            t.setAttribute("artist-view", "true");
@@ -1137,6 +1147,7 @@ __MODE__ = undefined;
 	                                    binders.forEach(function (b) { return new BindManager(el, service_1.serviceProvider).manage(b); });
 	                                });
 	                            });
+	                            view && view.initialize && view.initialize();
 	                            t.__view__ = view;
 	                            return t;
 	                        }));
@@ -1301,7 +1312,7 @@ __MODE__ = undefined;
 	                    script.onload = script.onreadystatechange = function () {
 	                        allmodules[src] = allmodules["..."]["..."];
 	                        allmodules["..."] = {};
-	                        allmodules[src] = allmodules[src] && allmodules[src](src).then(function (module) { resolve(loadedmodules[src] = module); return module; }) || resolve();
+	                        allmodules[src] = allmodules[src] && allmodules[src](src).then(function (module) { resolve(loadedmodules[src] = module); return module; });
 	                    };
 	                });
 	            })).then(function (result) {
@@ -1346,80 +1357,86 @@ __MODE__ = undefined;
 	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
 	    return c > 3 && r && Object.defineProperty(target, key, r), r;
 	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
 	(function (factory) {
 	    if (typeof module === "object" && typeof module.exports === "object") {
 	        var v = factory(require, exports);
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/service/notifier.js', ["require", "exports", "../core/service"], factory);
+	        define('src/service/eventManager.js', ["require", "exports", "../core/service", "viewProvider", "../lib/dom/index"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
 	    Object.defineProperty(exports, "__esModule", { value: true });
 	    var service_1 = require("../core/service");
-	    /** @description Interface du service gérant la communication entre vue.
-	     */
-	    var INotifier = /** @class */ (function () {
-	        function INotifier() {
-	        }
-	        return INotifier;
-	    }());
-	    exports.INotifier = INotifier;
-	    /** @description Classe définissant les évènements à manipuler pour la communication entre vue.
-	     */
-	    var Event = /** @class */ (function () {
-	        function Event(key) {
+	    var viewProvider_1 = require("viewProvider");
+	    var index_1 = require("../lib/dom/index");
+	    var NEvent = /** @class */ (function () {
+	        function NEvent(key) {
 	            this.key = key;
 	        }
-	        return Event;
+	        return NEvent;
 	    }());
-	    exports.Event = Event;
+	    exports.Event = NEvent;
 	    ;
-	    var Notifier = /** @class */ (function (_super) {
-	        __extends(Notifier, _super);
-	        function Notifier() {
-	            var _this = _super !== null && _super.apply(this, arguments) || this;
-	            _this._callbacks = {};
+	    var IEventManager = /** @class */ (function () {
+	        function IEventManager() {
+	        }
+	        return IEventManager;
+	    }());
+	    exports.IEventManager = IEventManager;
+	    var EventManager = /** @class */ (function (_super) {
+	        __extends(EventManager, _super);
+	        function EventManager(viewProvider) {
+	            var _this = _super.call(this) || this;
+	            _this.viewProvider = viewProvider;
 	            return _this;
 	        }
-	        Notifier.prototype.notify = function (obj, key, data) {
-	            var callbacks = this.register(obj, key);
-	            callbacks && callbacks.forEach(function (callback) {
-	                callback(data);
-	            });
-	        };
-	        Notifier.prototype.listen = function (obj, key, callback) {
-	            var callbacks = this.register(obj, key);
-	            callbacks.push(callback);
+	        EventManager.prototype.forEvent = function (event) {
+	            var _this = this;
 	            return {
-	                stop: function () {
-	                    var index = callbacks.indexOf(callback);
-	                    if (index > -1) {
-	                        callbacks.splice(index, 1);
+	                listen: function (context, callback) {
+	                    var fn;
+	                    setTimeout(function () {
+	                        _this.viewProvider.getNode(context).then(function (element) {
+	                            element && element.addEventListener(event.key, fn = function (e) {
+	                                var emitter = _this.viewProvider.getView(e.target);
+	                                var stopPropagation = emitter && callback(emitter, e.data);
+	                                stopPropagation && e.stopPropagation();
+	                            });
+	                        });
+	                    });
+	                    return {
+	                        stop: function (context) {
+	                            setTimeout(function () {
+	                                _this.viewProvider.getNode(context).then(function (element) {
+	                                    element && element.removeEventListener(event.key, fn);
+	                                });
+	                            });
+	                        }
+	                    };
+	                },
+	                notify: function (context, param) {
+	                    if (context) {
+	                        _this.viewProvider.getNode(context).then(function (e) {
+	                            index_1.dispatchEvent(e, event.key, param);
+	                        });
 	                    }
 	                }
 	            };
 	        };
-	        Notifier.prototype.forEvent = function (event) {
-	            var _this = this;
-	            return {
-	                listen: function (obj, callback) { return _this.listen(obj, event.key, callback); },
-	                notify: function (obj, data) { return _this.notify(obj, event.key, data); }
-	            };
-	        };
-	        Notifier.prototype.register = function (obj, key) {
-	            obj.__notifier__id__ = obj.__notifier__id__ || [new Date().getTime(), Math.random() * 100].join("");
-	            return this._callbacks[obj.__notifier__id__ + "_" + key] = this._callbacks[obj.__notifier__id__ + "_" + key] || [];
-	        };
-	        Notifier = __decorate([
+	        EventManager = __decorate([
 	            service_1.Service({
-	                key: INotifier
-	            })
-	        ], Notifier);
-	        return Notifier;
-	    }(INotifier));
-	    exports.Notifier = Notifier;
+	                key: IEventManager
+	            }),
+	            __metadata("design:paramtypes", [viewProvider_1.IViewProvider])
+	        ], EventManager);
+	        return EventManager;
+	    }(IEventManager));
+	    exports.EventManager = EventManager;
 	});
 	
 	var __extends = (this && this.__extends) || (function () {
@@ -1702,11 +1719,13 @@ __MODE__ = undefined;
 	                        beforeOut && beforeOut(el);
 	                        deleted.appendChild(el);
 	                        afterOut && afterOut(el);
+	                        index_1.dispatchEvent(el, 'custom:view:dom:remove');
 	                    });
 	                    elts.forEach(function (el) {
 	                        beforeIn && beforeIn(el);
 	                        element.appendChild(el);
 	                        afterIn && afterIn(el);
+	                        index_1.dispatchEvent(el, 'custom:view:dom:added');
 	                    });
 	                    callback && callback(value);
 	                    return elts;
@@ -2055,7 +2074,7 @@ __MODE__ = undefined;
 	        if (v !== undefined) module.exports = v;
 	    }
 	    else if (typeof define === "function" && define.amd) {
-	        define('src/core/index.js', ["require", "exports", "../lib/polyfills/object-assign", "../lib/polyfills/array-foreach", "../lib/polyfills/array-map", "../lib/polyfills/promise", "./service", "../service/viewProvider", "../lib/amd-loader/index", "../service/configManager", "../lib/amd-loader/index", "./view", "./service", "../service/serviceProvider", "../service/notifier", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../service/configManager", "../directive/view", "../directive/on", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
+	        define('src/core/index.js', ["require", "exports", "../lib/polyfills/object-assign", "../lib/polyfills/array-foreach", "../lib/polyfills/array-map", "../lib/polyfills/promise", "./service", "../service/viewProvider", "../lib/amd-loader/index", "../service/configManager", "../lib/amd-loader/index", "./view", "./service", "../service/serviceProvider", "../service/eventManager", "../service/viewProvider", "../service/observalizer", "../service/moduleProvider", "../service/router", "../service/ajax", "../service/configManager", "../directive/view", "../directive/on", "../directive/dom", "../directive/attr", "../directive/change", "../directive/click", "../directive/text", "../directive/value", "../directive/options", "../directive/each", "../directive/class", "../directive/router"], factory);
 	    }
 	})(function (require, exports) {
 	    "use strict";
@@ -2080,10 +2099,10 @@ __MODE__ = undefined;
 	    var serviceProvider_1 = require("../service/serviceProvider");
 	    exports.IServiceProvider = serviceProvider_1.IServiceProvider;
 	    exports.ServiceProvider = serviceProvider_1.ServiceProvider;
-	    var notifier_1 = require("../service/notifier");
-	    exports.INotifier = notifier_1.INotifier;
-	    exports.Notifier = notifier_1.Notifier;
-	    exports.Event = notifier_1.Event;
+	    var eventManager_1 = require("../service/eventManager");
+	    exports.IEventManager = eventManager_1.IEventManager;
+	    exports.EventManager = eventManager_1.EventManager;
+	    exports.Event = eventManager_1.Event;
 	    var viewProvider_2 = require("../service/viewProvider");
 	    exports.IViewProvider = viewProvider_2.IViewProvider;
 	    exports.ViewProvider = viewProvider_2.ViewProvider;
@@ -2120,31 +2139,6 @@ __MODE__ = undefined;
 	     * @return
 	     */
 	    function startup(selector, view) {
-	        var observer = new MutationObserver(function (records) {
-	            records.forEach(function (record) {
-	                var removedNodes = Array.prototype.map.call(record.removedNodes, function (x) { return x; });
-	                var addedNodes = Array.prototype.map.call(record.addedNodes, function (x) { return x; });
-	                removedNodes.forEach(function (e) {
-	                    var event = typeof (Event) === 'function' && new Event("custom:view:dom:remove") ||
-	                        (function () {
-	                            var event = document.createEvent("Event");
-	                            event.initEvent('custom:view:dom:remove', true, true);
-	                            return event;
-	                        })();
-	                    e.dispatchEvent(event);
-	                });
-	                addedNodes.forEach(function (e) {
-	                    var event = typeof (Event) === 'function' && new Event("custom:view:dom:added") ||
-	                        (function () {
-	                            var event = document.createEvent("Event");
-	                            event.initEvent('custom:view:dom:added', true, true);
-	                            return event;
-	                        })();
-	                    e.dispatchEvent(event);
-	                });
-	            });
-	        });
-	        observer.observe(document.querySelector("body"), { childList: true, subtree: true });
 	        var viewProvider = service_1.serviceProvider.getService(viewProvider_1.IViewProvider);
 	        viewProvider.getNode(viewProvider.newInstance(view)).then(function (el) { return document.querySelector(selector).appendChild(el); });
 	    }

@@ -86,7 +86,7 @@ export function define(identifier, dependencies?, modulefactory?): (context?) =>
                 script.onload = (<any>script).onreadystatechange = () => {
                     allmodules[src] = allmodules["..."]["..."];
                     allmodules["..."] = {};
-				allmodules[src] = allmodules[src] && allmodules[src](src).then(module => { resolve(loadedmodules[src] = module); return module; }) || resolve();
+				    allmodules[src] = allmodules[src] && allmodules[src](src).then(module => { resolve(loadedmodules[src] = module); return module; });
                 };
             });
         })).then(function (result) {

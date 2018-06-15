@@ -80,7 +80,6 @@ var __extends = (this && this.__extends) || (function () {
                     registerable: false,
                     initialize: function (view) {
                         var binding = viewType.binding;
-                        view && view.initialize && view.initialize();
                         viewType && (view.__elt__ = viewType.html.then(function (template) {
                             var t = index_2.createElement(template);
                             t.setAttribute("artist-view", "true");
@@ -91,6 +90,7 @@ var __extends = (this && this.__extends) || (function () {
                                     binders.forEach(function (b) { return new BindManager(el, service_1.serviceProvider).manage(b); });
                                 });
                             });
+                            view && view.initialize && view.initialize();
                             t.__view__ = view;
                             return t;
                         }));

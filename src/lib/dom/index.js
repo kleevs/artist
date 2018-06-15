@@ -28,4 +28,15 @@
     }
     exports.createElement = createElement;
     ;
+    function dispatchEvent(element, type, data) {
+        var event = typeof (Event) === 'function' && new Event(type, { bubbles: true }) ||
+            (function () {
+                var event = document.createEvent("Event");
+                event.initEvent(type, true, true);
+                return event;
+            })();
+        event.data = data;
+        element.dispatchEvent(event);
+    }
+    exports.dispatchEvent = dispatchEvent;
 });
