@@ -3,6 +3,7 @@ import { IConfigManager } from '../service/configManager';
 
 export abstract class IRouter {
     abstract on(callback: (href: string, pathname: string, hash: string) => void): void;
+    abstract trigger(href: string, replace: boolean): void;
     abstract trigger(href: string): void;
     abstract getUrl(localUri: string): string;
 }
@@ -25,8 +26,12 @@ export class Router extends IRouter {
         this._callbacks.push(callback);
     }
 
-    trigger(href: string) {
-        history.pushState({}, '', href);
+    trigger(href: string, replace?: boolean) {
+        if (!replace) { 
+            history.pushState({}, '', href); 
+        } else {
+            history.replaceState({}, '', href);
+        }
         this.change(href);
     }
 

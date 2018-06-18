@@ -1645,8 +1645,13 @@ __MODE__ = undefined;
 	            callback(parsed.href, parsed.pathname, parsed.hash);
 	            this._callbacks.push(callback);
 	        };
-	        Router.prototype.trigger = function (href) {
-	            history.pushState({}, '', href);
+	        Router.prototype.trigger = function (href, replace) {
+	            if (!replace) {
+	                history.pushState({}, '', href);
+	            }
+	            else {
+	                history.replaceState({}, '', href);
+	            }
 	            this.change(href);
 	        };
 	        Router.prototype.change = function (str) {
