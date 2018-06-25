@@ -21,13 +21,22 @@ export function createElement(html: string): Element {
 export function dispatchEvent(element: Element, type: string);
 export function dispatchEvent<T>(element: Element, type: string, data: T);
 export function dispatchEvent<T>(element: Element, type: string, data?: T) {
-	var event = typeof(Event) === 'function' && new Event(type, { bubbles:true }) || 
-		(() => { 
-			var event = document.createEvent("Event"); 
-			event.initEvent(type, true, true);
-			return event;
-		})();
+	try { 
+		var event = typeof(Event) === 'function' && new Event(type, { bubbles:true }) || 
+			(() => { 
+				var event = document.createEvent("Event"); 
+				event.initEvent(type, true, true);
+				return event;
+			})();
 
-	(<any>event).data = data;
-	element.dispatchEvent(event);
+		(<any>event).data = data;
+		element.dispatchEvent(event);
+	} catch (e) {
+		var event = document.createEvent("Event"); 
+		event.initEvent(type, true, true);
+		return event;
+
+		(<any>event).data = data;
+		element.dispatchEvent(event);
+	}
 }
